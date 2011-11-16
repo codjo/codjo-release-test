@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="Ant" default="test" basedir=".\">
+    <property name="gui.default.class" value="net.codjo.test.release.test.standard.SampleGui"/>
+
+    <taskdef name="release-test" classname="net.codjo.test.release.task.ReleaseTask"/>
+    <taskdef name="gui-test" classname="net.codjo.test.release.task.gui.GuiTask"/>
+
+    <target name="test">
+        <release-test>
+            <gui-test>
+                <group name="Frame simple">
+                    <click menu="Fichier:Nouvelle frame" timeout="1"/>
+                    <setValue name="editableCombo" value="edit4"/>
+                    <assertValue name="editableCombo" expected="edit4"/>
+                </group>
+            </gui-test>
+        </release-test>
+    </target>
+</project>

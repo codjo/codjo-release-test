@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="Ant" default="test" basedir=".\">
+    <taskdef name="release-test" classname="net.codjo.test.release.task.ReleaseTask"/>
+    <taskdef name="web-test" classname="net.codjo.test.release.task.web.WebTask"/>
+
+    <target name="test">
+
+        <release-test>
+            <description>Bla bla bla !!!</description>
+
+            <web-test session="session1" url="http://localhost:8181/login.html">
+                <editForm id="loginForm">
+                    <setField name="loginField" value="luke"/>
+                    <setField name="passwordField" value="r2d2rulez"/>
+                    <clickSubmit name="ok"/>
+                </editForm>
+                <editForm id="mail_vador">
+                    <clickSubmit name="mail_vador_button"/>
+                </editForm>
+                <assertPage title="From: Vador"/>
+            </web-test>
+
+            <web-test session="session2" url="http://localhost:8181/login.html">
+                <editForm id="loginForm">
+                    <setField name="loginField" value="luke"/>
+                    <setField name="passwordField" value="r2d2rulez"/>
+                    <clickSubmit name="ok"/>
+                </editForm>
+                <editForm id="mail_yoda">
+                    <clickSubmit name="mail_yoda_button"/>
+                </editForm>
+                <assertPage title="From: Yoda"/>
+            </web-test>
+
+            <web-test session="session1">
+                <assertPage title="From: Vador"/>
+            </web-test>
+        </release-test>
+    </target>
+</project>

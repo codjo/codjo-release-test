@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="Ant" default="test" basedir=".\">
+    <property name="gui.default.class"
+              value="net.codjo.test.release.test.standard.SampleGuiTest$AssertArgsClass"/>
+    <property name="gui.default.arg.0" value="val0"/>
+    <property name="gui.default.arg.1" value="val1"/>
+    <property name="gui.default.arg.2" value="val2"/>
+    <property name="gui.default.arg.3" value="val3"/>
+
+    <taskdef name="release-test" classname="net.codjo.test.release.task.ReleaseTask"/>
+    <taskdef name="gui-test" classname="net.codjo.test.release.task.gui.GuiTask"/>
+
+    <target name="test">
+        <release-test>
+            <gui-test user="boris" password="jelediraispas"/>
+        </release-test>
+    </target>
+</project>

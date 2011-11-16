@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<xs:schema
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    elementFormDefault="qualified"
+    attributeFormDefault="unqualified">
+
+    <xs:element name="function">
+        <xs:annotation>
+            <xs:documentation>Element racine.</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="name" type="xs:string"/>
+                <xs:element name="family">
+                    <xs:complexType>
+                        <xs:attribute name="id" type="xs:string"/>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="description" type="xs:string"/>
+                <xs:element name="documents">
+                    <xs:complexType>
+                        <xs:choice maxOccurs="unbounded">
+                            <xs:element ref="specification"/>
+                            <xs:element ref="test"/>
+                        </xs:choice>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="audit">
+                    <xs:annotation>
+                        <xs:documentation>Balise regroupant les informations directement récupérées du système de gestion de
+ version (CVS). Les valeurs par défaut pour les attributs 'revision' et 'tag' sont respectivement '$Revision' et '$Name:  $'.</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="log" type="xs:string"/>
+                        </xs:sequence>
+                        <xs:attribute name="revision" type="xs:string" use="required"/>
+                        <xs:attribute name="tag" type="xs:string" use="required"/>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+            <xs:attribute name="id" type="xs:string" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+
+    <xs:complexType name="document">
+        <xs:attribute name="href" type="xs:string"/>
+        <xs:attribute name="version" type="xs:string"/>
+    </xs:complexType>
+    <xs:element name="specification">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="document"/>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="test">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="document"/>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

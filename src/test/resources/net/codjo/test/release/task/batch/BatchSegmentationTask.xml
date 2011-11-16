@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<release-test name="BatchSegmentationTask" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:noNamespaceSchemaLocation="http://test-release.xsd">
+    <batch-segmentation initiator="me" segmentations="1, 2" date="2002-05-07" returnCode="5">
+        <extraArg line="-beginDate 19700101"/>
+        <extraArg line="-endDate 99990101"/>
+    </batch-segmentation>
+</release-test>

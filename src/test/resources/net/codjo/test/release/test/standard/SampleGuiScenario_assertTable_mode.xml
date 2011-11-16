@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="Ant" default="test" basedir=".\">
+    <property name="gui.default.class" value="net.codjo.test.release.test.standard.SampleGui"/>
+
+    <taskdef name="release-test" classname="net.codjo.test.release.task.ReleaseTask"/>
+    <taskdef name="gui-test" classname="net.codjo.test.release.task.gui.GuiTask"/>
+
+    <target name="test">
+        <release-test>
+            <description>Bla bla bla !!!</description>
+
+            <gui-test>
+                <group name="Frame avec écran de détail">
+                    <click menu="Fichier:Liste PortfolioWindow"/>
+                    <assertFrame title="Liste de PortfolioWindow"/>
+
+                    <assertTable name="tableWithCellRenderer" expected="a" row="0" column="0"/>
+                    <assertTable name="tableWithCellRenderer" expected="1" row="0" column="1"/>
+                    <assertTable name="tableWithCellRenderer" expected="One" row="0" column="1"/>
+
+                    <assertTable name="tableWithCellRenderer" expected="a" row="0" column="0" mode="auto"/>
+                    <assertTable name="tableWithCellRenderer" expected="1" row="0" column="1" mode="auto"/>
+                    <assertTable name="tableWithCellRenderer" expected="One" row="0" column="1" mode="auto"/>
+
+                    <assertTable name="tableWithCellRenderer" expected="a" row="0" column="0" mode="model"/>
+                    <assertTable name="tableWithCellRenderer" expected="1" row="0" column="1" mode="model"/>
+
+                    <assertTable name="tableWithCellRenderer" expected="a" row="0" column="0" mode="display"/>
+                    <assertTable name="tableWithCellRenderer" expected="One" row="0" column="1" mode="display"/>
+
+                    <assertTable name="tableWithCustomCellRenderer" expected="true" row="0" column="1" mode="display"/>
+                    <assertTable name="tableWithCustomCellRenderer" expected="false" row="1" column="1"/>
+                </group>
+            </gui-test>
+        </release-test>
+    </target>
+</project>

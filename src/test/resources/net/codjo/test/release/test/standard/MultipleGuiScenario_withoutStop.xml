@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="Ant" default="test" basedir=".\">
+    <property name="gui.default.class"
+              value="net.codjo.test.release.test.standard.SampleGui"/>
+    <property name="gui.admin.class"
+              value="net.codjo.test.release.test.tableeditor.SampleTableEditorGui"/>
+
+    <taskdef name="release-test" classname="net.codjo.test.release.task.ReleaseTask"/>
+    <taskdef name="gui-test" classname="net.codjo.test.release.task.gui.GuiTask"/>
+
+    <target name="test">
+        <release-test>
+            <gui-test session="session1">
+                <group name="Frame simple">
+                    <assertFrame title="SampleGui"/>
+                    <click name="ViewPopup"/>
+                    <assertMenu name="menuItemChecked" checked="true"
+                                label="Test check"/>
+                    <click name="menuItemChecked"/>
+                </group>
+            </gui-test>
+
+            <gui-test session="session1">
+                <group name="Frame simple 2">
+                    <assertFrame title="SampleGui"/>
+                    <click name="ViewPopup"/>
+                    <assertMenu name="menuItemChecked" checked="false"
+                                label="Test check"/>
+                </group>
+            </gui-test>
+
+        </release-test>
+    </target>
+</project>

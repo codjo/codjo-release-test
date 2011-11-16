@@ -1,0 +1,37 @@
+<html>
+<head>
+    <title>Mes messages</title>
+</head>
+
+<body>
+<table id="mailbox">
+    <tr>
+        <th></th>
+        <th>De</th>
+        <th>Sujet</th>
+        <th></th>
+    </tr>
+    <tr>
+        <form id="mail_yoda" action="mail_yoda.html">
+            <td><input type="checkbox" wicket:id="select_yoda"/></td>
+            <td>Yoda</td>
+            <td><input id="mail_yoda_title" type="text" value="Jeune Padawan..." name="titre"/></td>
+            <td><input type="button" id="mail_yoda_translate"
+                       onClick="document.getElementById('mail_yoda_title').value='Young Padawan...'" 
+                       value="Traduire"/></td>
+            <td><input type="submit" name="mail_yoda_button" value="Voir"></td>
+        </form>
+    </tr>
+    <tr>
+        <span>
+        <form id="mail_vador" action="mail_vador.html">
+            <td><input type="checkbox" wicket:id="select_vador"/></td>
+            <td>Dark vador</td>
+            <td><span><input type="text" value="Je suis ton pere" name="titre"/></span></td>
+            <td><input type="submit" name="mail_vador_button" value="Voir"/></td>
+        </form>
+        </span>
+    </tr>
+</table>
+</body>
+</html>

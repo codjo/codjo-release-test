@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="Ant" default="test" basedir=".\">
+    <property name="gui.default.class"
+              value="net.codjo.test.release.test.standard.SampleGui"/>
+
+    <taskdef name="release-test" classname="net.codjo.test.release.task.ReleaseTask"/>
+    <taskdef name="gui-test" classname="net.codjo.test.release.task.gui.GuiTask"/>
+
+    <target name="test">
+        <release-test>
+            <gui-test session="session1">
+                <group name="frame de la session session1">
+                    <assertFrame title="SampleGui"/>
+                    <click label="Nouvelle frame"/>
+                    <assertVisible name="ptfCode"/>
+                    <setValue name="ptfCode" value="frame1"/>
+                    <assertValue name="ptfCode" expected="frame1"/>
+                    <closeFrame title="Une frame"/>
+                </group>
+
+                <group name="assertEnabled sur un menu en utilisant le label">
+                    <assertEnabled menu="Fichier:Nouvelle frame" expected="true"/>
+                </group>
+
+                <group name="click sur un menu en utilisant le label">
+                    <click menu="Fichier:Nouvelle frame"/>
+                    <closeFrame title="Une frame"/>
+                </group>
+                <group name="click en utilisant le name label">
+                    <click name="toolbar.newFrame"/>
+                    <closeFrame title="Une frame"/>
+                </group>
+            </gui-test>
+
+            <gui-test session="session2">
+                <group name="frame de la session session2">
+                    <assertFrame title="SampleGui"/>
+                    <click label="Nouvelle frame"/>
+                    <assertVisible name="ptfCode"/>
+                    <setValue name="ptfCode" value="frame2"/>
+                    <assertValue name="ptfCode" expected="frame2"/>
+                    <closeFrame title="Une frame"/>
+                </group>
+
+                <group name="assertEnabled sur un menu en utilisant le label">
+                    <assertEnabled menu="Fichier:Nouvelle frame" expected="true"/>
+                </group>
+
+                <group name="click sur un menu en utilisant le label">
+                    <click menu="Fichier:Nouvelle frame"/>
+                    <closeFrame title="Une frame"/>
+                </group>
+                <group name="click en utilisant le name label">
+                    <click name="toolbar.newFrame"/>
+                    <closeFrame title="Une frame"/>
+                </group>
+            </gui-test>
+        </release-test>
+    </target>
+</project>

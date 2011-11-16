@@ -1,0 +1,18 @@
+<method>
+    <description>
+        <parameters>
+            <parameter name="user" required="true" comment="le user"/>
+            <parameter name="code" comment="code � ex�cuter"/>
+            <parameter name="">fsdf</parameter>
+        </parameters>
+        <comment>
+            Test du call-method
+        </comment>
+    </description>
+    <body>
+        <gui-test user="@user@">
+            <setvalue name="monNom3" value="&lt;"/>
+            @code@
+        </gui-test>
+    </body>
+</method>

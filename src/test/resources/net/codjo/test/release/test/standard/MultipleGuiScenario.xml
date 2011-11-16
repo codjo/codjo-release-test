@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="Ant" default="test" basedir=".\">
+    <property name="gui.default.class"
+              value="net.codjo.test.release.test.standard.SampleGui"/>
+    <property name="gui.admin.class"
+              value="net.codjo.test.release.test.tableeditor.SampleTableEditorGui"/>
+
+    <taskdef name="release-test" classname="net.codjo.test.release.task.ReleaseTask"/>
+    <taskdef name="gui-test" classname="net.codjo.test.release.task.gui.GuiTask"/>
+
+    <target name="test">
+        <release-test>
+            <gui-test gui="default">
+                <group name="Frame simple">
+                    <group name="Test PopupMenu">
+                        <assertFrame title="SampleGui"/>
+                        <click name="ViewPopup"/>
+                        <assertMenu name="menuItemChecked" checked="true"
+                                    label="Test check"/>
+                        <assertMenu name="menuItemUnChecked" checked="false"/>
+                        <click name="menuItemUnChecked"/>
+                        <click name="ViewPopup"/>
+                        <assertMenu name="menuItemUnChecked" checked="true"/>
+                    </group>
+                    <group name="Ouverture de la frame">
+                        <assertEnabled menu="Fichier:Nouvelle frame" expected="true"/>
+                        <click menu="Fichier:Nouvelle frame"/>
+                        <assertFrame title="Une frame" timeout="10" delay="1000"/>
+                    </group>
+
+                    <group name="Vérification des valeurs par défaut">
+                        <assertValue name="ptfCode" expected="un field" delay="1500"/>
+                        <assertValue name="period" expected="" timeout="3"/>
+                        <assertValue name="type" expected="valA" timeout="9" delay="800"/>
+                        <assertEnabled name="buttonDisable" expected="false"/>
+                        <assertEnabled name="textFieldEnable" expected="true"/>
+                        <assertEnabled name="comboBoxEnable" expected="false"/>
+                        <assertEnabled name="tableEnable" expected="true" row="0"
+                                       column="col1"/>
+                        <assertEnabled name="tableEnable" expected="false" row="1"
+                                       column="col1"/>
+                        <assertEnabled name="tableEnable" expected="true" row="0"
+                                       column="0"/>
+                        <assertEnabled name="tableEnable2" expected="false"/>
+                        <assertEditable name="textFieldEnable" expected="true"/>
+                        <assertEditable name="comboBoxEnable" expected="false"/>
+                        <assertEditable name="tableEnable" expected="true" row="0"
+                                        column="col1"/>
+                        <assertEditable name="tableEnable" expected="false" row="1"
+                                        column="col1"/>
+                        <assertEditable name="tableEnable" expected="true" row="0"
+                                        column="0"/>
+                    </group>
+                </group>
+            </gui-test>
+
+            <gui-test gui="admin">
+                <group name="Test édition d'une JCombo avec auto-validation">
+                    <assertFrame title="SampleTableEditorGui"/>
+                    <assertTable name="kingTable" expected="Simetierre" row="0"
+                                 column="Titre"/>
+                    <editCell name="kingTable" row="0" column="Titre">
+                        <assertListSize expected="5"/>
+                        <assertList row="0" expected="Simetierre"/>
+                        <assertList row="1" expected="Roadmaster"/>
+                        <assertList row="2" expected="Charlie"/>
+                        <assertList row="3" expected="Christine"/>
+                        <assertList row="4" expected="Ca"/>
+                        <setValue value="Christine"/>
+                    </editCell>
+                    <assertTable name="kingTable" expected="Christine" row="0"
+                                 column="Titre"/>
+                </group>
+
+                <group name="Test édition d'une JCombo avec validation">
+                    <assertTable name="kingTable" expected="9" row="0" column="Note"/>
+                    <editCell name="kingTable" row="0" column="Note">
+                        <assertListSize expected="9"/>
+                        <setValue value="8"/>
+                        <validate/>
+                    </editCell>
+                    <assertTable name="kingTable" expected="8" row="0" column="Note"/>
+                </group>
+
+                <group name="Test édition d'une JCombo sans validation">
+                    <assertTable name="kingTable" expected="8" row="0" column="Note"/>
+                    <editCell name="kingTable" row="0" column="Note">
+                        <assertListSize expected="9"/>
+                        <setValue value="1"/>
+                    </editCell>
+                    <assertTable name="kingTable" expected="8" row="0" column="Note"/>
+                    <editCell name="kingTable" row="0" column="Titre"/>
+                    <assertTable name="kingTable" expected="1" row="0" column="Note"/>
+                </group>
+
+                <group name="Test édition d'une JCombo avec cancel de l'édition">
+                    <assertTable name="kingTable" expected="1" row="0" column="Note"/>
+                    <editCell name="kingTable" row="0" column="Note">
+                        <assertListSize expected="9"/>
+                        <setValue value="9"/>
+                        <cancel/>
+                    </editCell>
+                    <assertTable name="kingTable" expected="1" row="0" column="Note"/>
+                    <editCell name="kingTable" row="0" column="Titre"/>
+                    <assertTable name="kingTable" expected="1" row="0" column="Note"/>
+                </group>
+
+                <group name="Test édition d'un JTextField">
+                    <assertTable name="kingTable" expected="génial" row="0" column="Avis"/>
+                    <editCell name="kingTable" row="0" column="Avis">
+                        <assertValue expected="génial"/>
+                        <setValue value="mouais, pas mal..."/>
+                        <validate/>
+                    </editCell>
+                    <assertTable name="kingTable" expected="mouais, pas mal..." row="0" column="Avis"/>
+                </group>
+
+                <group name="Démontre que l'on peut tester un autre composant que celui en édition">
+                    <assertTable name="kingTable" expected="pas lu (livre volé !)" row="1" column="Avis"/>
+                    <editCell name="kingTable" row="1" column="Avis">
+                        <assertValue expected="pas lu (livre volé !)"/>
+                        <assertFrame title="SampleTableEditorGui" closed="false"/>
+                    </editCell>
+                </group>
+            </gui-test>
+
+        </release-test>
+    </target>
+</project>

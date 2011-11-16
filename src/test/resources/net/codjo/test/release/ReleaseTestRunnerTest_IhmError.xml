@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<release-test name="VL_cotebleu" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://test-release.xsd">
+    <property name="gui.default.class" value="net.codjo.test.release.test.standard.SampleGui"/>
+
+    <gui-test>
+        <group name="Frame simple">
+            <group name="Ouverture de la frame en erreur">
+                <click menu="Fichier:Nouvelle frame0"/>
+            </group>
+        </group>
+    </gui-test>
+</release-test>

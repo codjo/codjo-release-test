@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<release-test name="test_XSD" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:noNamespaceSchemaLocation="../../../../../../../src/schema/test-release.xsd">
+    <description>Test de tous les éléments valides.</description>
+
+    <call-method file="">
+        <parameter name=""/>
+        <parameter name="" value="" comment="" required="true"/>
+        <parameter name="" value="" comment="" required="false"/>
+        <parameter name="">Hi there.</parameter>
+    </call-method>
+
+    <copy-to-inbox file="dummy">
+        <variable name="BEGIN_DATE" value="today" format="dd/MM/yyyy"/>
+        <variable name="END_DATE" value="today" format="dd/MM/yyyy"/>
+    </copy-to-inbox>
+    <cleanup dir="dummy"/>
+
+    <file-assert expected="toto" actual="titi"/>
+
+    <file-assert expected="toto" actual="titi" comparisonType="xml"/>
+
+    <gui-test additionalArguments="">
+        <group>
+            <assertEditable name="" expected="false"/>
+            <assertEnabled expected="false"/>
+            <assertFrame title="" matching="contains"/>
+            <assertList expected="toto" row="0"/>
+            <assertListSize expected="0"/>
+            <assertMenu label="yatta" checked="true"/>
+            <assertSelected name="" row="0"/>
+            <assertTable name="" expected="" row="0" column="" matching="contains"/>
+            <assertTableExcel name="" file="" expectedRowCount="0"/>
+            <assertTree name="" path="" exists="true"/>
+            <assertValue expected="sss" matching="contains"/>
+            <assertVisible name=""/>
+            <assertProgressDisplay name=""/>
+            <click name=""/>
+            <click name="" modifier="ctrl"/>
+            <click name="" modifier="shift"/>
+            <clickRight name="">
+                <assertEnabled expected="false"/>
+                <assertList expected="" row="1"/>
+                <assertListSize expected="1"/>
+                <pause/>
+                <select row="0"/>
+            </clickRight>
+            <clickTableHeader/>
+            <closeFrame title=""/>
+            <editCell name="" row="0" column="">
+                <assertEnabled expected="false"/>
+                <assertFrame title="" matching="contains"/>
+                <assertList expected="" row="0"/>
+                <assertListSize expected="0"/>
+                <assertMenu label="yo!" checked="true"/>
+                <assertSelected row="0"/>
+                <assertTable expected="" row="0" column="" matching="contains"/>
+                <assertTableExcel file="" expectedRowCount="0" expectedColumnCount="1"
+                                  checkColumnOrder="true"/>
+                <assertTree path="" exists="false"/>
+                <assertValue expected=""/>
+                <assertVisible/>
+                <cancel/>
+                <click/>
+                <closeFrame title=""/>
+                <pause/>
+                <select row="0"/>
+                <setValue value=""/>
+                <sleep duration="1"/>
+                <validate/>
+            </editCell>
+            <pause/>
+            <select/>
+            <selectTab name=""/>
+            <setValue value="1"/>
+            <sleep duration="100"/>
+            <scrollToVisible name="comp" scrollpane="scrollpane"/>
+            <assertTooltip name="aComponentInATableWithAToolTip" expected="qqChose" row="1"
+                           matching="startsWith"/>
+        </group>
+    </gui-test>
+
+    <listen-jms timeout="100">
+        <request step="1" user="toto" argument="tata">
+            <audit type="POST" error="NONE"/>
+            <audit type="POST" error="FATAL"/>
+            <audit type="POST" error="WARNING"/>
+            <audit type="PRE" error="NONE"/>
+            <audit type="PRE" error="FATAL"/>
+            <audit type="PRE" error="WARNING"/>
+        </request>
+    </listen-jms>
+
+    <!-- Format dates : yyyy-mm-dd hh:mm:ss.fffffffff -->
+    <security-model user="zsazsa" roles="chef" lastLogin="" lastLogout=""/>
+
+    <tokio-assert refId="refDB" allTables="true"/>
+    <tokio-assert refId="refDB" table="table"/>
+
+    <tokio-load id="refTokio" file=""/>
+
+    <tokio-set-db id="refDB" refId="refTokio" caseId="aze"/>
+    <tokio-set-db id="refDB" refId="refTokio" scenario="aze" deleteBeforeInsert="true"/>
+
+    <batch-import initiator="moi" file="import.csv" returnCode="5"/>
+
+    <batch-export initiator="seb" file="export.csv" date="$TODAY" dos2unix="true" returnCode="5">
+        <extraArg line="-DbeginDate 19700101"/>
+        <extraArg line="-DendDate 20121227"/>
+    </batch-export>
+
+    <batch-segmentation initiator="seb" segmentations="1, 2" date="2010-01-01" returnCode="5">
+        <extraArg line="-DbeginDate 19700101"/>
+        <extraArg line="-DendDate 20121227"/>
+    </batch-segmentation>
+
+    <batch returnCode="5">
+        <remote script="my-script.ksh" arg="-arg1 value1 -arg2 value2"/>
+        <local main="net.codjo.Me.MyBatchMain" arg="-arg1 value1 -arg2 value2"/>
+    </batch>
+
+    <!-- Tâches Ant : delete, tstamp -->
+    <tstamp>
+        <format property="TODAY_M+1M" pattern="MM" locale="fr" offset="1" unit="month"/>
+        <format property="TODAY_Y" pattern="yyyy" locale="fr"/>
+    </tstamp>
+
+    <!-- Tâches web -->
+    <web-test url="http://www.example.com/">
+        <assertCheckBox id="id" checked="false"/>
+        <assertLink>texte</assertLink>
+        <assertLink target="cible.html"/>
+        <assertPage title="titre"/>
+        <assertPresent id="id" present="false"/>
+        <assertTable id="id" excludedRows="0,1" excludedColumns="2,3">|table|content|</assertTable>
+        <assertTable position="1"/>
+        <assertText>texte</assertText>
+        <assertText containerId="container" present="false">texte</assertText>
+        <clickButton id="id"/>
+        <clickCheckBox id="id"/>
+        <clickLink id="id"/>
+        <clickLink text="texte"/>
+        <downloadFile link="lien" target="cible.txt"/>
+        <gotoPage url="http://www.example.net"/>
+        <refresh/>
+        <wait duration="1000"/>
+        <!-- Dialog -->
+        <assertAlert>message</assertAlert>
+        <setConfirmation accept="false"/>
+        <!-- Form -->
+        <editForm id="id">
+            <assertCheckBox name="nom" checked="false"/>
+            <assertField name="nom" value="valeur"/>
+            <assertSelectOptions name="nom">
+                <option>valeur</option>
+            </assertSelectOptions>
+            <clickCheckBox name="nom"/>
+            <clickSubmit name="nom"/>
+            <select name="nom" value="valeur"/>
+            <setField name="nom" value="valeur"/>
+        </editForm>
+        <editForm position="1">
+            <clickSubmit value="texte"/>
+        </editForm>
+    </web-test>
+
+    <!-- Continuation d'un session ouverte précédement -->
+    <web-test session="id session"/>
+
+    <!-- Tâches mail -->
+    <start-mail-server port="8082"/>
+    <send-mail from="from" to="to" subject="sujet" port="8082">body</send-mail>
+    <assert-inbox>
+        <message from="from" to="to" subject="sujet">
+            <assertText value="contenu"/>
+        </message>
+        <message from="fromfrom" to="toto" subject="sujet" present="false"/>
+    </assert-inbox>
+
+    <assert-excel expected="expected.xls" rowCount="1" columnCount="2"/>
+    <assert-excel expected="expected.xls" rowCount="1" columnCount="2"/>
+
+</release-test>
+

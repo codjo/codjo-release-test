@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="Ant" default="test" basedir=".\">
+    <taskdef name="release-test" classname="net.codjo.test.release.task.ReleaseTask"/>
+    <taskdef name="start-mail-server" classname="net.codjo.test.release.task.mail.StartMailServerTask"/>
+    <taskdef name="assert-inbox" classname="net.codjo.test.release.task.mail.AssertInboxTask"/>
+    <taskdef name="send-mail" classname="net.codjo.test.release.task.mail.SendMailTask"/>
+
+    <target name="test">
+
+        <release-test>
+            <start-mail-server port="8082"/>
+
+           <send-mail from="luke@rebellion.org" to="dark@vador.net" subject="Disponibilité ?" port="8082">
+                Salut Dark,
+                Est-ce que tu aurais un créneau cette semaine pour qu'on s'entretue ?
+                - Luke.
+            </send-mail>
+
+            <assert-inbox>
+                <message from="luke@rebellion.org" to="dark@vador.net" subject="Disponibilité ?" present="false"/>
+            </assert-inbox>
+        </release-test>
+    </target>
+</project>

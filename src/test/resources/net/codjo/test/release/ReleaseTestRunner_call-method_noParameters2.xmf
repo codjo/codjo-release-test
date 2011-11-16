@@ -1,0 +1,13 @@
+<method>
+    <description>
+        <parameters>
+        </parameters>
+        <comment>
+        </comment>
+    </description>
+    <body>
+        <gui-test>
+            No parameters 2
+        </gui-test>
+    </body>
+</method>

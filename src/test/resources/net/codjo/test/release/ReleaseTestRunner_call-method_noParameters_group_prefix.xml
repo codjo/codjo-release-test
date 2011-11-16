@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<release-test name="ApInvoiceAdmin">
+    <description><![CDATA[Ma description]]></description>
+    <call-method file="ReleaseTestRunner_call-method_noParameters_group_prefix.xmf">
+        <parameter name="nom" value="toto"/>
+        <parameter name="age" value="1"/>
+        <parameter name="dateDeNaissance" value="21/02/2002"/>
+    </call-method>
+</release-test>

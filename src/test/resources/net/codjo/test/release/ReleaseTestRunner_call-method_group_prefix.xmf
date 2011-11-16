@@ -1,0 +1,28 @@
+<method>
+    <description>
+        <parameters>
+        </parameters>
+        <comment>
+            Test du call-method
+        </comment>
+    </description>
+    <body>
+        <gui-test>
+
+            <group        name="unGroupe avec une seul balise et un nom"/>
+
+            <group
+
+                  name="
+                  unGroupe avec deux
+                  balises et un nom">
+            </group>
+
+            <group/>
+
+            <group>
+            </group>
+
+        </gui-test>
+    </body>
+</method>

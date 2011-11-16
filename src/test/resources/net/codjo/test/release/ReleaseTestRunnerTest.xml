@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<release-test name="VL_cotebleu" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://test-release.xsd">
+    <echo>Un message accentué.</echo>
+    <copy-to-inbox file="ReleaseTestRunnerTest.xml"/>
+</release-test>

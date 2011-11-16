@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<root>
+    <developers>
+        <developer>
+            <name value="seb"/>
+            <ssii value="toto consulting"/>
+        </developer>
+        <developer>
+            <name value="paul"/>
+            <ssii value="drug consulting"/>
+        </developer>
+    </developers>
+</root>

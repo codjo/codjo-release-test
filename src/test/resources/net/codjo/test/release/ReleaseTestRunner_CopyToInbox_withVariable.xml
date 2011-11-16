@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<release-test name="CopyToInbox_variable" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:noNamespaceSchemaLocation="http://test-release.xsd">
+    <copy-to-inbox file="my-file.txt">
+        <variable name="END_DATE" value="today" format="dd/MM/yyyy"/>
+    </copy-to-inbox>
+</release-test>

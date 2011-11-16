@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="Ant" default="test" basedir=".\">
+    <taskdef name="release-test" classname="net.codjo.test.release.task.ReleaseTask"/>
+    <taskdef name="web-test" classname="net.codjo.test.release.task.web.WebTask"/>
+
+    <target name="test">
+
+        <release-test>
+            <description>Bla bla bla !!!</description>
+
+            <web-test session="session-admin" url="http://localhost:8181/login.html">
+
+                <assertPage title="Formulaire de login"/>
+
+                <editForm id="loginForm">
+                    <setField name="loginField" value="luke"/>
+                    <setField name="passwordField" value="r2d2rulez"/>
+
+                    <assertField name="loginField" value="luke"/>
+                    <assertField name="passwordField" value="r2d2rulez"/>
+                    <assertField name="epanchement" value="Gunaxi kosmon e cigue pherei"/>
+
+                    <clickSubmit name="ok"/>
+                </editForm>
+
+                <assertPage title="Mes messages"/>
+
+                <assertTable id="mailbox" excludedColumns="0,3,4">
+                    <![CDATA[
+                       | De         | Sujet            |
+                       | Yoda       | Jeune Padawan... |
+                       | Dark vador | Je suis ton pere |
+                    ]]>
+                </assertTable>
+
+                <clickButton id="mail_yoda_translate"/>
+
+                <assertTable id="mailbox" excludedColumns="0,3,4">
+                    <![CDATA[
+                       | De         | Sujet            |
+                       | Yoda       | Young Padawan... |
+                       | Dark vador | Je suis ton pere |
+                    ]]>
+                </assertTable>
+
+                <editForm id="mail_vador">
+                    <clickSubmit name="mail_vador_button"/>
+                </editForm>
+
+                <assertPage title="From: Vador"/>
+
+                <assertText>ton père</assertText>
+
+                <assertLink>Retour</assertLink>
+
+                <clickLink text="Retour"/>
+
+                <assertPage title="Mes messages"/>
+
+                <refresh/>
+
+                <assertPage title="Mes messages"/>
+
+            </web-test>
+        </release-test>
+    </target>
+</project>

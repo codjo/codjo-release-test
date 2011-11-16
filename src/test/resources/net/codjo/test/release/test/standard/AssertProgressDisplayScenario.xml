@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="Ant" default="test AssertProgressDisplay" basedir=".\">
+    <property name="gui.default.class"
+              value="net.codjo.test.release.test.standard.AssertProgressDisplayGui"/>
+
+    <taskdef name="release-test" classname="net.codjo.test.release.task.ReleaseTask"/>
+    <taskdef name="gui-test" classname="net.codjo.test.release.task.gui.GuiTask"/>
+
+    <target name="test AssertProgressDisplay">
+        <release-test>
+            <gui-test>
+                <group name="JDialog">
+                    <click label="Lancer JDialog"/>
+                    <assertFrame title="JDialog avec WaitingPanel"/>
+                    <click label="Show WaitingPanel"/>
+                    <assertProgressDisplay name="waitingPanel"/>
+                    <closeFrame title="JDialog avec WaitingPanel"/>
+                </group>
+                <group name="JFrame">
+                    <click label="Lancer JFrame"/>
+                    <assertFrame title="JFrame avec WaitingPanel"/>
+                    <click label="Show WaitingPanel"/>
+                    <assertProgressDisplay name="waitingPanel"/>
+                    <closeFrame title="JFrame avec WaitingPanel"/>
+                </group>
+                <group name="JInternalFrame">
+                    <click label="Lancer JInternalFrame"/>
+                    <assertFrame title="JFrame contenant une JInternalFrame avec WaitingPanel"/>
+                    <assertFrame title="JInternalFrame avec WaitingPanel"/>
+                    <click label="Show WaitingPanel"/>
+                    <assertProgressDisplay name="waitingPanel"/>
+                    <closeFrame title="JFrame contenant une JInternalFrame avec WaitingPanel"/>
+                </group>
+                <group name="JWindow">
+                    <click label="Lancer JWindow"/>
+                    <click label="Show WaitingPanel"/>
+                    <assertProgressDisplay name="waitingPanel"/>
+                </group>
+            </gui-test>
+        </release-test>
+    </target>
+</project>

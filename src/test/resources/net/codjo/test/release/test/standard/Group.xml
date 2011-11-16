@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="Ant" default="test" basedir=".\">
+    <property name="gui.default.class"
+              value="net.codjo.test.release.test.standard.SampleGui"/>
+    <taskdef name="release-test" classname="net.codjo.test.release.task.ReleaseTask"/>
+    <taskdef name="gui-test" classname="net.codjo.test.release.task.gui.GuiTask"/>
+    <target name="test">
+
+        <release-test>
+            <description>Le contenu du groupe n'est pas exécuté (enabled=false), l'assertion en doit donc pas échouer</description>
+
+            <gui-test>
+                <group name="Groupe desactivé" enabled="false">
+                    <assertFrame title="Cette frame n'est pas affichée et pas assertée"/>
+                </group>
+
+            </gui-test>
+
+        </release-test>
+    </target>
+</project>

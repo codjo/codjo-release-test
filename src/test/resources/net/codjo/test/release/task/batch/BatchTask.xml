@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<release-test name="BatchTask" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:noNamespaceSchemaLocation="http://test-release.xsd">
+    <batch returnCode="5">
+        <remote script="my-script.ksh" arg="-arg1 value1 -arg2 value2"/>
+        <local main="net.codjo.Me.MyBatchMain" arg="-arg1 value1 -arg2 value2"/>
+    </batch>
+</release-test>

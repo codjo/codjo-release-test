@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="Ant" default="test" basedir=".\">
+    <property name="gui.default.class"
+              value="net.codjo.test.release.test.tabbedpane.SampleTabbedPaneGui"/>
+
+    <taskdef name="release-test" classname="net.codjo.test.release.task.ReleaseTask"/>
+    <taskdef name="gui-test" classname="net.codjo.test.release.task.gui.GuiTask"/>
+
+    <target name="test">
+        <release-test>
+            <description>Tests d'utilisation de la balise "assertTab"</description>
+
+            <gui-test>
+                <group name="Vérification de la sélection d'un onglet">
+                    <selectTab name="tabbedPane" tabIndex="0"/>
+                    <assertTab name="tabbedPane" tabLabel="tab0" selected="true"/>
+                    <assertTab name="tabbedPane" tabLabel="tab1" selected="false"/>
+                    <assertTab name="tabbedPane" tabLabel="tab2" selected="false"/>
+                    <assertTab name="tabbedPane" tabLabel="tab3" selected="false"/>
+                    <selectTab name="tabbedPane" tabIndex="1"/>
+                    <assertTab name="tabbedPane" tabLabel="tab0" selected="false"/>
+                    <assertTab name="tabbedPane" tabLabel="tab1" selected="true"/>
+                    <assertTab name="tabbedPane" tabLabel="tab2" selected="false"/>
+                    <assertTab name="tabbedPane" tabLabel="tab3" selected="false"/>
+                </group>
+
+                <group name="Test de la propriété 'enabled'">
+                    <assertTab name="tabbedPane" tabLabel="tab0" enabled="true"/>
+                    <assertTab name="tabbedPane" tabLabel="tab1" enabled="true"/>
+                    <assertTab name="tabbedPane" tabLabel="tab2" enabled="true"/>
+                    <assertTab name="tabbedPane" tabLabel="tab3" enabled="false"/>
+                </group>
+            </gui-test>
+        </release-test>
+    </target>
+</project>

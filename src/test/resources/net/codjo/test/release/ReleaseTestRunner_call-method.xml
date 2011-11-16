@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<release-test name="ApInvoiceAdmin">
+    <description><![CDATA[Ma description]]></description>
+    <setvalue name="monNom1" value="&lt;"/>
+    <call-method file="ReleaseTestRunner_call-method.xmf">
+        <parameter name="user" value="GABI"/>
+        <parameter name="code">
+            <![CDATA[
+            <group name="test"/>
+            <setvalue name="monNom2" value="&lt;"/>
+            ]]>
+        </parameter>
+    </call-method>
+</release-test>

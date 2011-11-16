@@ -1,0 +1,3175 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="yes"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+    <xs:annotation>
+        <xs:appinfo>Schema XML des Tests Release</xs:appinfo>
+        <xs:documentation xml:lang="fr">
+            Ce schéma définit le format des fichiers XML permettant de decrire les tests release.
+        </xs:documentation>
+    </xs:annotation>
+
+    <!-- ==================== ROOT ELEMENT ==================== -->
+    <xs:element name="release-test">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">
+                Element racine d'un release-test.
+                Ajouter les attributs
+                'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:noNamespaceSchemaLocation="test-release.xsd" '
+                dans le fichier XML pour le lier a ce schema.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="release-test-type">
+                    <xs:attribute name="name" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Nom du test release.</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="enabled" type="xs:boolean">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Si 'false' le test ne sera pas executé si lancé en
+                                groupe. 'true' par défaut.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="method">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:all>
+                <xs:element ref="parameters" minOccurs="0" maxOccurs="1"/>
+                <xs:element ref="description" minOccurs="0" maxOccurs="1"/>
+                <xs:element ref="body" minOccurs="1" maxOccurs="1"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- ==================== 2nd LEVEL ELEMENTS ==================== -->
+
+    <xs:element name="body" type="release-test-type">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Description du test-release.</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="description" type="xs:string">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Description du test-release.</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="parameters">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Paramètes de la méthode.</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="parameter" minOccurs="1" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="tstamp">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">
+                Balise 'Ant' permettant d'obtenir et de travailler avec la date du jour.
+                <p>
+                    <i>Exemple :</i>
+                    <pre>
+                        &lt;tstamp&gt;
+                        &lt;format property="TODAY_D" pattern="dd" locale="fr"/&gt;
+                        &lt;format property="TODAY_M" pattern="MM" locale="fr"/&gt;
+                        &lt;format property="TODAY_Y" pattern="yyyy" locale="fr"/&gt;
+                        &lt;/tstamp&gt;
+                    </pre>
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="format" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="call-method">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">
+                Appel d'un test release paramétré.
+                <p>
+                    <i>Exemple :</i>
+                    <pre>
+                        &lt;call-method file="InvoicePaymentIhm.xmf"&gt;
+                        &lt;parameter name="user" value="GABI"/&gt;
+                        &lt;/call-method&gt;
+                    </pre>
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="parameter" maxOccurs="unbounded" minOccurs="0"/>
+            </xs:sequence>
+            <xs:attribute name="file" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Nom du fichier de test contenant le test release paramétré
+                        (*.xmf).
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="tokio-load">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">
+                Chargement d'un fichier de paramétrage TOKIO.
+                <p>
+                    <i>Exemple :</i>
+                    <pre>&lt;tokio-load id="issuer.load" file="S_E1.tokio"/&gt;</pre>
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:attribute name="id" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Identifiant interne du fichier tokio</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="file" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Nom du fichier tokio</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="tokio-set-db">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">
+                Positionne la BD à partir :
+                <ul>
+                    <li>d'un 'scénario' défini dans un fichier de paramétrage TOKIO de type 'Scenarii'.</li>
+                    <pre>&lt;tokio-set-db id="issuer.setdb" refId="issuer.load"
+                        scenario="ExportEmetteursVersGPF" /&gt;</pre>
+                    <li>d'un 'case' défini dans un fichier de paramétrage TOKIO de type 'cases'.</li>
+                    <pre>&lt;tokio-set-db id="asset.setdb" refId="asset.load" case="ImportAssetNominal"
+                        /&gt;</pre>
+                    <li>d'une story définie dans un fichier de paramétrage TOKIO de type 'story'.</li>
+                    <pre>&lt;tokio-set-db id="bench.setdb" refId="bench.load" /&gt;</pre>
+                </ul>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:attribute name="id" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Identifiant interne du scénario tokio.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="refId" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Référence de l'identifiant interne du fichier tokio.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="scenario" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Nom du scénario tokio.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="caseId" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Identifiant du case tokio.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="deleteBeforeInsert" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Si 'true' la base sera effacée avant l'insertion des
+                        données de test (Valeur par défaut). Sinon, les données de test seront insérées sans
+                        opération préalable sur la base.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="tokio-assert">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">
+                Verifie l'etat de la BD à partir d'un scenario d'un fichier de paramétrage TOKIO.
+                <p>
+                    <i>Exemple :</i>
+                    <pre>&lt;tokio-assert refId="issuer.setdb" table="AP_ISSUER"/&gt;</pre>
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:attribute name="refId" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Référence de l'identifiant du scénario tokio.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="table" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Nom physique de la table à verifier.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="allTables" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">true si on veux vérifier toutes les tables de l'étalon.
+                        (false par defaut)
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="order" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Clause d'ordre pour la vérification (orderBy).
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="copy-to-inbox">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">
+                Balise permettant de copier un fichier dans un répertoire du serveur
+                (par défaut dans la INBOX, sinon l'attribut 'in' spécifie la clé des propriétés
+                .remote et .local définies dans le fichier test-release.config
+                <p>
+                    <i>Exemple simple :</i>
+                    <pre>&lt;copy-to-inbox file="RTG_EM.txt"/&gt;</pre>
+                </p>
+                <p>
+                    <i>Exemple de copie avec remplacement de variable :</i>
+                    <pre>&lt;copy-to-inbox file="Coupon.txt"&gt;
+                        &lt;variable name="END_DATE" value="today" format="dd/MM/yyyy" /&gt;
+                        &lt;/copy-to-inbox&gt;</pre>
+                </p>
+                <p>
+                    <i>Exemple de copie avec chemin et le contenu du fichier test-release.config :</i>
+                    <pre>&lt;copy-to-inbox file="RTG_EM.txt" in="inputDir"/&gt;</pre>
+                    <pre>inputDir.remote = ${unixApplicationDirectory}/DAT1/OUT
+                        inputDir.local = ${project.basedir}/target/release-test/tmp
+                    </pre>
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="variable" minOccurs="0" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:attribute name="name" type="xs:string"/>
+                        <xs:attribute name="value" type="xs:string"/>
+                        <xs:attribute name="format" type="xs:string"/>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+
+            <xs:attribute name="file" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Nom du fichier à copier.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="in" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Clé contenu dans le fichier test-release.config
+                        (avec .remote pour la valeur en distant et .local pour la valeur en local).
+                        <p>
+                            <i>Exemple de contenu du fichier test-release.config :</i>
+                            <pre>inputDir.remote = ${unixApplicationDirectory}/DAT1/OUT
+                                inputDir.local = ${project.basedir}/target/release-test/tmp
+                            </pre>
+                        </p>
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="cleanup">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">
+                Balise permettant de vider un répertoire local ou distant spécifié par l'attribut dir
+                (dir.local est le répertoire local, dir.remote est le répertoire distant,
+                spécifiés dans test-release.config)
+                <p>
+                    <i>Exemple simple :</i>
+                    Contenu du fichier test-release.config :
+                    <pre>directoryKey.local = c:\\dev\\temp
+                        directoryKey.remote = /DEV/TMP
+                    </pre>
+                    Contenu du fichier de test :
+                    <pre>&lt;cleanup dir="directoryKey"/&gt;</pre>
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:attribute name="dir" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Clé spécifiant le répertoire à vider.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:attribute name="returnCode" type="xs:integer" default="0">
+        <xs:annotation>
+            <xs:documentation
+                  xml:lang="fr">Code erreur de la demande attendu (0 par défaut, c.a.d. sans erreur).
+            </xs:documentation>
+        </xs:annotation>
+    </xs:attribute>
+    <xs:element name="batch-import">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">
+                Balise permettant de déclencher un import.
+                <p>
+                    <i>Exemple pour simuler une demande d'import :</i>
+                    <pre>&lt;batch-import initiator="red" file="RTG_EM.txt" /&gt;</pre>
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:attribute name="initiator" type="xs:string" use="required"/>
+            <xs:attribute name="file" type="xs:string" use="required"/>
+            <xs:attribute ref="returnCode"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="batch-export">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">
+                Balise permettant de déclencher un export.
+                <p>
+                    <i>Exemple pour simuler une demande d'export :</i>
+                    <pre>&lt;batch-export initiator="red" file="S_E1.txt" date="2003-01-01" unix2dos="true" &gt;
+                        &lt;extraArg line="-beginDate 2009-11-02" /&gt;
+                        &lt;batch-export /&gt;
+                    </pre>
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="extraArg">
+                    <xs:complexType>
+                        <xs:attribute name="line" use="required" type="xs:string">
+                            <xs:annotation>
+                                <xs:documentation>Ligne d'arguments à ajouter.</xs:documentation>
+                            </xs:annotation>
+                        </xs:attribute>
+                    </xs:complexType>
+                </xs:element>
+            </xs:choice>
+            <xs:attribute name="initiator" type="xs:string" use="required"/>
+            <xs:attribute name="file" type="xs:string" use="required"/>
+            <xs:attribute name="date" type="xs:string" use="required"/>
+            <xs:attribute name="dos2unix" type="xs:boolean" use="optional"/>
+            <xs:attribute ref="returnCode"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="batch-segmentation">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">
+                Balise permettant de déclencher une segmentation.
+                <p>
+                    <i>Exemple pour simuler une demande de segmentation :</i>
+                    <pre>&lt;batch-segmentation initiator="red" segmentations="1, 2" date="2003-01-01" &gt;
+                        &lt;extraArg line="-beginDate 2009-11-02" /&gt;
+                        &lt;batch-segmentation /&gt;
+                    </pre>
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="extraArg">
+                    <xs:complexType>
+                        <xs:attribute name="line" use="required" type="xs:string">
+                            <xs:annotation>
+                                <xs:documentation>Ligne d'arguments à ajouter.</xs:documentation>
+                            </xs:annotation>
+                        </xs:attribute>
+                    </xs:complexType>
+                </xs:element>
+            </xs:choice>
+            <xs:attribute name="initiator" type="xs:string" use="required"/>
+            <xs:attribute name="segmentations" type="xs:string" use="required"/>
+            <xs:attribute name="date" type="xs:string" use="required"/>
+            <xs:attribute ref="returnCode"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="batch">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">
+                Balise permettant de déclencher un batch personnalisé.
+                <p>
+                    <i>Exemple pour simuler une demande d'exécution de batch :</i>
+                    <pre>&lt;batch &gt;
+                        &lt;extraArg line="-beginDate 2009-11-02" /&gt;
+                        &lt;batch /&gt;
+                    </pre>
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:all>
+                <xs:element name="remote" minOccurs="0" maxOccurs="1">
+                    <xs:complexType>
+                        <xs:attribute name="script" type="xs:string" use="required"/>
+                        <xs:attribute name="arg" type="xs:string" use="optional"/>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="local" minOccurs="0" maxOccurs="1">
+                    <xs:complexType>
+                        <xs:attribute name="main" type="xs:string" use="required"/>
+                        <xs:attribute name="arg" type="xs:string" use="optional"/>
+                    </xs:complexType>
+                </xs:element>
+            </xs:all>
+            <xs:attribute ref="returnCode"/>
+            <xs:attribute name="remote" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">
+                        <li>Si 'false' la balise remote ne sera pas prise en compte.</li>
+                        <li>Sinon, le batch sera exécuté selon la config agf.test.remote</li>
+                        <li>i.e. en utilisant les balises remote ou local</li>
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="listen-jms">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">
+                Balise permettant d'écouter les messages d'audit du serveur et donc de
+                suivre le déroulement du processus.
+            </xs:documentation>
+            <xs:documentation xml:lang="fr">
+                Exemple :
+                <![CDATA[
+                <listen-jms timeout="-1">
+                    <request step="import" user="red" argument="RTG_EM.txt">
+                        <audit type="PRE" error="NONE" />
+                        <audit type="POST" error="NONE" />
+                    </request>
+                    <request step="control" user="red" argument="Q_AP_ISSUER_RATINGS">
+                        <audit type="PRE" error="NONE" />
+                        <audit type="POST" error="WARNING" />
+                    </request>
+                </listen-jms>
+                ]]>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="request" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attribute name="timeout" use="required" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Timeout d'écoute du serveur.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="gui-test">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Lance un client graphique.
+                <p>NB : Les 'properties' gui.default.*
+                    configurent le lancement du client (cf. test-release.config)
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="group" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attribute name="user" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Nom de l'utilisateur qui se connecte à l'application.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="password" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Mot de passe de l'utilisateur qui se connecte à
+                        l'application.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="gui" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Identifiant du client GUI a lancer. Il fait référence à
+                        une property définie dans le projet. Exemple pour executer le main de la classe
+                        SampleGui:
+                        <br/>
+                        <![CDATA[
+                        <property name="gui.monGui.class"
+                        value="com.agf.test.release.test.standard.SampleGui"/>
+                        <property name="gui.monGui.method" value="main"/>
+                        ...
+                        <gui-test gui="monGui">
+                           ...
+                        </gui-test>
+                        ]]>
+
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="session" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Nom de session identifiant une instance de GUI.
+                        Exemple :
+                        <br/>
+                        <![CDATA[
+                        <gui-test session="sessionDeBarbara">
+                            <!-- Barbara consulte le referentiel des produits -->
+                        </gui-test>
+
+                        ...
+
+                        <gui-test session="sessionDeBrandon">
+                            <!-- Brandon met à jour le referentiel des produits -->
+                        </gui-test>
+
+                        ...
+
+                        <gui-test session="sessionDeBarbara">
+                            <!-- Barbara raffraichit et constate la mise à jour du referentiel -->
+                        </gui-test>
+                        ]]>
+
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="additionalArguments" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Nom de l'utilisateur qui se connecte à l'application.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="file-assert">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Compare deux fichiers</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:attribute name="expected" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Nom du fichier étalon.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="actual" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Nom du fichier à contrôler.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="remote" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Surcharge la propriété agf.test.remote :
+                        <li>Si 'true' le fichier à contrôler sera recherché en distant
+                            (récupérer par ftp...),
+                        </li>
+                        <li>Sinon, le fichier sera recherché en local.</li>
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="comparisonType">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="xls"/>
+                        <xs:enumeration value="pdf"/>
+                        <xs:enumeration value="xml"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="assert-file-exists">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Vérifie l'existence ou l'absence d'un fichier</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:attribute name="expected" use="required" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Spécifie si le fichier doit exister ou non
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="filename" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Nom du fichier à contrôler.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="remote" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Surcharge la propriété agf.test.remote :
+                        <li>Si 'true' le fichier à contrôler sera recherché en distant
+                            (récupérer par ftp...),
+                        </li>
+                        <li>Sinon, le fichier sera recherché en local.</li>
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="set-property">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Compare deux fichiers</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:attribute name="name" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Nom de la propriété à positionner.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="remoteValue" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Valeur de la propriété pour le mode distant.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="localValue" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Valeur de la propriété pour le mode local.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="assert-excel">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Compare le fichier ouvert dans Excel avec un fichier étalon
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+
+            <xs:attribute name="expected" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Nom du fichier étalon.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="sheets" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation
+                          xml:lang="fr">Feuilles à asserter. Si non renseigné, toutes les feuilles seront
+                        assertées
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="matchers" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">
+                        Matchers de style à appliquer : bold, italic, alignement, font-size, border, background-color, font-color
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="delete">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Détruit un fichier ou un répertoire.
+                http://ant.apache.org/manual/CoreTasks/delete.html.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:attribute name="file" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Nom du fichier.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="dir" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Nom du répertoire.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="verbose" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Trace les fichiers détruit</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="quiet" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Ne trace pas si un répertoire n'existe pas
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="failonerror" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Stop le test si la destruction échoue
+                        (s'applique seulement si quiet="false")
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="includeemptydirs" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Détruit les repertoires vides (si on utilise fileset)
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="deleteonexit" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">???</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="clear-cookies">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Vide la liste des cookies</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="web-test">
+        <xs:complexType>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="assertAlert" type="xs:string"/>
+                <xs:element name="assertCheckBox">
+                    <xs:complexType>
+                        <xs:attribute name="id" type="xs:string" use="required"/>
+                        <xs:attribute name="checked" type="xs:boolean" use="required"/>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="assertLink">
+                    <xs:complexType>
+                        <xs:simpleContent>
+                            <xs:extension base="xs:string">
+                                <xs:attribute name="target" type="xs:string"/>
+                                <xs:attribute name="present" type="xs:boolean"/>
+                            </xs:extension>
+                        </xs:simpleContent>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="assertPage">
+                    <xs:complexType>
+                        <xs:attribute name="title" type="xs:string"/>
+                        <xs:attribute name="statusCode" type="xs:int"/>
+                    </xs:complexType>
+                    <xs:key name="eitherTitleOrstatusCodeIsMandatory">
+                        <xs:selector xpath="."/>
+                        <xs:field xpath="@title|@statusCode"/>
+                    </xs:key>
+                </xs:element>
+                <xs:element name="assertPresent">
+                    <xs:complexType>
+                        <xs:attribute name="id" type="xs:string" use="required"/>
+                        <xs:attribute name="present" type="xs:boolean"/>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="assertTable">
+                    <xs:complexType>
+                        <xs:simpleContent>
+                            <xs:extension base="xs:string">
+                                <xs:attribute name="position" type="xs:int"/>
+                                <xs:attribute name="id" type="xs:string"/>
+                                <xs:attribute name="excludedRows" type="xs:string"/>
+                                <xs:attribute name="excludedColumns" type="xs:string"/>
+                            </xs:extension>
+                        </xs:simpleContent>
+                    </xs:complexType>
+                    <xs:key name="assertTableAttribut">
+                        <xs:selector xpath="."/>
+                        <xs:field xpath="@position|@id"/>
+                    </xs:key>
+                </xs:element>
+                <xs:element name="assertText">
+                    <xs:complexType>
+                        <xs:simpleContent>
+                            <xs:extension base="xs:string">
+                                <xs:attribute name="containerId" type="xs:string"/>
+                                <xs:attribute name="present" type="xs:boolean"/>
+                            </xs:extension>
+                        </xs:simpleContent>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="assertImage">
+                    <xs:complexType>
+                        <xs:simpleContent>
+                            <xs:extension base="xs:string">
+                                <xs:attribute name="src" type="xs:string" use="required"/>
+                            </xs:extension>
+                        </xs:simpleContent>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="editForm">
+                    <xs:complexType>
+                        <xs:choice maxOccurs="unbounded">
+                            <xs:element name="setField" type="valueNameAttributs"/>
+                            <xs:element name="clickSubmit">
+                                <xs:complexType>
+                                    <xs:attribute name="name" type="xs:string"/>
+                                    <xs:attribute name="value" type="xs:string"/>
+                                </xs:complexType>
+                                <xs:key name="clickSubmitAttribut">
+                                    <xs:selector xpath="."/>
+                                    <xs:field xpath="@name|@value"/>
+                                </xs:key>
+                            </xs:element>
+                            <xs:element name="assertField" type="valueNameAttributs"/>
+                            <xs:element name="assertSelectOptions">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="option">
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                    <xs:extension base="xs:string">
+                                                        <xs:attribute name="value" type="xs:string"/>
+                                                    </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                    <xs:attribute name="name" type="xs:string" use="required"/>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="select" type="valueNameAttributs"/>
+                            <xs:element name="assertCheckBox">
+                                <xs:complexType>
+                                    <xs:attribute name="name" type="xs:string" use="required"/>
+                                    <xs:attribute name="checked" type="xs:boolean" use="required"/>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="clickCheckBox">
+                                <xs:complexType>
+                                    <xs:attribute name="name" type="xs:string" use="required"/>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="clickRadioButton">
+                                <xs:complexType>
+                                    <xs:attribute name="name" type="xs:string" use="required"/>
+                                    <xs:attribute name="value" type="xs:string" use="required"/>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:choice>
+                        <xs:attribute name="id" type="xs:string"/>
+                        <xs:attribute name="position" type="xs:int"/>
+                    </xs:complexType>
+                    <xs:key name="editFormAttribut">
+                        <xs:selector xpath="."/>
+                        <xs:field xpath="@position|@id"/>
+                    </xs:key>
+                </xs:element>
+                <xs:element name="setConfirmation">
+                    <xs:complexType>
+                        <xs:attribute name="accept" type="xs:boolean"/>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="clickButton">
+                    <xs:complexType>
+                        <xs:attribute name="id" type="xs:string" use="required"/>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="clickCheckBox">
+                    <xs:complexType>
+                        <xs:attribute name="id" type="xs:string"/>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="clickLink">
+                    <xs:complexType>
+                        <xs:attribute name="id" type="xs:string"/>
+                        <xs:attribute name="text" type="xs:string"/>
+                    </xs:complexType>
+                    <xs:key name="clickLinkAttribut">
+                        <xs:selector xpath="."/>
+                        <xs:field xpath="@id|@text"/>
+                    </xs:key>
+                </xs:element>
+                <xs:element name="downloadFile">
+                    <xs:complexType>
+                        <xs:attribute name="link" type="xs:string" use="required"/>
+                        <xs:attribute name="target" type="xs:string" use="required"/>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="gotoPage">
+                    <xs:complexType>
+                        <xs:attribute name="url" type="xs:string" use="required"/>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="refresh">
+                    <xs:complexType/>
+                </xs:element>
+                <xs:element name="wait">
+                    <xs:complexType>
+                        <xs:attribute name="duration" type="xs:integer" use="required"/>
+                    </xs:complexType>
+                </xs:element>
+            </xs:choice>
+            <xs:attribute name="url" type="xs:string"/>
+            <xs:attribute name="session" type="xs:string"/>
+            <xs:attribute name="javascript" type="xs:boolean" default="true"/>
+            <xs:attribute name="failOnError" type="xs:boolean" default="true"/>
+            <xs:attribute name="requestHeader" type="xs:string"/>
+        </xs:complexType>
+        <xs:key name="eitherSessionOrUrlIsMandatory">
+            <xs:selector xpath="."/>
+            <xs:field xpath="@session|@url"/>
+        </xs:key>
+    </xs:element>
+    <xs:element name="start-mail-server">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">
+                Balise permettant de démarrer un dummy mail server.
+                <p>
+                    <i>Exemple :</i>
+                    <pre>&lt;start-mail-server port="8082"/&gt;</pre>
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:attribute name="port" use="required" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Port d'écoute du serveur.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="send-mail">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">
+                Balise permettant d'envoyer un mail
+                <p>
+                    <i>Exemple :</i>
+                    <pre>&lt;send-mail port="derrick@allianz.de" to="maigret@allianz.fr" port="25"&gt;
+                        Hallo, wie geht's ?
+                        &lt;/send-mail&gt;
+                    </pre>
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="from" use="required" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Adresse de l'émetteur</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="to" use="required" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Adresse du destinataire.</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="port" use="required" type="xs:integer">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Port d'écoute du serveur.</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="subject" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Sujet du mail.</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="assert-inbox">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">
+                Balise permettant de vérifier les mails reçus dans le dummy mail server.
+                <p>
+                    <i>Exemple :</i>
+                    <pre>&lt;start-mail-server port="8082"/&gt;
+                        &lt;send-mail port="derrick@allianz.de" to="maigret@allianz.fr" port="25"&gt;
+                        Hallo, wie geht's ?
+                        &lt;/send-mail&gt;
+                        &lt;assert-inbox&gt;
+                        &lt;message from="derrick@allianz.de" to="maigret@allianz.fr"/&lt;
+                        &lt;/assert-inbox&gt;
+                    </pre>
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element name="message">
+                    <xs:complexType>
+                        <xs:choice minOccurs="0" maxOccurs="unbounded">
+                            <xs:element name="assertText">
+                                <xs:complexType>
+                                    <xs:attribute name="value" type="xs:string">
+                                        <xs:annotation>
+                                            <xs:documentation>Contenu attendu.</xs:documentation>
+                                        </xs:annotation>
+                                    </xs:attribute>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:choice>
+                        <xs:attribute name="from" type="xs:string">
+                            <xs:annotation>
+                                <xs:documentation>Émetteur attendu.</xs:documentation>
+                            </xs:annotation>
+                        </xs:attribute>
+                        <xs:attribute name="to" type="xs:string">
+                            <xs:annotation>
+                                <xs:documentation>Destinataire attendu.</xs:documentation>
+                            </xs:annotation>
+                        </xs:attribute>
+                        <xs:attribute name="subject" type="xs:string">
+                            <xs:annotation>
+                                <xs:documentation>Sujet attendu.</xs:documentation>
+                            </xs:annotation>
+                        </xs:attribute>
+                        <xs:attribute name="present" type="xs:boolean">
+                            <xs:annotation>
+                                <xs:documentation xml:lang="fr">
+                                    <ul>
+                                        <li>
+                                            <em>true</em>
+                                            : Vérifie que le message est reçu (valeur par défaut).
+                                        </li>
+                                        <li>
+                                            <em>false</em>
+                                            : Vérifie que le message n'est pas reçu.
+                                        </li>
+                                    </ul>
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:attribute>
+                    </xs:complexType>
+                </xs:element>
+            </xs:choice>
+            <xs:attribute name="retryCount" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Nombre de tentatives avant échec du step.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- ==================== 3rd LEVEL ELEMENTS ==================== -->
+    <xs:element name="format">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Définit une propriété qui pourra être utilisée par la suite.
+                <p>
+                    <i>Exemple :</i>
+                    <pre>&lt;format property="TODAY_D" pattern="dd" locale="fr"
+                        /&gt;</pre>
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:attribute name="property" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Valeurs possibles : TODAY_D, TODAY_M ou TODAY_Y.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="pattern" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Valeurs possibles : dd, MM ou yyyy.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="locale" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Seule valeur utilisee : fr.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="offset" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">The numeric offset to the current time</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="unit">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">The unit of the offset to be applied to the current time
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="millisecond"/>
+                        <xs:enumeration value="second"/>
+                        <xs:enumeration value="minute"/>
+                        <xs:enumeration value="hour"/>
+                        <xs:enumeration value="day"/>
+                        <xs:enumeration value="week"/>
+                        <xs:enumeration value="month"/>
+                        <xs:enumeration value="year"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="parameter">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Balise permettant de spécifier un paramètre d'appel sous la forme
+                clef/valeur. Dans le testParametre.xmf, le paramètre sera utilisé sous la forme @name@.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="name" use="required" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Nom du paramètre.</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="value" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Valeur du paramètre.</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="required" type="xs:boolean">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Indique si le paramètre est obligatoire.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="comment" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Description du paramètre.</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="group">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Permet de grouper plusieurs balises
+                (éventuellement 'group'), dans un souci de lisibilité.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="assertEditable"/>
+                <xs:element ref="assertSelected"/>
+                <xs:element ref="assertEnabled"/>
+                <xs:element ref="assertFrame"/>
+                <xs:element ref="assertList"/>
+                <xs:element ref="assertListSize"/>
+                <xs:element ref="assertMenu"/>
+                <xs:element ref="assertTable"/>
+                <xs:element ref="assertTableExcel"/>
+                <xs:element ref="assertTree"/>
+                <xs:element ref="assertValue"/>
+                <xs:element ref="assertVisible"/>
+                <xs:element ref="assertProgressDisplay"/>
+                <xs:element ref="assertContains"/>
+                <xs:element ref="assertComponentImage"/>
+                <xs:element ref="click"/>
+                <xs:element ref="clickMiddle"/>
+                <xs:element ref="clickRight"/>
+                <xs:element ref="clickRightTableHeader"/>
+                <xs:element ref="clickMiddleTableHeader"/>
+                <xs:element ref="clickTableHeader"/>
+                <xs:element ref="closeFrame"/>
+                <xs:element ref="editCell"/>
+                <xs:element ref="group"/>
+                <xs:element ref="pause"/>
+                <xs:element ref="select"/>
+                <xs:element ref="selectTab"/>
+                <xs:element ref="assertTab"/>
+                <xs:element ref="assertTabCount"/>
+                <xs:element ref="setValue"/>
+                <xs:element ref="sleep"/>
+                <xs:element ref="scrollToVisible"/>
+                <xs:element ref="expandAllTree"/>
+                <xs:element ref="pressKey"/>
+                <xs:element ref="assertTitleBorder"/>
+                <xs:element ref="assertTooltip"/>
+            </xs:choice>
+            <xs:attribute name="name" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Nom du groupe, à titre de commentaire.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="enabled" type="xs:string" default="true">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Le groupe s'execute ou pas</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="editCell">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Permet de simuler l'édition dans les cellules
+                d'un tableau ou d'un arbre.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="assertContains"/>
+                <xs:element ref="assertEnabled"/>
+                <xs:element ref="assertFrame"/>
+                <xs:element ref="assertList"/>
+                <xs:element ref="assertListSize"/>
+                <xs:element ref="assertMenu"/>
+                <xs:element ref="assertSelected"/>
+                <xs:element ref="assertTable"/>
+                <xs:element ref="assertTableExcel"/>
+                <xs:element ref="assertTree"/>
+                <xs:element ref="assertValue"/>
+                <xs:element ref="assertVisible"/>
+                <xs:element ref="editCell"/>
+                <xs:element ref="cancel"/>
+                <xs:element ref="click"/>
+                <xs:element ref="clickRight"/>
+                <xs:element ref="closeFrame"/>
+                <xs:element ref="pause"/>
+                <xs:element ref="select"/>
+                <xs:element ref="selectTab"/>
+                <xs:element ref="assertTab"/>
+                <xs:element ref="assertTabCount"/>
+                <xs:element ref="setValue"/>
+                <xs:element ref="sleep"/>
+                <xs:element ref="validate"/>
+                <xs:element ref="pressKey"/>
+            </xs:choice>
+            <xs:attribute name="name" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Nom du composant (JTable ou JTree).</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="row" type="integerOrVariable">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Numéro de ligne de la cellule de la table (Commence à 0).
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="column" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Nom de la colonne de la table (éventuellement
+                        numéro de colonne commençant à 0).
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="path" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Chemin du noeud à éditer dans l'arbre (séparé par ':').
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="mode">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Spécifie si l'on prend en compte la valeur
+                        du modèle ou la valeur affichée. Valeurs possibles : 'model' (Valeur du modèle),
+                        ou 'display' (Valeur affichée fournie par le renderer)
+                        Actuellement, l'unique composant tenant compte de cet attribut est le JTree.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="model"/>
+                        <xs:enumeration value="display"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="clickRight">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Permet de simuler le click droit sur un élément d'une table,
+                d'une liste, d'un arbre, d'un champ texte éditable ou d'une liste déroulante.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded" minOccurs="0">
+                <xs:element ref="assertList"/>
+                <xs:element ref="assertListSize"/>
+                <xs:element ref="assertEnabled"/>
+                <xs:element ref="pause"/>
+                <xs:element ref="select"/>
+            </xs:choice>
+            <xs:attribute name="name" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Nom du composant.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="row" type="integerOrVariable">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Numéro de ligne (Commence à 0).</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="column" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Nom de la colonne (Eventuellement numéro de colonne
+                        commençant à 0).
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="select" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">libellé de la ligne du menu à
+                        sélectionner (à utiliser dans le cas ou l'on n'utilise pas de sous balises).
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="path" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Valeur du noeud de l'arbre sur lequel on veut afficher le
+                        menu contextuel.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="mode">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Spécifie si l'on prend en compte la valeur
+                        du modèle ou la valeur affichée. Valeurs possibles : 'model' (Valeur du modèle),
+                        ou 'display' (Valeur affichée fournie par le renderer)
+                        Actuellement, l'unique composant tenant compte de cet attribut est le JTree.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="model"/>
+                        <xs:enumeration value="display"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
+            <xs:attribute name="popupVisible" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Si 'false', aucun menu contextuel n'est affiché.
+                        Par défaut : 'true'.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="clickRightTableHeader">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Permet de simuler le click droit sur l'entête d'une table
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded" minOccurs="0">
+                <xs:element ref="assertList"/>
+                <xs:element ref="assertListSize"/>
+                <xs:element ref="assertEnabled"/>
+                <xs:element ref="pause"/>
+                <xs:element ref="select"/>
+            </xs:choice>
+            <xs:attribute name="name" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Nom du composant.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+
+            <xs:attribute name="column" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Nom ou index de la colonne (Eventuellement numéro de
+                        colonne commençant à 0).
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="select" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">libellé de la ligne du menu à sélectionner (utiliser dans
+                        le cas ou l'on n'utilise pas de sous balises).
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="mode">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Spécifie si on teste la valeur
+                        du modèle ou la valeur affichée. Valeurs possibles : 'model' (Valeur du modèle),
+                        ou 'display' (Valeur affichée)
+                        Actuellement, l'unique composant tenant compte de cet attribut est le JTree.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="model"/>
+                        <xs:enumeration value="display"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
+            <xs:attribute name="popupVisible" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Si 'false', aucun menu contextuel n'est affiché.
+                        Par défaut : 'true'.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="clickMiddleTableHeader">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Permet de simuler le click milieu sur l'entête d'une table
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:attribute name="name" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Nom du composant.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="column" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Nom ou index de la colonne (Eventuellement numéro de
+                        colonne commençant à 0).
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="request">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Ecoute et attend une action du serveur.</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="audit" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attribute name="step" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Etape attendue.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="user" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Utilisateur ayant déclenché l'étape.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="argument" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Argument de l'étape.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- ==================== 4rd LEVEL ELEMENTS ==================== -->
+    <xs:element name="cancel">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Permet d'annuler l'édition de la table en
+                cours (balise placée à l'intérieur d'un editCell).
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="validate">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Permet de valider l'édition de la table en
+                cours (balise placée à l'intérieur d'un editCell).
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="assertFrame">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Vérifie si une JInternalFrame / Frame / Dialog
+                est affichée à l'écran.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="assert-type">
+                    <xs:attribute name="title" use="required" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Titre de la frame (peut être une expression
+                                régulière).
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="closed" type="xs:boolean">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Si 'true', vérifie que la frame n'est pas affichée
+                                ('false' par défaut).
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="matching">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Spécifie la manière dont la compararaison
+                                est effectuée. Valeurs possibles : 'equals' (valeur par défaut),
+                                'contains', 'startsWith', 'endsWith', 'regexp'.
+                            </xs:documentation>
+                        </xs:annotation>
+                        <xs:simpleType>
+                            <xs:restriction base="xs:string">
+                                <xs:enumeration value="equals"/>
+                                <xs:enumeration value="contains"/>
+                                <xs:enumeration value="startsWith"/>
+                                <xs:enumeration value="endsWith"/>
+                                <xs:enumeration value="regexp"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:attribute>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="assertList">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Vérifie le contenu des cellules d'une JList ou un JComboBox.
+                <p>
+                    <i>Exemple :</i>
+                    <pre>&lt;assertList name="myList" expected="ABC" row="3" /&gt;</pre>
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="assert-type">
+                    <xs:attribute name="name" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Nom de la JList ou JComboBox
+                                (positionné par setName()).(obligatoire si n'est pas
+                                contenu dans une autre balise)
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="expected" use="required" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Valeur attendue.</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="row" use="required" type="integerOrVariable">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Numéro de ligne de la cellule (Commence à 0).
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="mode">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Spécifie si on teste la valeur du modèle ou la
+                                valeur affichée. Valeurs possibles : 'model' (Valeur du modèle),
+                                'display' (Valeur affichée) ou 'auto' (Par défaut. Valeur affichée, puis en
+                                cas d'échec la valeur du modèle).
+                                Actuellement, l'unique composant tenant compte de cet attribut est la
+                                comboBox.
+                            </xs:documentation>
+                        </xs:annotation>
+                        <xs:simpleType>
+                            <xs:restriction base="xs:string">
+                                <xs:enumeration value="model"/>
+                                <xs:enumeration value="display"/>
+                                <xs:enumeration value="auto"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:attribute>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="assertListSize">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Vérifie le nombre de ligne d'une JTable, une JList ou un
+                JComboBox.
+                <p>
+                    <i>Exemple :</i>
+                    <pre>&lt;assertListSize name="MyTable" expected="6" /&gt;</pre>
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="assert-type">
+                    <xs:attribute name="name" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Nom de la JTable, JList ou JComboBox
+                                (Positionné par setName()). (obligatoire si n'est pas contenu dans une autre
+                                balise)
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="expected" use="required" type="integerOrVariable">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Nombre de lignes attendu.</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="assertMenu">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Vérifie le contenu (radio check ) et la taille d'un menu
+                <p>
+                    <i>Exemple :</i>
+                    <pre>&lt;assertMenu name="myMenu" label="ABC" checked="true" /&gt;</pre>
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="assert-type">
+                    <xs:attribute name="name" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Nom du JCheckBoxMenuItem ou JRadioButtonMenuItem
+                                (positionné par setName()).(obligatoire si n'est pas
+                                contenu dans une autre balise)
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="label" use="required" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Libellé</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="checked" use="required" type="xs:boolean">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Valeur attendue</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="assertTable">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Vérifie le contenu des cellules d'une JTable.
+                <p>
+                    <i>Exemple :</i>
+                    <pre>&lt;assertTable name="PorfolioCode" expected="06_C" row="3"
+                        column="Code Ptf"/&gt;</pre>
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="assert-type">
+                    <xs:attribute name="name" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Nom de la JTable (Positionné par setName()).
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="expected" use="required" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Valeur attendue.</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="row" use="required" type="integerOrVariable">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Numéro de ligne commençant à 0.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="column" use="required" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Nom de la colonne (Eventuellement numéro de
+                                colonne commençant à 0).
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="mode">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Spécifie si on teste la valeur du modèle ou la
+                                valeur affichée. Valeurs possibles : 'model' (Valeur du modèle),
+                                'display' (Valeur affichée) ou 'auto' (Par défaut. Valeur affichée, puis en
+                                cas d'échec la valeur du modèle).
+                            </xs:documentation>
+                        </xs:annotation>
+                        <xs:simpleType>
+                            <xs:restriction base="xs:string">
+                                <xs:enumeration value="model"/>
+                                <xs:enumeration value="display"/>
+                                <xs:enumeration value="auto"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:attribute>
+                    <xs:attribute name="background" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Spécifie la couleur de fond</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="matching">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Spécifie la manière dont la compararaison
+                                est effectuée. Valeurs possibles : 'equals' (valeur par défaut),
+                                'contains', 'startsWith' ou 'endsWith'.
+                            </xs:documentation>
+                        </xs:annotation>
+                        <xs:simpleType>
+                            <xs:restriction base="xs:string">
+                                <xs:enumeration value="equals"/>
+                                <xs:enumeration value="contains"/>
+                                <xs:enumeration value="startsWith"/>
+                                <xs:enumeration value="endsWith"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:attribute>
+                    <xs:attribute name="expectedCellRenderer" use="optional" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Renderer attendu pour la cellule
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="assertTree">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Vérifie le contenu d'un arbre.
+                <p>
+                    <i>Exemple :</i>
+                    <pre>&lt;assertTree name="axisTree" path="Répartition par fourchettes
+                        de coûts:ENTRE 100 ET 500 KEUR" exists="true"/&gt;</pre>
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="assert-type">
+                    <xs:attribute name="name" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Nom de l'arbre (Positionné par setName()).
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="path" use="required" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Valeur du noeud ou de la feuille recherché.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="row" type="integerOrVariable">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Position de l'élément dans l'arbre.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="exists" use="required" type="xs:boolean">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Présence attendue ou non.</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="mode">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Spécifie si on teste la valeur
+                                du modèle ou la valeur affichée. Valeurs possibles :
+                                'model' (Valeur du modèle) ou 'display' (Valeur affichée).
+                            </xs:documentation>
+                        </xs:annotation>
+                        <xs:simpleType>
+                            <xs:restriction base="xs:string">
+                                <xs:enumeration value="model"/>
+                                <xs:enumeration value="display"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:attribute>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="assertValue">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Vérifie le contenu d'un composant graphique simple.
+                <p>
+                    Les composants supportés sont :
+                    <ol>
+                        <li>'JTextComponent' (Vérifie le texte qu'il contient).</li>
+                        <li>'JLabel' (Vérifie le texte qu'il contient).</li>
+                        <li>'JComboBox' (Vérifie le texte de l'élément sélectionné).</li>
+                        <li>'JCheckBox' (Vérifie l'état courant).</li>
+                        <li>'JDialog' (Vérifie le message).</li>
+                    </ol>
+                </p>
+                <p>
+                    <i>Exemple :</i>
+                    <pre>&lt;assertValue name="PorfolioCode" expected="06_C" /&gt;</pre>
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="assert-type">
+                    <xs:attribute name="name" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Nom du composant (positionné
+                                par setName()). Requis pour tous les composants sauf les
+                                JDialog (utiliser l'attribut 'dialogTitle dans ce cas).
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="expected" use="required" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Valeur attendue.</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="mode">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Spécifie si on teste la valeur du modèle ou la
+                                valeur affichée.
+                                Valeurs possibles : 'model' (Valeur du modèle), 'display' (Valeur affichée)
+                                ou 'auto' (Par défaut. Valeur affichée, puis en cas d'échec la valeur du
+                                modèle).
+                            </xs:documentation>
+                        </xs:annotation>
+                        <xs:simpleType>
+                            <xs:restriction base="xs:string">
+                                <xs:enumeration value="model"/>
+                                <xs:enumeration value="display"/>
+                                <xs:enumeration value="auto"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:attribute>
+                    <xs:attribute name="dialogTitle" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">A renseigner dans le cas d'une JDialog. Titre de
+                                la fenêtre dont il faut tester le message.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="matching">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Spécifie la manière dont la compararaison
+                                est effectuée. Valeurs possibles : 'equals' (valeur par défaut),
+                                'contains', 'startsWith', 'endsWith' ou 'regexp'.
+                            </xs:documentation>
+                        </xs:annotation>
+                        <xs:simpleType>
+                            <xs:restriction base="xs:string">
+                                <xs:enumeration value="equals"/>
+                                <xs:enumeration value="contains"/>
+                                <xs:enumeration value="startsWith"/>
+                                <xs:enumeration value="endsWith"/>
+                                <xs:enumeration value="regexp"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:attribute>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="assertContains">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Vérifie qu'une JList ou une JCombobox contient une valeur donnée.
+                <p>
+                    Les composants supportés sont :
+                    <ol>
+                        <li>'JComboBox'.</li>
+                        <li>'JList'.</li>
+                    </ol>
+                </p>
+                <p>
+                    <i>Exemple :</i>
+                    <pre>&lt;assertContains name="PorfolioCodeCombo" expected="06_C"
+                        /&gt;</pre>
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="assert-type">
+                    <xs:attribute name="name" type="xs:string" use="required">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Nom du composant (positionné par setName()).
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="expected" use="required" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Valeur attendue.</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="mode">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Spécifie si on teste la valeur du modèle
+                                ou la valeur affichée.
+                                Valeurs possibles : 'model' (Valeur du modèle), 'display' (Valeur affichée)
+                                ou 'auto' (Par défaut. Valeur affichée, puis en cas d'échec la valeur du
+                                modèle).
+                            </xs:documentation>
+                        </xs:annotation>
+                        <xs:simpleType>
+                            <xs:restriction base="xs:string">
+                                <xs:enumeration value="model"/>
+                                <xs:enumeration value="display"/>
+                                <xs:enumeration value="auto"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:attribute>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="assertComponentImage">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Vérifie que le checksum de l'image d'un composant Swing est égale
+                à la valeur donnée par un fichier étalon.
+                <p>
+                    Les composants supportés sont :
+                    <ol>
+                        <li>'JComponent'.</li>
+                    </ol>
+                </p>
+                <p>
+                    <i>Exemple :</i>
+                    <pre>&lt;assertComponentImage name="JFreeChartPanel" expected="JFreeChartPanel.jpg"
+                        /&gt;</pre>
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="assert-type">
+                    <xs:attribute name="name" type="xs:string" use="required">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Nom du composant (positionné par setName()).
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="expected" use="required" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Nom du fichier étalon.</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="checksum" use="optional">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Méthode de calcul du checksum.</xs:documentation>
+                        </xs:annotation>
+                        <xs:simpleType>
+                            <xs:restriction base="xs:string">
+                                <xs:enumeration value="CRC32"/>
+                                <xs:enumeration value="Adler32"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:attribute>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="assertVisible">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Vérifie si un composant graphique est visible.
+                <p>
+                    Tous les composants sont supportés à l'exception des composants de
+                    type 'Window' (JDialog, JFrame, etc.).
+                </p>
+                <p>
+                    <i>Exemple :</i>
+                    <pre>&lt;assertVisible name="label" expected="true" /&gt;</pre>
+                    <pre>&lt;assertVisible name="notVisible" expected="false" /&gt;</pre>
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:attribute name="name" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Nom du composant (positionné par setName()).
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="expected" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">
+                        <p>Si
+                            <em>true</em>
+                            , vérifie que le composant est visible.
+                            Si
+                            <em>false</em>
+                            , vérifie que le composant n'est pas visible.
+                            Par défaut,
+                            <em>true</em>
+                            .
+                        </p>
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="timeout" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Timeout d'écoute du serveur.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="assertProgressDisplay">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Vérifie l'affichage temporaire d'un composant.
+                <p>
+                    <i>Exemple :</i>
+                    <pre>&lt;assertProgressDisplay name="waitingPanel"/&gt;</pre>
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="assert-type">
+                    <xs:attribute name="name" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Nom du composant (positionné par setName()).
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="assertEditable">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Vérifie qu'un TextField, un TextArea ou une
+                JTable est modifiable ou pas.
+                <p>
+                    Les composants supportés sont :
+                    <ol>
+                        <li>'JTextArea' (Vérifie que la zone est modifiable).</li>
+                        <li>'JTextField' (Vérifie que le champ est modifiable).</li>
+                        <li>'JComboBox' (Vérifie que la liste déroulante est modifiable).</li>
+                        <li>'JTable' (Vérifie qu'une cellule de la table est modifiable).
+                            Dans ce cas on teste si le composant est modifiable.
+                        </li>
+                    </ol>
+                </p>
+                <p>
+                    <i>Exemple :</i>
+                    <pre>&lt;assertEditable name="textFieldName" expected="true"/&gt;</pre>
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="assert-type">
+                    <xs:attribute name="name" use="required" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Nom de la JTable (Positionné par setName()).
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="expected" use="required" type="xs:boolean">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Si 'true', vérifie que le
+                                composant est modifiable (Par défaut).
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="row" type="integerOrVariable">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Numéro de ligne commençant à 0.</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="column" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Nom de la colonne
+                                (Eventuellement numéro de colonne commençant à 0).
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="assertSelected">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Vérifie qu'une ligne est sélectionnée dans une JTable, une
+                JList ou un JTree.
+                Dans le cas de la JTable, on peut préciser la ligne ou la cellule à tester en fonction
+                du mode de sélection de la table.
+                <p>
+                    <i>Exemple :</i>
+                    <pre>&lt;assertSelected name="tableName" row="2" expected="true"/&gt;</pre>
+                    <pre>&lt;assertSelected name="tableName" row="3" column="2" expected="true"/&gt;</pre>
+                </p>
+
+                <p>
+                    <i>Exemple nominal avec un JTree :</i>
+                    <pre>&lt;assertSelected name="tree" path="root:father:child" expected="true"/&gt;</pre>
+                    <i>Exemple pour tester qu'aucun noeud n'est sélectionné :</i>
+                    <pre>&lt;assertSelected name="tree" expected="false"/&gt;</pre>
+                    <i>Exemple pour tester qu'au moins un noeud est sélectionné :</i>
+                    <pre>&lt;assertSelected name="tree" expected="true"/&gt;</pre>
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="assert-type">
+                    <xs:attribute name="name" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation
+                                  xml:lang="fr">Nom du composant (JTable, JList ou JTree, positionné
+                                par setName()).
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="expected" type="xs:boolean">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Si 'true', vérifie que la ligne,
+                                la cellule ou le noeud est sélectionné (Par défaut).
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="row" type="integerOrVariable">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Numéro de ligne (commençant à 0).
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="column" type="integerOrVariable">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Numéro de colonne (commençant à 0).
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="path" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Chemin du noeud sélectionné.</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="mode">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Spécifie si l'on prend en compte la valeur
+                                du modèle ou la valeur affichée. Valeurs possibles : 'model' (Valeur du
+                                modèle),
+                                ou 'display' (Valeur affichée fournie par le renderer)
+                                Actuellement, l'unique composant tenant compte de cet attribut est le JTree.
+                            </xs:documentation>
+                        </xs:annotation>
+                        <xs:simpleType>
+                            <xs:restriction base="xs:string">
+                                <xs:enumeration value="model"/>
+                                <xs:enumeration value="display"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:attribute>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="assertTableExcel">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Vérifie le contenu des cellules d'une JTable en la comparant à
+                un fichier Excel.
+                <p>
+                    <i>Exemple :</i>
+                    <pre>&lt;assertTableExcel name="PorfolioCode" file="myTable.xls"
+                        sheetName="portfolio_sheet"
+                        expectedRowCount="12" excludedColumns="calculs_internes_date,calculs_internes_ptf"
+                        Ptf"/&gt;</pre>
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="assert-type">
+                    <xs:attribute name="name" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Nom de la JTable (positionné par setName()).
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="file" use="required" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Chemin du fichier Excel contenant la table
+                                attendue.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="sheetName" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Nom de la feuille Excel contenant la table
+                                attendue (optionnel si le fichier contient une seule feuille).
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="expectedRowCount" use="required" type="integerOrVariable">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Nombre de lignes attendu pour la table
+                                (sans compter le header).
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="expectedColumnCount" use="optional" type="integerOrVariable">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Nombre de colonnes attendu pour la table.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="excludedColumns" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Noms des colonnes présentes dans le fichier
+                                Excel qui ne doivent pas être prises en compte pour la comparaison.
+                                Les noms doivent être séparés par des virgules (cet attribut est optionnel).
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="checkColumnOrder" type="xs:boolean">
+                        <xs:annotation>
+                            <xs:documentation
+                                  xml:lang="fr">Indique si l'ordre des colonnes de l'étalon doit être
+                                respecté par la table testée.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="assertEnabled">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Vérifie qu'un bouton, un menu ou un TextField est activé ou pas.
+                <p>
+                    Les composants supportés sont :
+                    <ol>
+                        <li>'JMenuItem' (Vérifie que le menu est accessible).</li>
+                        <li>'JButton' (Vérifie que le bouton est activé).</li>
+                        <li>'JTextField' (Vérifie que le champ est activé).</li>
+                        <li>'JComboBox' (Vérifie que la liste déroulante est
+                            activée).
+                        </li>
+                        <li>'JTable' (Vérifie qu'une cellule de la table est activée).
+                            Dans ce cas on teste si le composant est editable.
+                        </li>
+                    </ol>
+                </p>
+                <p>
+                    <i>Exemple :</i>
+                    <pre>&lt;assertEnabled name="buttonName" expected="true"/&gt;</pre>
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="assert-type">
+                    <xs:attribute name="name" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Nom du composant
+                                (autre que menu, positionné par setName()).
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="menu" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Libellés des éléments de menus à cliquer, séparés
+                                par le caractère ':'.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="expected" use="required" type="xs:boolean">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Si 'true', vérifie que le composant est activé
+                                (Par défaut).
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="row" type="integerOrVariable">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Numéro de ligne commençant à 0.</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="column" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Nom de la colonne
+                                (Eventuellement numéro de colonne commençant à 0).
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="click">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Simule un ou plusieurs clics.
+                <ul>
+                    <li>Pour un menu l'élément est identifié par les libellés (attribut 'menu').</li>
+                    <li>Pour un composant simple l'élément est identifié par son nom (attribut 'name') ou par
+                        son label (attribut 'label').
+                    </li>
+                </ul>
+                <p>
+                    <i>Exemple d'un clique sur le menu 'Fichier > Nouveau > Document' :</i>
+                    <pre> &lt;click menu="Fichier:Nouveau:Document"/&gt;</pre>
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded" minOccurs="0">
+                <xs:element ref="assertList"/>
+                <xs:element ref="assertListSize"/>
+                <xs:element ref="assertEnabled"/>
+                <xs:element ref="pause"/>
+                <xs:element ref="select"/>
+            </xs:choice>
+            <xs:attribute name="menu" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Libellés des éléments de menus à cliquer, séparés par le
+                        caractère ':'.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="name" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Nom de la JTable (Positionné par setName())
+                        - Ignoré dans le cas d'un menu.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="label" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Label du JButton positionné par setText() - Ignoré dans le
+                        cas d'un menu ou dans le cas où l'attribut 'name' est renseigné.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="count" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Nombre de clics.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="row" type="integerOrVariable">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Numéro de ligne commençant à 0 (0 par défaut).
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="column" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Nom de la colonne (Eventuellement numéro de colonne
+                        commençant à 0).
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="select" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">libellé de la ligne du menu à
+                        sélectionner (à utiliser dans le cas ou l'on n'utilise pas de sous balises).
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="popupVisible" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Si 'false', aucun menu contextuel n'est affiché.
+                        Par défaut : 'true'.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="matcher">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Type de recherche : equals ou contains.</xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="equals"/>
+                        <xs:enumeration value="contains"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
+            <xs:attribute name="path" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation
+                          xml:lang="fr">Chemin du noeud sur lequel cliquer dans l'arbre (séparé par ':').
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="mode">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Spécifie si l'on prend en compte la valeur
+                        du modèle ou la valeur affichée. Valeurs possibles : 'model' (Valeur du modèle),
+                        ou 'display' (Valeur affichée fournie par le renderer)
+                        Actuellement, l'unique composant tenant compte de cet attribut est le JTree.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="model"/>
+                        <xs:enumeration value="display"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
+            <xs:attribute name="modifier">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Spécifie un "modifier" pour l'action
+                        du click. Cette propriété ne peut prendre que les trois valeurs
+                        suivantes :
+                        - ctrl : controle
+                        - shift : touche "Shift"
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="ctrl"/>
+                        <xs:enumeration value="shift"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="clickMiddle">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Simule un ou plusieurs clics milieu.
+                <ul>
+                    <li>Pour un menu l'élément est identifié par les libellés (attribut 'menu').</li>
+                    <li>Pour un composant simple l'élément est identifié par son nom (attribut 'name') ou par
+                        son label (attribut 'label').
+                    </li>
+                </ul>
+                <p>
+                    <i>Exemple d'un clique milieu sur le menu 'Fichier > Nouveau > Document' :</i>
+                    <pre> &lt;clickMiddle menu="Fichier:Nouveau:Document"/&gt;</pre>
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded" minOccurs="0">
+                <xs:element ref="assertList"/>
+                <xs:element ref="assertListSize"/>
+                <xs:element ref="assertEnabled"/>
+                <xs:element ref="pause"/>
+                <xs:element ref="select"/>
+            </xs:choice>
+            <xs:attribute name="menu" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Libellés des éléments de menus à cliquer, séparés par le
+                        caractère ':'.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="name" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Nom de la JTable (Positionné par setName())
+                        - Ignoré dans le cas d'un menu.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="label" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Label du JButton positionné par setText() - Ignoré dans le
+                        cas d'un menu ou dans le cas où l'attribut 'name' est renseigné.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="count" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Nombre de clics.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="row" type="integerOrVariable">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Numéro de ligne commençant à 0 (0 par défaut).
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="column" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Nom de la colonne (Eventuellement numéro de colonne
+                        commençant à 0).
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="select" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">libellé de la ligne du menu à
+                        sélectionner (à utiliser dans le cas ou l'on n'utilise pas de sous balises).
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="popupVisible" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Si 'false', aucun menu contextuel n'est affiché.
+                        Par défaut : 'true'.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="matcher">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Type de recherche : equals ou contains.</xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="equals"/>
+                        <xs:enumeration value="contains"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
+            <xs:attribute name="path" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation
+                          xml:lang="fr">Chemin du noeud sur lequel cliquer dans l'arbre (séparé par ':').
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="mode">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Spécifie si l'on prend en compte la valeur
+                        du modèle ou la valeur affichée. Valeurs possibles : 'model' (Valeur du modèle),
+                        ou 'display' (Valeur affichée fournie par le renderer)
+                        Actuellement, l'unique composant tenant compte de cet attribut est le JTree.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="model"/>
+                        <xs:enumeration value="display"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="clickTableHeader">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Simule un ou plusieurs clics sur l'en-tête d'une table.
+                <p>
+                    <i>Exemple d'un double clic sur l'en tête de label 'colonne 1' :</i>
+                    <pre> &lt;click name="tableName" count="2" column="colonne 1"/&gt;</pre>
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:attribute name="name" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Nom de la JTable (Positionné par setName())
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="count" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Nombre de clics.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="column" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Nom de la colonne (Eventuellement numéro de colonne
+                        commençant à 0).
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="component" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">"true" si il existe un bouton contenu dans le header de la
+                        colonne de la JTable sur lequel on veut cliquer.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="modifier" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">
+                        Spécifie un "modifier" pour l'action
+                        du click. Cette propriété ne peut prendre que les trois valeurs
+                        suivantes :
+                        - ctrl : controle
+                        - shift : touche "Shift"
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="closeFrame">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Permet de fermer une JInternalFrame.
+                <p>
+                    <i>Exemple :</i>
+                    <pre>&lt;closeFrame title="Options"/&gt;</pre>
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:attribute name="title" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Titre de la frame (peut être une expression régulière).
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="select">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Sélectionne des lignes dans une JTable, une
+                JList ou un JTree (voire une cellule pour la JTable).
+                <p>
+                    <i>Exemple de sélection de deux lignes de la liste par leur libellé
+                        :
+                    </i>
+                    <pre>
+                        &lt;select name="type" label="lg0"/&gt;
+                        &lt;select name="type" label="lg3" multiple="true"/&gt;
+                    </pre>
+                </p>
+                <p>
+                    <i>Exemple de sélection du noeud 'child1Name' dans l'arbre 'treeName'
+                        :
+                    </i>
+                    <pre>
+                        &lt;select name="treeName" path="rootName:child1Name"/&gt;
+                    </pre>
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:attribute name="name" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Nom de la JTable (Positionné par
+                        setName()) - Ignoré dans le cas d'un menu. (obligatoire si n'est
+                        pas contenu dans une autre balise)
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="row" type="integerOrVariable">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Numéro de ligne commençant à 0.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="label" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Label de la ligne (Ne fonctionne qu'avec les JList).
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="column" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Numéro de colonne commençant à 0. Ne peut être utilisé
+                        avec l'attribut 'multiple'.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="multiple" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Si 'true', la nouvelle sélection s'ajoute aux lignes
+                        précédemment sélectionnées. Les autres lignes sont désélectionnées sinon (Par défaut).
+                        Ne peut pas être utilisé avec l'attribut 'column'.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="path" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Pour un JTree, chemin du noeud à sélectionner.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="mode">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Spécifie si on teste la valeur
+                        du modèle ou la valeur affichée. Valeurs possibles : 'model' (Valeur du modèle) ou
+                        'display' (Valeur affichée). Actuellement, l'unique composant tenant compte de cet
+                        attribut est le JTree.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="model"/>
+                        <xs:enumeration value="display"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="selectTab">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Sélectionne un onglet.
+                <p>
+                    <i>Exemple de sélection d'un onglet par son index ou son nom :</i>
+                    <pre>&lt;selectTab name="onglet" tabIndex="0"/&gt;</pre>
+                    <pre>&lt;selectTab name="onglet" tabLabel="Titre de
+                        l'onglet"/&gt;</pre>
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:attribute name="name" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Nom de l'onglet.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="tabIndex" type="integerOrVariable">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Numéro de l'onglet commençant à 0.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="tabLabel" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Titre de l'onglet.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="assertTab">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Vérification de l'existence d'un onglet dans un JTabbedPane.
+                On peut aussi vérifier de manière optionnelle s'il est sélectionné ou pas.
+                <p>
+                    <i>Exemple de vérification par le label :</i>
+                    <pre>&lt;assertTab name="monTabbedPane" tabLabel="Titre de
+                        l'onglet"/&gt;</pre>
+                    <i>Exemple de vérification par le label et l'index :</i>
+                    <pre>&lt;assertTab name="monTabbedPane" tabLabel="Titre de l'onglet"
+                        tabIndex="0"/&gt;</pre>
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:attribute name="name" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Nom du conteneur d'onglets.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="tabLabel" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Titre de l'onglet.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="tabIndex" use="optional" type="integerOrVariable">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Numéro de l'onglet commençant à 0.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="selected" use="optional" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">
+                        Si cet attribut est positionné à 'true', on vérifie que l'onglet est sélectionné.
+                        S'il est positionné à 'false', on vérifie que l'onglet n'est pas sélectionné.
+                        Si cet attribut n'est pas précisé, on ne vérifie rien.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="enabled" use="optional" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">
+                        Précise si l'onglet est actif ou non. Si ce paramètre n'est
+                        pas précisé alors on considère que l'onglet est actif.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="assertTabCount">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Vérification du nombre d'onglets dans un JTabbedPane.
+                <p>
+                    <i>Exemple de vérification</i>
+                    <pre>&lt;assertTabCount name="monTabbedPane" tabCount="3"/&gt;</pre>
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:attribute name="name" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Nom du conteneur d'onglets.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="tabCount" use="required" type="integerOrVariable">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Nombre d'onglets</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="setValue">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Fixe la valeur d'un composant graphique
+                simple.
+                <p>
+                    Les composants supportés sont :
+                    <ol>
+                        <li>JTextComponent : fixe le texte qu'il contient.</li>
+                        <li>JComboBox : sélectionne un élément via la velur du
+                            modèle.
+                        </li>
+                        <li>JCheckBox : fixe l'état de la checkbox.</li>
+                        <li>JTable : change la valeur d'une cellule.</li>
+                    </ol>
+                </p>
+                <p>
+                    <i>Exemple pour écrire '08_D' dans le JTextField 'PorfolioCode' en
+                        simulant la frappe au
+                        clavier (pour appeler les listeners) :
+                    </i>
+                    <pre>
+                        &lt;setValue name="PorfolioCode" value="08_D" mode="keyboard"/&gt;
+                    </pre>
+                </p>
+                <p>
+                    <i>Exemple de modification de la valeur d'une cellule d'une table
+                        :
+                    </i>
+                    <pre>
+                        &lt;setValue name="myTable" row="0" column="1" value="new value"/&gt;
+                    </pre>
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:attribute name="name" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Nom du composant positionné par setName(). (obligatoire si
+                        n'est pas contenu dans une autre balise)
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="value" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Valeur à écrire. Pour une JComboBox doit être une des
+                        valeurs du modèlev (et non du 'renderer' si différent).
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="mode">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Mode de saisie du texte dans les
+                        JTextComponent et les JComboBox éditables :
+                        <ul>
+                            <li>'setter' (valeur par défaut) : appel de la méthode setText
+                            </li>
+                            <li>'keyboard' : simulation de la frappe au clavier (appelle les listeners, mais
+                                ne supporte pas les accents).
+                            </li>
+                        </ul>
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="setter"/>
+                        <xs:enumeration value="keyboard"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
+            <xs:attribute name="row" type="integerOrVariable">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Numéro de ligne dans une JTable commençant à 0.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="column" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Nom de la colonne (Voire éventuellement le numéro de
+                        colonne dans une JTable commencant à 0).
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="sleep">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Fait un arrêt dans l'exécution de l'IHM
+                <p>
+                    <i>Exemple pour faire une pause de 3 secondes :</i>
+                    <pre>&lt;sleep duration="3000" /&gt;</pre>
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:attribute name="duration" use="required" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Durée de la pause en millisecondes.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="pressKey">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Appuie sur une touche
+                <p>
+                    <i>Exemple pour appuyer sur ENTREE :</i>
+                    <pre>&lt;pressKey value="ENTER" /&gt;</pre>
+                </p>
+                <p>
+                    <i>Exemple pour appuyer sur "a" (la casse est importante pour la value) :</i>
+                    <pre>&lt;pressKey value="A" /&gt;</pre>
+                </p>
+                <p>
+                    <i>Exemple pour appuyer sur "shift+A" :</i>
+                    <pre>&lt;pressKey value="shift A" /&gt;</pre>
+                </p>
+                <p>
+                    <i>Exemple pour appuyer sur "ctrl+A" :</i>
+                    <pre>&lt;pressKey value="ctrl A" /&gt;</pre>
+                </p>
+                <p>
+                    <i>Exemple pour appuyer sur "alt+A" :</i>
+                    <pre>&lt;pressKey value="alt A" /&gt;</pre>
+                </p>
+                <p>
+                    <i>Exemple pour appuyer sur "tabulation" :</i>
+                    <pre>&lt;pressKey value="TAB" /&gt;</pre>
+                </p>
+                <p>
+                    <i>Exemple pour appuyer sur "retour arrière" :</i>
+                    <pre>&lt;pressKey value="BACK_SPACE" /&gt;</pre>
+                </p>
+                <p>
+                    <i>Exemple pour appuyer sur "échappe" :</i>
+                    <pre>&lt;pressKey value="ESCAPE" /&gt;</pre>
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:attribute name="value" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Touche sur laquelle on souhaite appuyer</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="assertTitleBorder">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Vérifie le titre de la bordure d'un composant.
+                <p>
+                    <i>Exemple pour asserter le titre de la bordure du composant 'panelName' :</i>
+                    <pre>&lt;assertTitleBorder name="panelName" expected="My Title" /&gt;</pre>
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:attribute name="name" type="xs:string" use="required">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Nom du composant auquel est associé le TitleBorder.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="expected" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Titre de la bordure.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="matching">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Spécifie la manière dont la compararaison
+                        est effectuée. Valeurs possibles : 'equals' (valeur par défaut),
+                        'contains', 'startsWith', 'endsWith', 'regexp'.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="equals"/>
+                        <xs:enumeration value="contains"/>
+                        <xs:enumeration value="startsWith"/>
+                        <xs:enumeration value="endsWith"/>
+                        <xs:enumeration value="regexp"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="assertTooltip">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Vérifie le tooltip d'un composant.
+                <p>
+                    <i>Exemple pour vérifier le contenu du tooltip du composant 'myTextField' :</i>
+                    <pre>&lt;assertTooltip name="myTextField" expected="ceci est un tooltip" /&gt;</pre>
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:attribute name="name" type="xs:string" use="required">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Nom du composant auquel est associé le tooltip.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="expected" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Contenu du tooltip.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="row" type="integerOrVariable">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Ligne du tableau contenant le tooltip
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="matching">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Spécifie la manière dont la compararaison
+                        est effectuée. Valeurs possibles : 'equals' (valeur par défaut),
+                        'contains', 'startsWith', 'endsWith', 'regexp'.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="equals"/>
+                        <xs:enumeration value="contains"/>
+                        <xs:enumeration value="startsWith"/>
+                        <xs:enumeration value="endsWith"/>
+                        <xs:enumeration value="regexp"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="scrollToVisible">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Scroll pour que la JScrollPane passée en attribut pour
+                que le composant passé en attribut soit visible.
+                <p>
+                    <i>Exemple pour que le composant 'textfield' soit visible par rapport
+                        à la JScrollPane 'scrollpane' :
+                    </i>
+                    <pre>&lt;scrollToVisible name="textfield" scrollpane="scrollpane" /&gt;</pre>
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:attribute name="name" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Nom du composant à rendre visible.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="scrollpane" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Nom de la JScrollPane devant scroller
+                        pour rendre le composant.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="expandAllTree">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Permet de déployer tous les éléments d'un JTree.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:attribute name="name" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Nom du JTree à déployer.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="pause">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Permet de faire une pause pendant l'exécution de l'IHM.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="audit">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">Message d'audit de l'action.</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:attribute name="type" use="required">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Type de message : 'PRE' pour la réception et 'POST' pour
+                        le résultat.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="PRE"/>
+                        <xs:enumeration value="POST"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
+            <xs:attribute name="error" use="required">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Résultat : 'NONE' pour aucune erreur,
+                        'WARNING' pour des contrôles en erreur, 'FATAL' pour une erreur bloquante.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="NONE"/>
+                        <xs:enumeration value="WARNING"/>
+                        <xs:enumeration value="FATAL"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="security-model">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">
+                Mise en place d'un modèle de sécurité en base (agf-security).
+                <p>
+                    <i>Exemple :</i>
+                    <pre>&lt;security-model user="smith" roles="agent, bad-man"/&gt;</pre>
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:attribute name="user" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Nom de l'utilisateur à déclarer</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="roles" use="optional" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Définition des rôles de l'utilisateur</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="lastLogin" use="optional" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Date de dernière connexion de l'utilisateur
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="lastLogout" use="optional" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Date de dernière deconnexion de l'utilisateur
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="setCalendar">
+        <xs:annotation>
+            <xs:documentation xml:lang="fr">
+                Balise permettant d'initialiser une date sur un composant JCalendar.
+                <p>
+                    <i>Exemple :</i>
+                    <pre>&lt;setCalendar name="monCalendrier" value="2009-06-15"/&gt;</pre>
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:attribute name="name" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Nom du composant JCalendar</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="value" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Date à initialiser au format yyyy-MM-dd</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- ==================== COMMON ELEMENT ==================== -->
+    <xs:complexType name="release-test-type">
+        <xs:choice maxOccurs="unbounded">
+            <xs:element ref="description"/>
+            <xs:element ref="tstamp"/>
+            <xs:element ref="call-method"/>
+            <xs:element ref="security-model"/>
+            <xs:element ref="tokio-load"/>
+            <xs:element ref="tokio-set-db"/>
+            <xs:element ref="tokio-assert"/>
+            <xs:element ref="copy-to-inbox"/>
+            <xs:element ref="cleanup"/>
+            <xs:element ref="batch-import"/>
+            <xs:element ref="batch-export"/>
+            <xs:element ref="batch-segmentation"/>
+            <xs:element ref="batch"/>
+            <xs:element ref="listen-jms"/>
+            <xs:element ref="gui-test"/>
+            <xs:element ref="clear-cookies"/>
+            <xs:element ref="web-test"/>
+            <xs:element ref="start-mail-server"/>
+            <xs:element ref="send-mail"/>
+            <xs:element ref="assert-inbox"/>
+            <xs:element ref="file-assert"/>
+            <xs:element ref="set-property"/>
+            <xs:element ref="assert-excel"/>
+            <xs:element ref="delete"/>
+        </xs:choice>
+    </xs:complexType>
+
+    <xs:complexType name="assert-type">
+        <xs:attribute name="timeout" type="xs:integer">
+            <xs:annotation>
+                <xs:documentation xml:lang="fr">Période maximale (en seconde) pendant laquelle l'assert est
+                    rejoué jusqu'à ce que la condition soit vérifiée.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="valueNameAttributs">
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="value" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:simpleType name="integerOrVariable">
+        <xs:union>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:pattern value="@\w*@"/>
+                </xs:restriction>
+            </xs:simpleType>
+            <xs:simpleType>
+                <xs:restriction base="xs:integer"/>
+            </xs:simpleType>
+        </xs:union>
+    </xs:simpleType>
+
+</xs:schema>

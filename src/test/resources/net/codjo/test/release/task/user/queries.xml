@@ -1,0 +1,11 @@
+<list>
+    <!--
+     | Creation de l'axe (id=3) : 'UC hors OPCVM AGF'
+    -->
+    <send>
+        <insert request_id="7">
+        </insert>
+    </send>
+
+    <send>query é 2</send>
+</list>

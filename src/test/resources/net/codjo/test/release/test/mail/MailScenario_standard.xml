@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="Ant" default="test" basedir=".\">
+    <property name="gui.default.class" value="net.codjo.test.release.test.standard.SampleGui"/>
+
+    <taskdef name="release-test" classname="net.codjo.test.release.task.ReleaseTask"/>
+    <taskdef name="start-mail-server" classname="net.codjo.test.release.task.mail.StartMailServerTask"/>
+    <taskdef name="assert-inbox" classname="net.codjo.test.release.task.mail.AssertInboxTask"/>
+    <taskdef name="send-mail" classname="net.codjo.test.release.task.mail.SendMailTask"/>
+
+    <target name="test">
+
+        <release-test>
+            <start-mail-server port="8082"/>
+
+            <send-mail from="luke@rebellion.org" to="dark@vador.net" subject="Disponibilité ?" port="8082">
+                Salut Dark,
+                Est-ce que tu aurais un créneau cette semaine pour qu'on s'entretue ?
+                - Luke.
+            </send-mail>
+
+            <send-mail from="dark@vador.net" to="luke@rebellion.org" subject="Re: Disponibilité ?" port="8082">
+                Salut Luke,
+                Désolé, je suis un peu pris en ce moment.
+                A bientôt,
+                Dark.
+                PS: Au fait, t'ai-je dit que j'étais ton père ?
+            </send-mail>
+
+            <assert-inbox>
+                <message from="luke@rebellion.org" to="dark@vador.net" subject="Disponibilité ?">
+                    <assertText value="un créneau cette semaine"/>
+                </message>
+                <message from="dark@vador.net" to="luke@rebellion.org" subject="Re: Disponibilité ?">
+                    <assertText value="ton père"/>
+                </message>
+                <message from="dark@vador.net" to="leia@rebellion.org" subject="Et ta soeur ?" present="false"/>
+            </assert-inbox>
+
+        </release-test>
+    </target>
+</project>

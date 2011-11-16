@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="Ant" default="test" basedir=".\">
+    <property name="gui.default.class"
+              value="net.codjo.test.release.test.standard.SampleGui"/>
+
+    <taskdef name="release-test" classname="net.codjo.test.release.task.ReleaseTask"/>
+    <taskdef name="gui-test" classname="net.codjo.test.release.task.gui.GuiTask"/>
+    <target name="test">
+
+        <release-test>
+            <description>Bla bla bla !!!</description>
+
+            <gui-test>
+
+                <group name="Frame simple">
+                    <group name="Test PopupMenu">
+                        <click name="ViewPopup"/>
+                        <assertMenu name="menuItemChecked" checked="true" label="Test check"/>
+                        <assertMenu name="menuItemUnChecked" checked="false"/>
+                        <click name="menuItemUnChecked"/>
+                        <click name="ViewPopup"/>
+                        <assertMenu name="menuItemUnChecked" checked="true"/>
+
+                        <click name="ViewPopup">
+                            <assertListSize expected="2"/>
+                        </click>
+                    </group>
+                    <group name="Ouverture de la frame">
+                        <assertEnabled menu="Fichier:Nouvelle frame" expected="true"/>
+                        <click menu="Fichier:Nouvelle frame"/>
+                        <assertFrame title="Une frame" timeout="10" delay="1000"/>
+                    </group>
+
+                    <group name="Vérification des valeurs par défaut">
+                        <assertValue name="ptfCode" expected="un field" delay="1500"/>
+                        <assertValue name="period" expected="" timeout="3"/>
+                        <assertValue name="type" expected="valA" timeout="9" delay="800"/>
+                        <assertEnabled name="buttonDisable" expected="false"/>
+                        <assertEnabled name="textFieldEnable" expected="true"/>
+                        <assertEnabled name="comboBoxEnable" expected="false"/>
+                        <assertEnabled name="tableEnable" expected="true" row="0" column="col1"/>
+                        <assertEnabled name="tableEnable" expected="false" row="1" column="col1"/>
+                        <assertEnabled name="tableEnable" expected="true" row="0" column="0"/>
+                        <assertEnabled name="tableEnable2" expected="false"/>
+                        <assertEditable name="textFieldEnable" expected="true"/>
+                        <assertEditable name="comboBoxEnable" expected="false"/>
+                        <assertEditable name="tableEnable" expected="true" row="0" column="col1"/>
+                        <assertEditable name="tableEnable" expected="false" row="1" column="col1"/>
+                        <assertEditable name="tableEnable" expected="true" row="0" column="0"/>
+                    </group>
+
+                    <group name="Modification des valeurs">
+                        <setValue name="ptfCode" value="05"/>
+                        <setValue name="period" value="200405"/>
+                        <setValue name="type" value="valB"/>
+                        <assertValue name="ptfCode" expected="05"/>
+                        <assertValue name="period" expected="200405"/>
+                        <!-- vérification de la taille du combo -->
+                        <assertListSize name="type" expected="3"/>
+                        <assertList name="type" expected="valA" row="0" delay="500"/>
+                        <assertList name="type" expected="valB" row="1"/>
+                        <assertList name="type" expected="valC" row="2"/>
+                        <assertValue name="type" expected="valB"/>
+                    </group>
+
+                    <group name="Fermeture de la frame">
+                        <click name="Button.ok"/>
+                        <assertFrame title="Une frame" closed="true"/>
+                    </group>
+                </group>
+
+                <group name="Frame avec écran de détail">
+                    <group name="Ouverture de la frame">
+                        <click menu="Fichier:Liste PortfolioWindow"/>
+                        <assertFrame title="Liste de PortfolioWindow"/>
+                    </group>
+
+                    <group name="Sélection d'une ligne de la JTable">
+                        <select name="type" row="0"/>
+                        <select name="type" row="2"/>
+                        <assertListSize name="type" expected="3" delay="500"/>
+                        <assertSelected name="type" row="0" expected="false" delay="500"/>
+                        <assertSelected name="type" row="1" expected="false"/>
+                        <assertSelected name="type" row="2" expected="true"/>
+                    </group>
+
+                    <group name="Sélection d'une cellule de la JTable">
+                        <select name="tableWithCellSelectable" row="2" column="1"/>
+                        <assertSelected name="tableWithCellSelectable" row="0" column="1" expected="false"/>
+                        <assertSelected name="tableWithCellSelectable" row="2" column="1" expected="true"/>
+                    </group>
+
+                    <group name="Sélection d'une ligne de la JList">
+                        <select name="lignes" row="0"/>
+                        <select name="lignes" row="2"/>
+                        <assertListSize name="lignes" expected="3"/>
+                        <assertList name="lignes" expected="ligne0" row="0"/>
+                        <assertList name="lignes" expected="ligne1" row="1"/>
+                        <assertList name="lignes" expected="ligne2" row="2"/>
+                        <assertSelected name="lignes" row="0" expected="false"/>
+                        <assertSelected name="lignes" row="1" expected="false"/>
+                        <assertSelected name="lignes" row="2" expected="true"/>
+                    </group>
+
+                    <group name="Sélection de deux lignes de la JTable">
+                        <select name="type" row="0"/>
+                        <select name="type" row="2" multiple="true"/>
+                        <assertSelected name="type" row="0"/>
+                        <assertSelected name="type" row="1" expected="false"/>
+                        <assertSelected name="type" row="2" expected="true"/>
+                    </group>
+
+                    <group name="Click droit sur le header d'une JTable associée à un menu contextuel">
+                        <clickRightTableHeader name="tableWithPopupMenu" column="0">
+                            <assertEnabled menu="TableHeaderMenu1" expected="true"/>
+                            <assertEnabled menu="TableHeaderMenu2" expected="true"/>
+                        </clickRightTableHeader>
+                        <clickRightTableHeader name="tableWithPopupMenu" column="titreB">
+                            <assertEnabled menu="TableHeaderMenu1" expected="true"/>
+                            <assertEnabled menu="TableHeaderMenu2" expected="true"/>
+                        </clickRightTableHeader>
+                        <clickMiddleTableHeader name="tableWithCellRenderer" column="ColWithRenderer"/>
+                        <assertFrame title="Middle Click at ColWithRenderer"/>
+                        <closeFrame title="Middle Click at ColWithRenderer"/>
+                        <clickMiddleTableHeader name="tableWithCellRenderer" column="Col1"/>
+                        <assertFrame title="Middle Click at Col1"/>
+                        <closeFrame title="Middle Click at Col1"/>
+                        <clickMiddle name="tableWithCellRenderer" column="1" row="1"/>
+                        <closeFrame title="clic sur tableWithCellRenderer avec le bouton milieu sur 1,1"/>
+
+                        <assertTableExcel name="tableWithCellSelectable"
+                                          file="AssertTableExcel.xls"
+                                          sheetName="sheet1"
+                                          checkColumnOrder="true"
+                                          expectedRowCount="3"
+                                          expectedColumnCount="2"/>
+
+                    </group>
+
+                    <group name="Click droit sur une table ou un JTree associée à un menu contextuel">
+                        <clickRight name="tableWithPopupMenu" row="0" select="menu2"/>
+                        <clickRight name="tableWithPopupMenu" row="1">
+                            <assertEnabled menu="menu1" expected="false"/>
+                            <assertEnabled menu="menu2" expected="true"/>
+                            <select label="menu2"/>
+                        </clickRight>
+                        <clickRight name="treeNameWithPopupMenu" path="rootName:child1:child11">
+                            <assertEnabled menu="menuTree2" expected="true"/>
+                            <select label="menuTree2"/>
+                        </clickRight>
+                    </group>
+
+                    <group name="Sélection de deux lignes de la JList">
+                        <select name="lignes" row="0"/>
+                        <select name="lignes" row="2" multiple="true"/>
+                        <assertSelected name="lignes" row="0"/>
+                        <assertSelected name="lignes" row="1" expected="false"/>
+                        <assertSelected name="lignes" row="2" expected="true"/>
+                    </group>
+
+                    <group name="Sélection d'un noeud du JTree">
+                        <select name="treeNameWithPopupMenu" path="rootName:child1:child11"/>
+                        <assertTree name="treeNameWithPopupMenu" path="rootName:child1:child11" delay="500"/>
+                    </group>
+
+                    <group name="Modification dans une JTextArea">
+                        <setValue name="theTextArea" value="ligne un&#10;ligne deux"/>
+                        <assertValue name="theTextArea" expected="ligne un&#10;ligne deux"/>
+                    </group>
+
+                    <group name="Afficher l'écran de détail">
+                        <click name="Button.edit"/>
+                        <assertFrame title="Une frame"/>
+                    </group>
+
+                    <group name="Modification des valeurs">
+                        <setValue name="period" value="200406"/>
+                        <assertValue name="period" expected="200406"/>
+                    </group>
+
+                    <group name="Modification de valid (checkBox)">
+                        <setValue name="validBox" value="true"/>
+                        <assertValue name="validBox" expected="true"/>
+                    </group>
+
+                    <group name="Validation des modifications">
+                        <click name="Button.ok"/>
+                        <assertFrame title="Une frame" closed="true"/>
+                    </group>
+
+                    <group name="Attendre une seconde">
+                        <sleep duration="1000"/>
+                    </group>
+
+                    <group name="Vérification des modifications dans la liste">
+                        <assertTable name="type" expected="2A" row="1" column="0"/>
+                    </group>
+
+                    <group name="Modification d'une cellule de la table">
+                        <setValue name="type" row="0" column="1" value="mod"/>
+                        <assertTable name="type" expected="mod" row="0" column="1"/>
+                    </group>
+
+                    <group name="manipulation des JTabbedPanes">
+                        <selectTab name="MyJTabbedPane" tabLabel="page 2"/>
+                        <assertValue name="textField2" expected="Hello2"/>
+                        <selectTab name="MyJTabbedPane" tabIndex="0"/>
+                        <setValue name="textField1" value="bye1"/>
+                        <assertValue name="textField1" expected="bye1"/>
+                    </group>
+
+                    <group name="Recherche de l'existence d'un élément dans une JList ou une JComboBox">
+                        <assertContains name="comboBoxWithRenderer" expected="ligne2"/>
+                        <assertContains name="comboBoxWithRenderer" expected="renderer3"/>
+                        <assertContains name="comboBoxWithRenderer" expected="ligne4" mode="model"/>
+                        <assertContains name="comboBoxWithRenderer" expected="renderer5" mode="display"/>
+                        <assertContains name="lignes" expected="ligne2"/>
+                    </group>
+
+                    <group name="Fermer la frame">
+                        <closeFrame title="Liste de PortfolioWindow"/>
+                        <assertFrame title="Liste de PortfolioWindow" closed="true"/>
+                    </group>
+
+                </group>
+
+            </gui-test>
+        </release-test>
+    </target>
+</project>
