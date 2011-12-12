@@ -152,8 +152,8 @@ public class AssertTreeStep extends AbstractAssertStep {
 
 
     private Component getRendererComponent(JTree tree, TreePath foundPath) {
-        boolean expanded = tree.isExpanded(row);
-        boolean selected = tree.getSelectionModel().isRowSelected(row);
+        boolean expanded = tree.isExpanded(foundPath);
+        boolean selected = tree.getSelectionModel().isPathSelected(foundPath);
         Object value = foundPath.getLastPathComponent();
         boolean leaf = tree.getModel().isLeaf(value);
         boolean focus = tree.hasFocus();

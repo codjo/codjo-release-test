@@ -312,19 +312,19 @@ public class AssertTreeStepTest extends JFCTestCase {
 
 
     public void test_assertIcons() throws Exception {
+        TestContext context = new TestContext(this, project);
         JTree tree = createTreeWithColorsAndIcons();
         showFrame(tree);
-        TreeUtils.expandSubtree(tree, new TreePath(tree.getModel().getRoot()));
 
         step.setName("treeName");
         step.setPath("rootName");
         step.setExists(true);
-        step.setIcon("red.png");
-        TestContext context = new TestContext(this, project);
+        step.setIcon("folder_expanded.png");
         step.proceed(context);
 
         step.setPath("rootName:green");
-        step.setIcon("green.png");
+        step.setIcon("folder_collapsed.png");
+        step.setIcon("folder_collapsed.png");
         step.proceed(context);
 
         step.setPath("rootName:green:red");
@@ -396,7 +396,7 @@ public class AssertTreeStepTest extends JFCTestCase {
                                                       boolean hasFocus) {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode)value;
             String colorText = (String)node.getUserObject();
-            Icon icon = getIcon(colorText);
+            Icon icon = getIcon(node, expanded, colorText);
             return buildLabel(colorText, icon);
         }
 
@@ -414,11 +414,15 @@ public class AssertTreeStepTest extends JFCTestCase {
         }
 
 
-        private Icon getIcon(String text) {
-            if (!"green".equals(text)) {
-                text = "red";
+        private Icon getIcon(DefaultMutableTreeNode node, boolean expanded, String text) {
+            String iconName;
+            if (!node.isLeaf()) {
+                iconName = expanded ? "folder_expanded" : "folder_collapsed";
             }
-            return new ImageIcon(getClass().getResource(text + ".png"));
+            else {
+                iconName = "green".equals(text) ? "green" : "red";
+            }
+            return new ImageIcon(getClass().getResource(iconName + ".png"));
         }
     }
 
