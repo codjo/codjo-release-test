@@ -1,9 +1,10 @@
 package net.codjo.test.release.util.comparisonstrategy;
-import org.apache.log4j.Logger;
 import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+import org.apache.log4j.Logger;
+
 import static junit.framework.Assert.fail;
 /**
  *

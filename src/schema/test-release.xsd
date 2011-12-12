@@ -1746,6 +1746,16 @@
                             </xs:restriction>
                         </xs:simpleType>
                     </xs:attribute>
+                    <xs:attribute name="foreground" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Spécifie la couleur de police</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="icon" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Spécifie l'icone du path courant</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
                 </xs:extension>
             </xs:complexContent>
         </xs:complexType>

@@ -4,25 +4,39 @@
  * Copyright (c) 2001 AGF Asset Management.
  */
 package net.codjo.test.release.task.gui;
+import java.awt.Color;
 import java.awt.Component;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreePath;
 import junit.extensions.jfcunit.JFCTestCase;
 import junit.extensions.jfcunit.TestHelper;
+import net.codjo.test.common.PathUtil;
+import org.apache.tools.ant.Project;
+
+import static net.codjo.test.release.task.AgfTask.TEST_DIRECTORY;
 /**
  * Classe de test de {@link AssertTreeStep}.
  */
 public class AssertTreeStepTest extends JFCTestCase {
     private AssertTreeStep step;
+    private Project project;
 
 
     @Override
     protected void setUp() throws Exception {
+        project = new Project();
+        project.setProperty(
+              TEST_DIRECTORY,
+              PathUtil.findResourcesFileDirectory(getClass()).getPath());
         step = new AssertTreeStep();
         step.setTimeout(1);
         step.setDelay(5);
@@ -263,6 +277,75 @@ public class AssertTreeStepTest extends JFCTestCase {
     }
 
 
+    public void test_assertColors() throws Exception {
+        JTree tree = createTreeWithColorsAndIcons();
+        showFrame(tree);
+        TreeUtils.expandSubtree(tree, new TreePath(tree.getModel().getRoot()));
+
+        step.setName("treeName");
+        step.setPath("rootName");
+        step.setExists(true);
+        step.setForeground("255,0,0");
+        TestContext context = new TestContext(this);
+        step.proceed(context);
+
+        step.setPath("rootName:green");
+        step.setForeground("0,255,0");
+        step.proceed(context);
+
+        step.setPath("rootName:green:red");
+        step.setForeground("255,0,0");
+        step.proceed(context);
+
+        try {
+            step.setPath("rootName:red");
+            step.setForeground("0,0,255");
+            step.proceed(context);
+            fail();
+        }
+        catch (GuiAssertException guiException) {
+            assertEquals(
+                  "Couleur de police du composant 'treeName' au niveau de 'rootName:red' : attendu='java.awt.Color[r=0,g=0,b=255]' obtenu='java.awt.Color[r=255,g=0,b=0]'",
+                  guiException.getMessage());
+        }
+    }
+
+
+    public void test_assertIcons() throws Exception {
+        JTree tree = createTreeWithColorsAndIcons();
+        showFrame(tree);
+        TreeUtils.expandSubtree(tree, new TreePath(tree.getModel().getRoot()));
+
+        step.setName("treeName");
+        step.setPath("rootName");
+        step.setExists(true);
+        step.setIcon("red.png");
+        TestContext context = new TestContext(this, project);
+        step.proceed(context);
+
+        step.setPath("rootName:green");
+        step.setIcon("green.png");
+        step.proceed(context);
+
+        step.setPath("rootName:green:red");
+        step.setIcon("red.png");
+        step.proceed(context);
+
+        try {
+            step.setPath("rootName:red");
+            step.setIcon("green.png");
+            step.proceed(context);
+            fail();
+        }
+        catch (GuiAssertException guiException) {
+            assertEquals(
+                  "Erreur de l'icone sur 'treeName' au niveau de 'rootName:red' : attendu='green.png' obtenu='red.png'",
+                  guiException.getMessage());
+        }
+        Thread.sleep(5000);
+    }
+
+
     private JTree createTreeWithChilds() {
         JTree tree = new JTree();
 
@@ -280,6 +363,63 @@ public class AssertTreeStepTest extends JFCTestCase {
         tree.setModel(treeModel);
 
         return tree;
+    }
+
+
+    private JTree createTreeWithColorsAndIcons() {
+        JTree tree = new JTree();
+        tree.setCellRenderer(new ColorsAndIconsTreeRenderer());
+        // Noeud racine
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode("rootName");
+
+        // Ajout d'une feuille à la racine
+        DefaultMutableTreeNode child1 = new DefaultMutableTreeNode("green");
+        root.add(child1);
+        root.add(new DefaultMutableTreeNode("red"));
+        child1.add(new DefaultMutableTreeNode("red"));
+
+        // Construction de l'arbre
+        DefaultTreeModel treeModel = new DefaultTreeModel(root);
+        tree.setModel(treeModel);
+
+        return tree;
+    }
+
+
+    private class ColorsAndIconsTreeRenderer implements TreeCellRenderer {
+        public Component getTreeCellRendererComponent(JTree tree,
+                                                      Object value,
+                                                      boolean selected,
+                                                      boolean expanded,
+                                                      boolean leaf,
+                                                      int row,
+                                                      boolean hasFocus) {
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode)value;
+            String colorText = (String)node.getUserObject();
+            Icon icon = getIcon(colorText);
+            return buildLabel(colorText, icon);
+        }
+
+
+        private JLabel buildLabel(String color, Icon icon) {
+            JLabel component = new JLabel(color, icon, JLabel.HORIZONTAL);
+            component.setBackground(Color.WHITE);
+            component.setForeground(getForegroundColor(color));
+            return component;
+        }
+
+
+        private Color getForegroundColor(String color) {
+            return "green".equals(color) ? Color.GREEN : Color.RED;
+        }
+
+
+        private Icon getIcon(String text) {
+            if (!"green".equals(text)) {
+                text = "red";
+            }
+            return new ImageIcon(getClass().getResource(text + ".png"));
+        }
     }
 
 
