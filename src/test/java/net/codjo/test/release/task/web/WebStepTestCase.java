@@ -1,7 +1,7 @@
 package net.codjo.test.release.task.web;
-import net.codjo.test.release.test.web.DummyWebServer;
 import com.gargoylesoftware.htmlunit.WebClient;
 import junit.framework.TestCase;
+import net.codjo.test.release.test.web.DummyWebServer;
 import org.apache.tools.ant.Project;
 /**
  *

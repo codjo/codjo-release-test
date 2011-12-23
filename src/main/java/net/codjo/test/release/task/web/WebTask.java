@@ -1,9 +1,4 @@
 package net.codjo.test.release.task.web;
-import net.codjo.test.release.task.AgfTask;
-import net.codjo.test.release.task.Resource;
-import net.codjo.test.release.task.web.dialogs.AssertAlert;
-import net.codjo.test.release.task.web.dialogs.SetConfirmation;
-import net.codjo.test.release.task.web.form.EditForm;
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.CookieManager;
 import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
@@ -11,10 +6,16 @@ import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebResponse;
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import net.codjo.test.release.task.AgfTask;
+import net.codjo.test.release.task.Resource;
+import net.codjo.test.release.task.web.dialogs.AssertAlert;
+import net.codjo.test.release.task.web.dialogs.SetConfirmation;
+import net.codjo.test.release.task.web.form.EditForm;
 /**
  *
  */
@@ -31,7 +32,9 @@ public class WebTask extends AgfTask implements Resource {
           = "L'attribut 'url' est obligatoire pour le premier web-test d'une session.";
     static final String MISSING_SESSION = "L'attribut 'session' est obligatoire.";
     static final String CANNOT_OPEN_PAGE = "Impossible d'ouvrir la page : ";
+    static final String CANNOT_IGNORE_SSL_SECURE = "Impossible de positionner la propriété allowAllCertificates ";
     private String requestHeader;
+    private boolean allowAllCertificates = true;
 
 
     @Override
@@ -87,6 +90,12 @@ public class WebTask extends AgfTask implements Resource {
             client.setJavaScriptEnabled(javascript);
             client.setThrowExceptionOnFailingStatusCode(failOnError);
             client.setCookieManager(getCookieManager());
+            try {
+                client.setUseInsecureSSL(isAllowAllCertificates());
+            }
+            catch (GeneralSecurityException e) {
+                throw new WebException(CANNOT_IGNORE_SSL_SECURE + e.getMessage(), e);
+            }
             buildHeader(client);
 
             if (url == null) {
@@ -266,5 +275,15 @@ public class WebTask extends AgfTask implements Resource {
 
     private CookieManager getCookieManager() {
         return (CookieManager)getProject().getReference(COOKIE_MANAGER);
+    }
+
+
+    public boolean isAllowAllCertificates() {
+        return allowAllCertificates;
+    }
+
+
+    public void setAllowAllCertificates(boolean allowAllCertificates) {
+        this.allowAllCertificates = allowAllCertificates;
     }
 }
