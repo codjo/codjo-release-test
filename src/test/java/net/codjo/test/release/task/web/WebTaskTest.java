@@ -110,6 +110,19 @@ public class WebTaskTest extends WebStepTestCase {
     }
 
 
+    public void test_allowAllCertificates() throws Exception {
+        //NB : test light des accesseurs : TU avec jetty en SSL à implementer
+        AssertPageMock stepMock = new AssertPageMock();
+        task.addAssertPage(stepMock);
+        assertTrue(task.isAllowAllCertificates());
+        task.execute();
+
+        task.setAllowAllCertificates(false);
+        assertFalse(task.isAllowAllCertificates());
+        task.execute();
+    }
+
+
     @Override
     protected void setUp() throws Exception {
         task = new WebTask();

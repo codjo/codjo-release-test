@@ -4,10 +4,6 @@
  * Copyright (c) 2001 AGF Asset Management.
  */
 package net.codjo.test.release;
-import net.codjo.test.release.ant.AntRunner;
-import net.codjo.test.release.task.tokio.TokioInsertListener;
-import net.codjo.test.release.task.tokio.TokioLoadListener;
-import net.codjo.util.file.FileUtil;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -18,13 +14,17 @@ import java.io.Writer;
 import javax.xml.parsers.ParserConfigurationException;
 import junit.framework.Test;
 import junit.framework.TestResult;
+import net.codjo.test.release.ant.AntRunner;
+import net.codjo.test.release.task.tokio.TokioInsertListener;
+import net.codjo.test.release.task.tokio.TokioLoadListener;
+import net.codjo.util.file.FileUtil;
 import org.apache.tools.ant.Project;
 import org.xml.sax.SAXException;
 /**
- * Lanceur de test release. Cette classe remplace la mécanique de génération via Maven et Jelly.<p><b>NB</b> :
- * A remplacer par la mécanique construction DOM en mémoire.</p>
+ * Lanceur de test release. Cette classe remplace la mécanique de génération via Maven et Jelly.<p><b>NB</b> : A
+ * remplacer par la mécanique construction DOM en mémoire.</p>
  *
- * @noinspection UseOfSystemOutOrSystemErr,CallToPrintStackTrace
+ * @noinspection UseOfSystemOutOrSystemErr, CallToPrintStackTrace
  */
 public final class ReleaseTestRunner {
     private ReleaseTestRunner() {

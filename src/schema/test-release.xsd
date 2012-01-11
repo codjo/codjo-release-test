@@ -901,6 +901,7 @@
             <xs:attribute name="javascript" type="xs:boolean" default="true"/>
             <xs:attribute name="failOnError" type="xs:boolean" default="true"/>
             <xs:attribute name="requestHeader" type="xs:string"/>
+            <xs:attribute name="allowAllCertificates" type="xs:boolean" default="true"/>
         </xs:complexType>
         <xs:key name="eitherSessionOrUrlIsMandatory">
             <xs:selector xpath="."/>
@@ -1745,16 +1746,6 @@
                                 <xs:enumeration value="display"/>
                             </xs:restriction>
                         </xs:simpleType>
-                    </xs:attribute>
-                    <xs:attribute name="foreground" type="xs:string">
-                        <xs:annotation>
-                            <xs:documentation xml:lang="fr">Spécifie la couleur de police</xs:documentation>
-                        </xs:annotation>
-                    </xs:attribute>
-                    <xs:attribute name="icon" type="xs:string">
-                        <xs:annotation>
-                            <xs:documentation xml:lang="fr">Spécifie l'icone du path courant</xs:documentation>
-                        </xs:annotation>
                     </xs:attribute>
                 </xs:extension>
             </xs:complexContent>
