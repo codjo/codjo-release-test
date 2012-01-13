@@ -4,6 +4,7 @@
  * Copyright (c) 2001 AGF Asset Management.
  */
 package net.codjo.test.release.task.gui;
+import chrriis.dj.nativeswing.swtimpl.components.JHTMLEditor;
 import java.awt.Component;
 import java.io.IOException;
 import java.io.StringReader;
@@ -117,10 +118,30 @@ public class AssertValueStep extends AbstractMatchingStep {
         else if (component instanceof JSlider) {
             proceed((JSlider)component);
         }
+        else if (component instanceof JHTMLEditor) {
+            proceed(context, (JHTMLEditor)component);
+        }
         else {
             throw new GuiConfigurationException("Type de composant non supporté : "
                                                 + component.getClass().getName());
         }
+    }
+
+
+    private void proceed(TestContext context, final JHTMLEditor htmlEditor) {
+        final String[] actualValue = new String[1];
+
+        try {
+            runAwtCode(context, new Thread() {
+                public void run() {
+                    actualValue[0] = String.valueOf(htmlEditor.getHTMLContent());
+                }
+            });
+        }
+        catch (Exception e) {
+            throw new GuiAssertException("Impossible de récuperer le contenu html du htmlEditor", e);
+        }
+        assertExpected(actualValue[0]);
     }
 
 
