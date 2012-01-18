@@ -4,12 +4,16 @@
  * Copyright (c) 2001 AGF Asset Management.
  */
 package net.codjo.test.release.task.gui;
-import net.codjo.test.common.LogString;
-import net.codjo.test.release.task.gui.matcher.MatcherFactory;
+import chrriis.dj.nativeswing.swtimpl.NativeInterface;
+import chrriis.dj.nativeswing.swtimpl.components.JHTMLEditor;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.IllegalComponentStateException;
 import java.awt.Window;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -30,6 +34,8 @@ import javax.swing.SwingUtilities;
 import junit.extensions.jfcunit.JFCTestCase;
 import junit.extensions.jfcunit.TestHelper;
 import junit.extensions.jfcunit.finder.DialogFinder;
+import net.codjo.test.common.LogString;
+import net.codjo.test.release.task.gui.matcher.MatcherFactory;
 /**
  * Classe de test de {@link AssertValueStepTest}.
  */
@@ -48,6 +54,7 @@ public class AssertValueStepTest extends JFCTestCase {
     private JSpinner spinner;
     private JSlider slider;
     private JEditorPane htmlEditorPane;
+    private JHTMLEditor htmlEditor;
 
 
     @Override
@@ -523,6 +530,32 @@ public class AssertValueStepTest extends JFCTestCase {
     }
 
 
+    public void test_jhtmlEditor() throws Exception {
+        NativeInterface.open();
+        try {
+            JFrame frame = new JFrame();
+            addJHtmlEditorPane(frame.getContentPane());
+            frame.pack();
+            frame.setVisible(true);
+            flushAWT();
+            TestContext context = new TestContext(this);
+            step.setName(htmlEditor.getName());
+
+            step.runAwtCode(context, new Runnable() {
+                public void run() {
+                    htmlEditor.setHTMLContent("Simple text with <b>bold</b>");
+                }
+            });
+
+            step.setExpected("<p>Simple text with <strong>bold</strong></p>");
+            step.proceed(context);
+        }
+        finally {
+            NativeInterface.close();
+        }
+    }
+
+
     private void showFrame() {
         JFrame frame = new JFrame();
 
@@ -546,6 +579,34 @@ public class AssertValueStepTest extends JFCTestCase {
         frame.pack();
         frame.setVisible(true);
         flushAWT();
+    }
+
+
+    private void addJHtmlEditorPane(final Container panel) {
+        try {
+            step.runAwtCode(new TestContext(this), new Runnable() {
+                public void run() {
+                    Map<String, String> optionMap = new HashMap<String, String>();
+                    optionMap.put("theme_advanced_buttons1",
+                                  "'bold,italic,underline,|,charmap,|,justifyleft,justifycenter,justifyright,justifyfull,|,formatselect,fontselect,fontsizeselect,|,hr,removeformat'");
+                    optionMap.put("theme_advanced_buttons2",
+                                  "'undo,redo,|,link,unlink,anchor,image,cleanup,code,|,cut,copy,paste,pastetext,pasteword,|,search,replace,|,forecolor,backcolor,bullist,numlist,|,outdent,indent,blockquote,|,table'");
+                    optionMap.put("theme_advanced_buttons3", "''");
+                    optionMap.put("theme_advanced_toolbar_location", "'top'");
+                    optionMap.put("theme_advanced_toolbar_align", "'left'");
+
+                    optionMap.put("plugins", "'table,paste,contextmenu'");
+                    htmlEditor = new JHTMLEditor(JHTMLEditor.HTMLEditorImplementation.TinyMCE,
+                                                 JHTMLEditor.TinyMCEOptions.setOptions(optionMap)
+                    );
+                    htmlEditor.setName("jHtmlEditor");
+                    panel.add(htmlEditor);
+                }
+            });
+        }
+        catch (Exception e) {
+            throw new IllegalComponentStateException("Impossible d'initialiser le composant JHtmlEditor");
+        }
     }
 
 

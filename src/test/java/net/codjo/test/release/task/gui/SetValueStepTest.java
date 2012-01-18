@@ -4,21 +4,21 @@
  * Copyright (c) 2001 AGF Asset Management.
  */
 package net.codjo.test.release.task.gui;
-import net.codjo.test.common.LogString;
-import net.codjo.test.release.task.gui.metainfo.AnotherComponentMock;
-import net.codjo.test.release.task.gui.metainfo.AnotherComponentMockTestBehavior;
-import net.codjo.test.release.task.gui.metainfo.MyComponentMock;
-import net.codjo.test.release.task.gui.metainfo.MyComponentMockTestBehavior;
-import net.codjo.test.release.task.gui.metainfo.YetAnotherComponentMock;
+import chrriis.dj.nativeswing.swtimpl.NativeInterface;
+import chrriis.dj.nativeswing.swtimpl.components.JHTMLEditor;
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.IllegalComponentStateException;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -35,6 +35,12 @@ import javax.swing.SpinnerListModel;
 import javax.swing.SwingUtilities;
 import junit.extensions.jfcunit.JFCTestCase;
 import junit.extensions.jfcunit.TestHelper;
+import net.codjo.test.common.LogString;
+import net.codjo.test.release.task.gui.metainfo.AnotherComponentMock;
+import net.codjo.test.release.task.gui.metainfo.AnotherComponentMockTestBehavior;
+import net.codjo.test.release.task.gui.metainfo.MyComponentMock;
+import net.codjo.test.release.task.gui.metainfo.MyComponentMockTestBehavior;
+import net.codjo.test.release.task.gui.metainfo.YetAnotherComponentMock;
 /**
  * Classe de test de {@link SetValueStepTest}.
  */
@@ -55,6 +61,7 @@ public class SetValueStepTest extends JFCTestCase {
     private YetAnotherComponentMock yetAnotherComponent;
     private JSpinner spinner;
     private JSlider slider;
+    private JHTMLEditor htmlEditor;
 
 
     public void test_defaults() throws Exception {
@@ -398,6 +405,34 @@ public class SetValueStepTest extends JFCTestCase {
     }
 
 
+    public void test_setValue_jHtmlEditor() throws Exception {
+        NativeInterface.open();
+        try {
+            JFrame frame = new JFrame();
+            addJHtmlEditorPane(frame.getContentPane());
+            frame.pack();
+            frame.setVisible(true);
+            flushAWT();
+
+            step.setName(htmlEditor.getName());
+            step.setValue("Simple text with <strong>bold</strong>");
+            TestContext context = new TestContext(this);
+            step.proceed(context);
+
+            final String[] htmlContent = new String[1];
+            step.runAwtCode(context, new Runnable() {
+                public void run() {
+                    htmlContent[0] = htmlEditor.getHTMLContent();
+                }
+            });
+            assertEquals("<p>Simple text with <strong>bold</strong></p>", htmlContent[0]);
+        }
+        finally {
+            NativeInterface.close();
+        }
+    }
+
+
     private void showFrame() {
         JFrame frame = new JFrame();
 
@@ -418,6 +453,34 @@ public class SetValueStepTest extends JFCTestCase {
         frame.pack();
         frame.setVisible(true);
         flushAWT();
+    }
+
+
+    private void addJHtmlEditorPane(final Container panel) {
+        try {
+            SwingUtilities.invokeAndWait(new Runnable() {
+                public void run() {
+                    Map<String, String> optionMap = new HashMap<String, String>();
+                    optionMap.put("theme_advanced_buttons1",
+                                  "'bold,italic,underline,|,charmap,|,justifyleft,justifycenter,justifyright,justifyfull,|,formatselect,fontselect,fontsizeselect,|,hr,removeformat'");
+                    optionMap.put("theme_advanced_buttons2",
+                                  "'undo,redo,|,link,unlink,anchor,image,cleanup,code,|,cut,copy,paste,pastetext,pasteword,|,search,replace,|,forecolor,backcolor,bullist,numlist,|,outdent,indent,blockquote,|,table'");
+                    optionMap.put("theme_advanced_buttons3", "''");
+                    optionMap.put("theme_advanced_toolbar_location", "'top'");
+                    optionMap.put("theme_advanced_toolbar_align", "'left'");
+
+                    optionMap.put("plugins", "'table,paste,contextmenu'");
+                    htmlEditor = new JHTMLEditor(JHTMLEditor.HTMLEditorImplementation.TinyMCE,
+                                                 JHTMLEditor.TinyMCEOptions.setOptions(optionMap)
+                    );
+                    htmlEditor.setName("jHtmlEditor");
+                    panel.add(htmlEditor);
+                }
+            });
+        }
+        catch (Exception e) {
+            throw new IllegalComponentStateException("Impossible d'initialiser le composant JHtmlEditor");
+        }
     }
 
 

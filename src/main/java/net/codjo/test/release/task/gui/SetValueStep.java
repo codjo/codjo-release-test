@@ -4,8 +4,7 @@
  * Copyright (c) 2001 AGF Asset Management.
  */
 package net.codjo.test.release.task.gui;
-import net.codjo.test.release.task.gui.metainfo.Introspector;
-import net.codjo.test.release.task.gui.metainfo.SetValueDescriptor;
+import chrriis.dj.nativeswing.swtimpl.components.JHTMLEditor;
 import java.awt.Component;
 import java.awt.event.KeyEvent;
 import java.util.Dictionary;
@@ -22,6 +21,8 @@ import junit.extensions.jfcunit.JFCTestCase;
 import junit.extensions.jfcunit.eventdata.KeyEventData;
 import junit.extensions.jfcunit.eventdata.StringEventData;
 import junit.extensions.jfcunit.finder.NamedComponentFinder;
+import net.codjo.test.release.task.gui.metainfo.Introspector;
+import net.codjo.test.release.task.gui.metainfo.SetValueDescriptor;
 /**
  * Classe permettant d'affecter la valeur d'un composant
  */
@@ -82,6 +83,9 @@ public class SetValueStep extends AbstractGuiStep {
                 else if (component instanceof JSlider) {
                     proceed(context, (JSlider)component);
                 }
+                else if (component instanceof JHTMLEditor) {
+                    proceed(context, (JHTMLEditor)component);
+                }
                 else {
                     throw new GuiConfigurationException("Type de composant non supporté : "
                                                         + component.getClass().getName());
@@ -134,6 +138,25 @@ public class SetValueStep extends AbstractGuiStep {
 
     public void setColumn(String column) {
         this.column = column;
+    }
+
+
+    private void proceed(TestContext context, final JHTMLEditor htmlEditor) throws Exception {
+        if (!htmlEditor.isEnabled()) {
+            return;
+        }
+        runAwtCode(context,
+                   new Runnable() {
+                       public void run() {
+                           htmlEditor.requestFocus();
+                       }
+                   });
+        runAwtCode(context,
+                   new Runnable() {
+                       public void run() {
+                           htmlEditor.setHTMLContent(value);
+                       }
+                   });
     }
 
 
