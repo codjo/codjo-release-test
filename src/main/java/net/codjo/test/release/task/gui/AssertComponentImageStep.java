@@ -1,8 +1,5 @@
 package net.codjo.test.release.task.gui;
 
-import net.codjo.test.release.ImageManager;
-import net.codjo.test.release.task.AgfTask;
-import net.codjo.test.release.util.comparisonstrategy.BufferedImageComparisonStrategy;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -11,12 +8,14 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 import junit.extensions.jfcunit.finder.NamedComponentFinder;
-import static junit.framework.Assert.fail;
+import net.codjo.test.release.ImageManager;
+import net.codjo.test.release.task.AgfTask;
+import net.codjo.test.release.util.comparisonstrategy.BinaryComparisonStrategy;
+import org.apache.log4j.Logger;
 /**
  *
  */
 public class AssertComponentImageStep extends AbstractAssertStep {
-
     private String name;
     private String expected;
 
@@ -24,49 +23,48 @@ public class AssertComponentImageStep extends AbstractAssertStep {
     @Override
     protected void proceedOnce(TestContext context) {
         JComponent component = getComponentFromName(context);
+        File expectedFile = new File(context.getProperty(AgfTask.TEST_DIRECTORY), expected);
+        File actualFile = new File(System.getProperty("java.io.tmpdir"), "saved.bmp");
         try {
-            BufferedImage componentImageFile = exportImageFromComponent(component);
-            BufferedImage expectedImage;
-            String parentPath = context.getProperty(AgfTask.TEST_DIRECTORY);
-            File expectedFile = new File(parentPath, expected);
+            exportImageFromComponent(component, actualFile);
             if (!expectedFile.exists()) {
-                expectedImage = exportImageFromComponent(component);
-                ImageIO.write(expectedImage, "bmp", expectedFile);
-            }
-            else {
-                expectedImage = ImageIO.read(expectedFile);
+                throw new GuiAssertException("Le fichier etalon est introuvable : " + expectedFile.getAbsolutePath());
             }
 
-            proceedComparison(expectedImage, componentImageFile);
+            proceedComparison(expectedFile, actualFile);
         }
-        catch (IOException e) {
-            fail("Impossible d'ouvrir le fichier spécifié.");
+        finally {
+            actualFile.delete();
         }
     }
 
 
-    private void proceedComparison(BufferedImage expectedFile, BufferedImage actualFile) {
+    private void proceedComparison(File expectedFile, File actualFile) {
         try {
-            BufferedImageComparisonStrategy comparisonStrategy =
-                  new BufferedImageComparisonStrategy(expectedFile, actualFile);
+            BinaryComparisonStrategy comparisonStrategy = new BinaryComparisonStrategy(expectedFile, actualFile);
+            comparisonStrategy.setErrorMessage("Comparaison du component avec le fichier étalon en erreur.");
             if (!comparisonStrategy.compare()) {
                 throw new GuiAssertException("");
             }
         }
         catch (FileNotFoundException ex) {
-            throw new GuiAssertException(
-                  "Unable to compare : " + expectedFile + " and " + actualFile, ex);
+            throw new GuiAssertException("Unable to compare : " + expectedFile + " and " + actualFile, ex);
         }
     }
 
 
-    private BufferedImage exportImageFromComponent(JComponent component) {
+    private void exportImageFromComponent(JComponent component, File generatedFile) {
         BufferedImage image = ImageManager.getScreenCapture(component);
         Graphics2D g2 = image.createGraphics();
         component.paint(g2);
         g2.dispose();
 
-        return image;
+        try {
+            ImageIO.write(image, "bmp", generatedFile);
+        }
+        catch (IOException e) {
+            throw new GuiAssertException("Impossible de créer le fichier image à partir du component.", e);
+        }
     }
 
 
