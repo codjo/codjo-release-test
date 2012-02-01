@@ -1,4 +1,5 @@
 package net.codjo.test.release.task.gui;
+import java.io.File;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -23,6 +24,7 @@ public class AssertComponentImageStepTest extends JFCTestCase {
     private AssertComponentImageStep assertComponentImageStep;
 
     private JTextField textField1;
+    private JTextField textField2;
     private JPanel mainPanel;
     private Project project;
 
@@ -55,6 +57,15 @@ public class AssertComponentImageStepTest extends JFCTestCase {
         assertComponentImageStep.setName(textField1.getName());
         assertComponentImageStep.setExpected("JTextField.bmp");
         assertComponentImageStep.proceed(new TestContext(this, project));
+
+        // JTextField sans étalon
+        assertComponentImageStep.setName(textField2.getName());
+        assertComponentImageStep.setExpected("JTextField2.bmp");
+        assertComponentImageStep.proceed(new TestContext(this, project));
+        File etalon = new File(PathUtil.findResourcesFileDirectory(getClass()), "JTextField2.bmp");
+        if(etalon.exists()) {
+            etalon.delete();
+        }
 
         // JPannel
         assertComponentImageStep.setName(mainPanel.getName());
@@ -116,7 +127,7 @@ public class AssertComponentImageStepTest extends JFCTestCase {
 
 
     private void addTextField2(JPanel panel) {
-        JTextField textField2 = new JTextField(8);
+        textField2 = new JTextField(8);
         textField2.setName("ChampCalculé");
         panel.add(textField2);
     }
