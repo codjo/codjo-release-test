@@ -1,8 +1,6 @@
 package net.codjo.test.release.util.comparisonstrategy;
 import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
 import org.apache.log4j.Logger;
 
 import static junit.framework.Assert.fail;
@@ -10,7 +8,7 @@ import static junit.framework.Assert.fail;
  *
  */
 public class BufferedImageComparisonStrategy implements ComparisonStrategy {
-    private final static Logger logger = Logger.getLogger(BufferedImageComparisonStrategy.class);
+    private final static Logger LOGGER = Logger.getLogger(BufferedImageComparisonStrategy.class);
     private BufferedImage expectedImage;
     private BufferedImage actualImage;
 
@@ -27,33 +25,37 @@ public class BufferedImageComparisonStrategy implements ComparisonStrategy {
                   "BufferedImageComparisonStrategy must be build with existing files");
         }
 
-        if (convertImageToPixelList(expectedImage).equals(convertImageToPixelList(actualImage))) {
+        if (comparePixelPerPixel(expectedImage, actualImage)) {
             return true;
         }
 
-        logger.info("Comparaison du component avec le fichier étalon en erreur.");
+        LOGGER.info("Comparaison du component avec le fichier étalon en erreur.");
         fail("Comparaison du component avec le fichier étalon en erreur.");
 
         return false;
     }
 
 
-    public static List<List<Integer>> convertImageToPixelList(BufferedImage image) {
-        List<List<Integer>> all = new ArrayList<List<Integer>>();
-        int width = image.getWidth(null);
-        int height = image.getHeight(null);
-        int[] rgbs = new int[width * height];
-        int index = 0;
-        image.getRGB(0, 0, width, height, rgbs, 0, width);
+    private boolean comparePixelPerPixel(BufferedImage expectedBufferedImage, BufferedImage actualBufferedImage) {
+        int wExpected = expectedBufferedImage.getWidth(null);
+        int hExpected = expectedBufferedImage.getHeight(null);
+        int[] rgbsExpected = new int[wExpected * hExpected];
+        expectedBufferedImage.getRGB(0, 0, wExpected, hExpected, rgbsExpected, 0, wExpected);
 
-        for (int i = 0; i < width; i++) {
-            List<Integer> line = new ArrayList<Integer>();
-            for (int j = 0; j < height; j++) {
-                line.add(rgbs[index]);
-                index++;
-            }
-            all.add(line);
+        int wActual = actualBufferedImage.getWidth(null);
+        int hActual = actualBufferedImage.getHeight(null);
+        int[] rgbsActual = new int[wActual * hActual];
+        actualBufferedImage.getRGB(0, 0, wActual, hActual, rgbsActual, 0, wActual);
+
+        if (wExpected != wActual || hExpected != hActual) {
+            return false;
         }
-        return all;
+
+        for (int i = 0; i < wExpected * hExpected; i++) {
+            if (rgbsExpected[i] != rgbsActual[i]) {
+                return false;
+            }
+        }
+        return true;
     }
 }

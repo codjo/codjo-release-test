@@ -1,5 +1,6 @@
 package net.codjo.test.release.task.gui;
 
+import java.awt.Graphics;
 import net.codjo.test.release.ImageManager;
 import net.codjo.test.release.task.AgfTask;
 import net.codjo.test.release.util.comparisonstrategy.BufferedImageComparisonStrategy;
@@ -25,19 +26,19 @@ public class AssertComponentImageStep extends AbstractAssertStep {
     protected void proceedOnce(TestContext context) {
         JComponent component = getComponentFromName(context);
         try {
-            BufferedImage componentImageFile = exportImageFromComponent(component);
-            BufferedImage expectedImage;
+            BufferedImage componentBufferedImage = exportImageFromComponent(component);
+            BufferedImage expectedBufferedImage;
             String parentPath = context.getProperty(AgfTask.TEST_DIRECTORY);
             File expectedFile = new File(parentPath, expected);
             if (!expectedFile.exists()) {
-                expectedImage = exportImageFromComponent(component);
-                ImageIO.write(expectedImage, "bmp", expectedFile);
+                expectedBufferedImage = exportImageFromComponent(component);
+                ImageIO.write(expectedBufferedImage, "bmp", expectedFile);
             }
             else {
-                expectedImage = ImageIO.read(expectedFile);
+                expectedBufferedImage = ImageIO.read(expectedFile);
             }
 
-            proceedComparison(expectedImage, componentImageFile);
+            proceedComparison(expectedBufferedImage, componentBufferedImage);
         }
         catch (IOException e) {
             fail("Impossible d'ouvrir le fichier spécifié.");
@@ -61,10 +62,12 @@ public class AssertComponentImageStep extends AbstractAssertStep {
 
 
     private BufferedImage exportImageFromComponent(JComponent component) {
-        BufferedImage image = ImageManager.getScreenCapture(component);
-        Graphics2D g2 = image.createGraphics();
-        component.paint(g2);
-        g2.dispose();
+       BufferedImage image = new BufferedImage(component.getWidth(),
+                                              component.getHeight(),
+                                              BufferedImage.TYPE_INT_RGB);
+        Graphics gx = image.getGraphics();
+        component.paint(gx);
+        gx.dispose();
 
         return image;
     }
