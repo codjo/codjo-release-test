@@ -15,7 +15,7 @@ import org.apache.tools.ant.Project;
  */
 public class TestEnvironmentMock extends AbstractTestEnvironment {
     private LogString log = new LogString();
-    private Connection connectionMock = new ConnectionMock();
+    private Connection connectionMock = new ConnectionMock().getStub();
 
 
     public TestEnvironmentMock(Project project) {

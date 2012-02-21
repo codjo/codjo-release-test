@@ -37,7 +37,7 @@ public class SetDbTest extends TestCase {
 
         log.assertContent("load.getScenario(story-id)"
                           + ", createJdbcScenario()"
-                          + ", jdbcScenario.insertInputInDb(ConnectionMock)");
+                          + ", jdbcScenario.insertInputInDb(good connection)");
     }
 
 
@@ -75,7 +75,7 @@ public class SetDbTest extends TestCase {
 
         @Override
         public void insertInputInDb(Connection con) throws SQLException {
-            log.call("insertInputInDb", con.getClass().getSimpleName());
+            log.call("insertInputInDb", (con==null ? "connection is null" : "good connection"));
         }
     }
 }

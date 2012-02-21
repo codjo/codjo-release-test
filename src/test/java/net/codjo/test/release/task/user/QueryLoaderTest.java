@@ -6,9 +6,8 @@
 package net.codjo.test.release.task.user;
 import java.io.File;
 import junit.framework.TestCase;
-/**
- * Classe de test de {@link QueryLoader}.
- */
+import net.codjo.test.common.XmlUtil;
+
 public class QueryLoaderTest extends TestCase {
     private QueryLoader loader;
 
@@ -17,7 +16,7 @@ public class QueryLoaderTest extends TestCase {
         String[] query = loader.load(new File(pathname));
 
         assertEquals(2, query.length);
-        assertEquals("\n        <insert request_id=\"7\">\n        </insert>\n    ", query[0]);
+        XmlUtil.assertEquivalent("<insert request_id='7'/>", query[0]);
         assertEquals("query é 2", query[1]);
     }
 

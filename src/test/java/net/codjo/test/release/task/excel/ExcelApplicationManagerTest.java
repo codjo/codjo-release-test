@@ -39,14 +39,14 @@ public class ExcelApplicationManagerTest {
         }
         catch (BuildException e) {
             assertEquals("Matcher 'toto' inconnu. Liste des matchers disponibles : \n"
+                         + "\t - alignement\n"
+                         + "\t - background-color\n"
+                         + "\t - bold\n"
+                         + "\t - border\n"
+                         + "\t - font-color\n"
                          + "\t - font-size\n"
                          + "\t - italic\n"
-                         + "\t - bold\n"
                          + "\t - margin-size\n"
-                         + "\t - alignement\n"
-                         + "\t - font-color\n"
-                         + "\t - border\n"
-                         + "\t - background-color\n"
                          + "\t - merge-region\n"
                   , e.getMessage());
         }
