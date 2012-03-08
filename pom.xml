@@ -18,7 +18,6 @@
         <dependency>
             <groupId>net.codjo.test</groupId>
             <artifactId>codjo-test-common</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.codjo.database</groupId>
@@ -46,7 +45,6 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>regexp</groupId>
@@ -56,7 +54,6 @@
         <dependency>
             <groupId>jfcunit</groupId>
             <artifactId>jfcunit</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>ant</groupId>
@@ -84,7 +81,6 @@
         <dependency>
             <groupId>net.codjo.tokio</groupId>
             <artifactId>codjo-tokio</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.codjo.variable</groupId>
