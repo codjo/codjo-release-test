@@ -1,12 +1,12 @@
 package net.codjo.test.release.task.mail;
-import net.codjo.test.common.fixture.MailFixture;
-import net.codjo.test.common.fixture.MailMessage;
-import net.codjo.test.release.task.AgfTask;
 import com.dumbster.smtp.SmtpMessage;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import junit.framework.AssertionFailedError;
+import net.codjo.test.common.fixture.MailFixture;
+import net.codjo.test.common.fixture.MailMessage;
+import net.codjo.test.release.task.AgfTask;
 import org.apache.tools.ant.BuildException;
 /**
  *
@@ -39,7 +39,7 @@ public class AssertInboxTask extends AgfTask {
                 return;
             }
             catch (BuildException e) {
-                if (i < retryCount && expectedMessages.size() > 0) {
+                if (i < retryCount && !expectedMessages.isEmpty()) {
                     waitForMessage();
                 }
                 else {
@@ -59,12 +59,11 @@ public class AssertInboxTask extends AgfTask {
 
 
     private void checkExpectedMessages(List<MailMessage> actualMessages) {
-        for (Iterator<Message> expecteds = expectedMessages.iterator(); expecteds.hasNext();) {
+        for (Iterator<Message> expecteds = expectedMessages.iterator(); expecteds.hasNext(); ) {
             Message expectedMessage = expecteds.next();
 
             boolean found = false;
-            for (Iterator<MailMessage> actualIterator = actualMessages.iterator(); actualIterator.hasNext();)
-            {
+            for (Iterator<MailMessage> actualIterator = actualMessages.iterator(); actualIterator.hasNext(); ) {
                 MailMessage actualMailMessage = actualIterator.next();
                 SmtpMessage actualMessage = actualMailMessage.getSmtpMessage();
 
@@ -73,6 +72,11 @@ public class AssertInboxTask extends AgfTask {
                 String subject = actualMailMessage.getSubject();
                 if (expectedMessage.isSame(from, to, subject)) {
                     expectedMessage.assertBody(actualMailMessage);
+                    if (MultiPartMessage.class.isInstance(expectedMessage)) {
+                        ((MultiPartMessage)expectedMessage).assertAttachments(actualMailMessage,
+                                                                              this,
+                                                                              getProperty(BROADCAST_LOCAL_DIR, true));
+                    }
                     found = true;
                     expecteds.remove();
                     actualIterator.remove();
@@ -82,7 +86,8 @@ public class AssertInboxTask extends AgfTask {
             if (!found && expectedMessage.isPresent()) {
                 throw new BuildException("Message non reçu : " + expectedMessage + "\n"
                                          + "Inbox=\n" + getInboxContents(actualMessages));
-            } else if( found && !expectedMessage.isPresent() ) {
+            }
+            else if (found && !expectedMessage.isPresent()) {
                 throw new BuildException("Message non attendu reçu : " + expectedMessage + "\n"
                                          + "Inbox=\n" + getInboxContents(actualMessages));
             }
@@ -114,6 +119,11 @@ public class AssertInboxTask extends AgfTask {
 
 
     public void addMessage(Message message) {
+        this.expectedMessages.add(message);
+    }
+
+
+    public void addMultipartMessage(MultiPartMessage message) {
         this.expectedMessages.add(message);
     }
 
