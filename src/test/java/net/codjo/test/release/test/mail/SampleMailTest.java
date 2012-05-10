@@ -55,4 +55,20 @@ public class SampleMailTest extends AbstractSampleGuiTestCase {
             assertTrue(e.getMessage().contains("Comparaison en erreur : Assert Body contains"));
         }
     }
+
+
+    public void test_messageWithAttachments() throws Exception {
+        runScenario("MailScenario_withAttachments.xml");
+    }
+
+
+    public void test_messageWithAttachmentsComparisonFailure() throws Exception {
+        try {
+            runScenario("MailScenario_withAttachmentsComparisonFailure.xml");
+            fail();
+        }
+        catch (BuildException e) {
+            assertTrue(e.getCause().getMessage().contains("Contenu de la feuille 'Errors in quarantine' en erreur."));
+        }
+    }
 }

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="Ant" default="test" basedir=".\">
+    <property name="gui.default.class" value="net.codjo.test.release.test.standard.SampleGui"/>
+    <property name="broadcast.output.dir" value="${basedir}"/>
+    <property name="test.dir" value="${basedir}"/>
+
+    <taskdef name="release-test" classname="net.codjo.test.release.task.ReleaseTask"/>
+    <taskdef name="start-mail-server" classname="net.codjo.test.release.task.mail.StartMailServerTask"/>
+    <taskdef name="assert-inbox" classname="net.codjo.test.release.task.mail.AssertInboxTask"/>
+    <taskdef name="send-mail" classname="net.codjo.test.release.task.mail.SendMailTask"/>
+
+    <target name="test">
+
+        <release-test>
+            <start-mail-server port="8082"/>
+
+            <send-mail from="luke@rebellion.org" to="dark@vador.net" subject="Disponibilité ?" port="8082">
+                Salut Dark,
+                Est-ce que tu aurais un créneau cette semaine pour qu'on s'entretue ?
+                - Luke.
+                <attachment file="${basedir}\sw_sabreLaser.xls" type="application/excel"/>
+            </send-mail>
+
+            <assert-inbox>
+                <multipartMessage from="luke@rebellion.org" to="dark@vador.net" subject="Disponibilité ?">
+                    <assertText value="un créneau cette semaine"/>
+                    <assertAttachment attachmentIndex="1" expected="sw_taylor.xls"/>
+                </multipartMessage>
+            </assert-inbox>
+
+        </release-test>
+    </target>
+</project>

@@ -940,30 +940,42 @@
             </xs:documentation>
         </xs:annotation>
         <xs:complexType>
-            <xs:simpleContent>
-                <xs:extension base="xs:string">
-                    <xs:attribute name="from" use="required" type="xs:string">
-                        <xs:annotation>
-                            <xs:documentation xml:lang="fr">Adresse de l'émetteur</xs:documentation>
-                        </xs:annotation>
-                    </xs:attribute>
-                    <xs:attribute name="to" use="required" type="xs:string">
-                        <xs:annotation>
-                            <xs:documentation xml:lang="fr">Adresse du destinataire.</xs:documentation>
-                        </xs:annotation>
-                    </xs:attribute>
-                    <xs:attribute name="port" use="required" type="xs:integer">
-                        <xs:annotation>
-                            <xs:documentation xml:lang="fr">Port d'écoute du serveur.</xs:documentation>
-                        </xs:annotation>
-                    </xs:attribute>
-                    <xs:attribute name="subject" type="xs:string">
-                        <xs:annotation>
-                            <xs:documentation xml:lang="fr">Sujet du mail.</xs:documentation>
-                        </xs:annotation>
-                    </xs:attribute>
-                </xs:extension>
-            </xs:simpleContent>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="attachment">
+                    <xs:complexType>
+                        <xs:attribute name="file" type="xs:string">
+                            <xs:annotation>
+                                <xs:documentation>File path</xs:documentation>
+                            </xs:annotation>
+                        </xs:attribute>
+                        <xs:attribute name="type" type="xs:string">
+                            <xs:annotation>
+                                <xs:documentation>File type</xs:documentation>
+                            </xs:annotation>
+                        </xs:attribute>
+                    </xs:complexType>
+                </xs:element>
+            </xs:choice>
+            <xs:attribute name="from" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Adresse de l'émetteur</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="to" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Adresse du destinataire.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="port" use="required" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Port d'écoute du serveur.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="subject" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Sujet du mail.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
     <xs:element name="assert-inbox">
@@ -994,6 +1006,80 @@
                                         <xs:annotation>
                                             <xs:documentation>Contenu attendu.</xs:documentation>
                                         </xs:annotation>
+                                    </xs:attribute>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:choice>
+                        <xs:attribute name="from" type="xs:string">
+                            <xs:annotation>
+                                <xs:documentation>Émetteur attendu.</xs:documentation>
+                            </xs:annotation>
+                        </xs:attribute>
+                        <xs:attribute name="to" type="xs:string">
+                            <xs:annotation>
+                                <xs:documentation>Destinataire attendu.</xs:documentation>
+                            </xs:annotation>
+                        </xs:attribute>
+                        <xs:attribute name="subject" type="xs:string">
+                            <xs:annotation>
+                                <xs:documentation>Sujet attendu.</xs:documentation>
+                            </xs:annotation>
+                        </xs:attribute>
+                        <xs:attribute name="present" type="xs:boolean">
+                            <xs:annotation>
+                                <xs:documentation xml:lang="fr">
+                                    <ul>
+                                        <li>
+                                            <em>true</em>
+                                            : Vérifie que le message est reçu (valeur par défaut).
+                                        </li>
+                                        <li>
+                                            <em>false</em>
+                                            : Vérifie que le message n'est pas reçu.
+                                        </li>
+                                    </ul>
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:attribute>
+                    </xs:complexType>
+                </xs:element>
+
+                <xs:element name="multipartMessage">
+                    <xs:complexType>
+                        <xs:choice minOccurs="0" maxOccurs="unbounded">
+                            <xs:element name="assertText">
+                                <xs:complexType>
+                                    <xs:attribute name="value" type="xs:string">
+                                        <xs:annotation>
+                                            <xs:documentation>Contenu attendu.</xs:documentation>
+                                        </xs:annotation>
+                                    </xs:attribute>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="assertAttachment">
+                                <xs:annotation>
+                                    <xs:documentation xml:lang="fr">Teste les fichiers joints.</xs:documentation>
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:attribute name="expected" use="required" type="xs:string">
+                                        <xs:annotation>
+                                            <xs:documentation xml:lang="fr">Nom du fichier étalon.</xs:documentation>
+                                        </xs:annotation>
+                                    </xs:attribute>
+                                    <xs:attribute name="attachmentIndex" use="required" type="xs:integer">
+                                        <xs:annotation>
+                                            <xs:documentation xml:lang="fr">Index de la pièce jointe à controler.
+                                            </xs:documentation>
+                                        </xs:annotation>
+                                    </xs:attribute>
+                                    <xs:attribute name="comparisonType">
+                                        <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                                <xs:enumeration value="xls"/>
+                                                <xs:enumeration value="pdf"/>
+                                                <xs:enumeration value="xml"/>
+                                            </xs:restriction>
+                                        </xs:simpleType>
                                     </xs:attribute>
                                 </xs:complexType>
                             </xs:element>
