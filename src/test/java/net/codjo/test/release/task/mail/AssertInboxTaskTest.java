@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 import javax.activation.DataHandler;
+import javax.mail.Message.RecipientType;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Transport;
@@ -69,6 +70,7 @@ public class AssertInboxTaskTest extends TestCase {
         task.addMessage(expectedMessage);
         expectedMessage.setFrom("emetteur@example.com");
         expectedMessage.setTo("destinataire@example.com");
+        expectedMessage.setCc("destinataireEnCopie@example.com");
         expectedMessage.setSubject("Sujet");
         expectedMessage.setPresent(true);
         AssertText assertion = new AssertText();
@@ -88,6 +90,7 @@ public class AssertInboxTaskTest extends TestCase {
         task.addMessage(expectedMessage);
         expectedMessage.setFrom("emetteur@example.com");
         expectedMessage.setTo("destinataire@example.com");
+        expectedMessage.setCc("destinataireEnCopie@example.com");
         expectedMessage.setSubject("Sujet");
         expectedMessage.setPresent(present);
         AssertText assertion = new AssertText();
@@ -147,6 +150,8 @@ public class AssertInboxTaskTest extends TestCase {
         message.setFrom(new InternetAddress("emetteur@example.com"));
         message.setRecipients(javax.mail.Message.RecipientType.TO,
                               InternetAddress.parse("destinataire@example.com", false));
+        message.setRecipients(javax.mail.Message.RecipientType.CC,
+                              InternetAddress.parse("destinataireEnCopie@example.com", false));
         message.setSubject("Sujet", "ISO-8859-1");
         return message;
     }
