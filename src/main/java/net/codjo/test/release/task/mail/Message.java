@@ -71,6 +71,11 @@ public class Message {
 
     @Override
     public String toString() {
-        return "from='" + from + "' to='" + to + "' cc='" + cc + "' subject='" + subject + "'";
+        return "from='" + from + "' to='" + to + "'" + appendCcIfNeeded() + " subject='" + subject + "'";
+    }
+
+
+    private String appendCcIfNeeded() {
+        return (cc == null) ? "" : " cc='" + cc + "'";
     }
 }
