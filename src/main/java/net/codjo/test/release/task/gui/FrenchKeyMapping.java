@@ -3,7 +3,7 @@ import java.awt.event.KeyEvent;
 import junit.extensions.jfcunit.keyboard.AbstractKeyMapping;
 import junit.extensions.jfcunit.keyboard.JFCKeyStroke;
 /**
- * Honteusement copi\u00E9 de DefaultKeyMapping
+ * Honteusement copié de DefaultKeyMapping
  */
 public class FrenchKeyMapping extends AbstractKeyMapping {
 
@@ -266,41 +266,41 @@ public class FrenchKeyMapping extends AbstractKeyMapping {
           {KeyEvent.VK_KP_RIGHT, new JFCKeyStroke(UNDEFINED, KeyEvent.VK_KP_RIGHT, 0, false)},
 
 
-          {'\u00E0', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_GRAVE, 0, false), new JFCKeyStroke('\u00E0', KeyEvent.VK_A, 0, true)},
-          {'\u00E4', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_DIAERESIS, 0, false), new JFCKeyStroke('\u00E4', KeyEvent.VK_A, 0, true)},
-          {'\u00E2', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_CIRCUMFLEX, 0, false), new JFCKeyStroke('\u00E2', KeyEvent.VK_A, 0, true)},          
-          {'\u00E9', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_ACUTE, 0, false), new JFCKeyStroke('\u00E9', KeyEvent.VK_E, 0, true)},
-          {'\u00E8', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_GRAVE, 0, false), new JFCKeyStroke('\u00E8', KeyEvent.VK_E, 0, true)},
-          {'\u00EB', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_DIAERESIS, 0, false), new JFCKeyStroke('\u00EB', KeyEvent.VK_E, 0, true)},
-          {'\u00EA', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_CIRCUMFLEX, 0, false), new JFCKeyStroke('\u00EA', KeyEvent.VK_E, 0, true)},
-          {'\u00EF', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_GRAVE, 0, false), new JFCKeyStroke('\u00EF', KeyEvent.VK_I, 0, true)},
-          {'\u00EE', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_CIRCUMFLEX, 0, false), new JFCKeyStroke('\u00EE', KeyEvent.VK_I, 0, true)},
-          {'\u00F6', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_DIAERESIS, 0, false), new JFCKeyStroke('\u00F6', KeyEvent.VK_O, 0, true)},
-          {'\u00F4', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_CIRCUMFLEX, 0, false), new JFCKeyStroke('\u00F4', KeyEvent.VK_O, 0, true)},
-          {'\u00F9', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_GRAVE, 0, false), new JFCKeyStroke('\u00F9', KeyEvent.VK_U, 0, true)},
-          {'\u00FC', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_DIAERESIS, 0, false), new JFCKeyStroke('\u00FC', KeyEvent.VK_U, 0, true)},
-          {'\u00FB', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_CIRCUMFLEX, 0, false), new JFCKeyStroke('\u00FB', KeyEvent.VK_U, 0, true)},
-          {'\u00FF', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_DIAERESIS, 0, false), new JFCKeyStroke('\u00FF', KeyEvent.VK_Y, 0, true)},
-          {'\u00E7', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_CEDILLA, 0, false), new JFCKeyStroke('\u00E7', KeyEvent.VK_C, 0, true)},
+          {'à', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_GRAVE, 0, false), new JFCKeyStroke('à', KeyEvent.VK_A, 0, true)},
+          {'ä', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_DIAERESIS, 0, false), new JFCKeyStroke('ä', KeyEvent.VK_A, 0, true)},
+          {'â', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_CIRCUMFLEX, 0, false), new JFCKeyStroke('â', KeyEvent.VK_A, 0, true)},
+          {'é', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_ACUTE, 0, false), new JFCKeyStroke('é', KeyEvent.VK_E, 0, true)},
+          {'è', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_GRAVE, 0, false), new JFCKeyStroke('è', KeyEvent.VK_E, 0, true)},
+          {'ë', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_DIAERESIS, 0, false), new JFCKeyStroke('ë', KeyEvent.VK_E, 0, true)},
+          {'ê', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_CIRCUMFLEX, 0, false), new JFCKeyStroke('ê', KeyEvent.VK_E, 0, true)},
+          {'ï', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_GRAVE, 0, false), new JFCKeyStroke('ï', KeyEvent.VK_I, 0, true)},
+          {'î', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_CIRCUMFLEX, 0, false), new JFCKeyStroke('î', KeyEvent.VK_I, 0, true)},
+          {'ö', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_DIAERESIS, 0, false), new JFCKeyStroke('ö', KeyEvent.VK_O, 0, true)},
+          {'ô', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_CIRCUMFLEX, 0, false), new JFCKeyStroke('ô', KeyEvent.VK_O, 0, true)},
+          {'ù', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_GRAVE, 0, false), new JFCKeyStroke('ù', KeyEvent.VK_U, 0, true)},
+          {'ü', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_DIAERESIS, 0, false), new JFCKeyStroke('ü', KeyEvent.VK_U, 0, true)},
+          {'û', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_CIRCUMFLEX, 0, false), new JFCKeyStroke('û', KeyEvent.VK_U, 0, true)},
+          {'ÿ', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_DIAERESIS, 0, false), new JFCKeyStroke('ÿ', KeyEvent.VK_Y, 0, true)},
+          {'ç', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_CEDILLA, 0, false), new JFCKeyStroke('ç', KeyEvent.VK_C, 0, true)},
 
-          {'\u00C0', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_GRAVE, 0, false), new JFCKeyStroke('\u00C0', KeyEvent.VK_A, SHIFT, true)},
-          {'\u00C4', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_DIAERESIS, 0, false), new JFCKeyStroke('\u00C4', KeyEvent.VK_A, SHIFT, true)},
-          {'\u00C2', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_CIRCUMFLEX, 0, false), new JFCKeyStroke('\u00C2', KeyEvent.VK_A, SHIFT, true)},
-          {'\u00C9', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_ACUTE, 0, false), new JFCKeyStroke('\u00C9', KeyEvent.VK_E, SHIFT, true)},
-          {'\u00C8', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_GRAVE, 0, false), new JFCKeyStroke('\u00C8', KeyEvent.VK_E, SHIFT, true)},
-          {'\u00CB', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_DIAERESIS, 0, false), new JFCKeyStroke('\u00CB', KeyEvent.VK_E, SHIFT, true)},
-          {'\u00CA', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_CIRCUMFLEX, 0, false), new JFCKeyStroke('\u00CA', KeyEvent.VK_E, SHIFT, true)},
-          {'\u00CF', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_GRAVE, 0, false), new JFCKeyStroke('\u00CF', KeyEvent.VK_I, SHIFT, true)},
-          {'\u00CE', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_CIRCUMFLEX, 0, false), new JFCKeyStroke('\u00CE', KeyEvent.VK_I, SHIFT, true)},
-          {'\u00D6', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_DIAERESIS, 0, false), new JFCKeyStroke('\u00D6', KeyEvent.VK_O, SHIFT, true)},
-          {'\u00D4', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_CIRCUMFLEX, 0, false), new JFCKeyStroke('\u00D4', KeyEvent.VK_O, SHIFT, true)},
-          {'\u00D9', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_GRAVE, 0, false), new JFCKeyStroke('\u00D9', KeyEvent.VK_U, SHIFT, true)},
-          {'\u00DC', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_DIAERESIS, 0, false), new JFCKeyStroke('\u00DC', KeyEvent.VK_U, SHIFT, true)},
-          {'\u00DB', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_CIRCUMFLEX, 0, false), new JFCKeyStroke('\u00DB', KeyEvent.VK_U, SHIFT, true)},
-          {'\u009F', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_DIAERESIS, 0, false), new JFCKeyStroke('\u009F', KeyEvent.VK_Y, SHIFT, true)},
-          {'\u00C7', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_CEDILLA, 0, false), new JFCKeyStroke('\u00C7', KeyEvent.VK_C, SHIFT, true)},
+          {'À', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_GRAVE, 0, false), new JFCKeyStroke('À', KeyEvent.VK_A, SHIFT, true)},
+          {'Ä', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_DIAERESIS, 0, false), new JFCKeyStroke('Ä', KeyEvent.VK_A, SHIFT, true)},
+          {'Â', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_CIRCUMFLEX, 0, false), new JFCKeyStroke('Â', KeyEvent.VK_A, SHIFT, true)},
+          {'É', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_ACUTE, 0, false), new JFCKeyStroke('É', KeyEvent.VK_E, SHIFT, true)},
+          {'È', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_GRAVE, 0, false), new JFCKeyStroke('È', KeyEvent.VK_E, SHIFT, true)},
+          {'Ë', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_DIAERESIS, 0, false), new JFCKeyStroke('Ë', KeyEvent.VK_E, SHIFT, true)},
+          {'Ê', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_CIRCUMFLEX, 0, false), new JFCKeyStroke('Ê', KeyEvent.VK_E, SHIFT, true)},
+          {'Ï', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_GRAVE, 0, false), new JFCKeyStroke('Ï', KeyEvent.VK_I, SHIFT, true)},
+          {'Î', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_CIRCUMFLEX, 0, false), new JFCKeyStroke('Î', KeyEvent.VK_I, SHIFT, true)},
+          {'Ö', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_DIAERESIS, 0, false), new JFCKeyStroke('Ö', KeyEvent.VK_O, SHIFT, true)},
+          {'Ô', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_CIRCUMFLEX, 0, false), new JFCKeyStroke('Ô', KeyEvent.VK_O, SHIFT, true)},
+          {'Ù', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_GRAVE, 0, false), new JFCKeyStroke('Ù', KeyEvent.VK_U, SHIFT, true)},
+          {'Ü', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_DIAERESIS, 0, false), new JFCKeyStroke('Ü', KeyEvent.VK_U, SHIFT, true)},
+          {'Û', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_CIRCUMFLEX, 0, false), new JFCKeyStroke('Û', KeyEvent.VK_U, SHIFT, true)},
+          {'Ÿ', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_DIAERESIS, 0, false), new JFCKeyStroke('Ÿ', KeyEvent.VK_Y, SHIFT, true)},
+          {'Ç', new JFCKeyStroke(UNDEFINED, KeyEvent.VK_DEAD_CEDILLA, 0, false), new JFCKeyStroke('Ç', KeyEvent.VK_C, SHIFT, true)},
 
-          {'\u0080', new JFCKeyStroke('\u0080', KeyEvent.VK_EURO_SIGN, 0, true)}
+          {'€', new JFCKeyStroke('€', KeyEvent.VK_EURO_SIGN, 0, true)}
     };
 
 
