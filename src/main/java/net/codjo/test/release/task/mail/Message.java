@@ -1,21 +1,23 @@
 package net.codjo.test.release.task.mail;
-import net.codjo.test.common.fixture.MailMessage;
 import java.util.ArrayList;
 import java.util.List;
+import net.codjo.test.common.fixture.MailMessage;
 /**
  *
  */
 public class Message {
     private String from;
     private String to;
+    private String cc;
     private String subject;
     private boolean present = true;
     private List<AssertText> assertions = new ArrayList<AssertText>();
 
 
-    public boolean isSame(String fromRecipient, String toRecipient, String mailSubject) {
+    public boolean isSame(String fromRecipient, String toRecipient, String ccRecipient, String mailSubject) {
         return equals(this.from, fromRecipient)
                && equals(this.to, toRecipient)
+               && equals(this.cc, ccRecipient)
                && equals(this.subject, mailSubject);
     }
 
@@ -42,6 +44,11 @@ public class Message {
     }
 
 
+    public void setCc(String cc) {
+        this.cc = cc;
+    }
+
+
     public void setSubject(String subject) {
         this.subject = subject;
     }
@@ -64,6 +71,11 @@ public class Message {
 
     @Override
     public String toString() {
-        return "from='" + from + "' to='" + to + "' subject='" + subject + "'";
+        return "from='" + from + "' to='" + to + "'" + appendCcIfNeeded() + " subject='" + subject + "'";
+    }
+
+
+    private String appendCcIfNeeded() {
+        return (cc == null) ? "" : " cc='" + cc + "'";
     }
 }

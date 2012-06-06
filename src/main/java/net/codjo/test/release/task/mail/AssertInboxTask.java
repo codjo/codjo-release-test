@@ -69,8 +69,9 @@ public class AssertInboxTask extends AgfTask {
 
                 String from = actualMessage.getHeaderValue("From");
                 String to = actualMessage.getHeaderValue("To");
+                String cc = actualMessage.getHeaderValue("Cc");
                 String subject = actualMailMessage.getSubject();
-                if (expectedMessage.isSame(from, to, subject)) {
+                if (expectedMessage.isSame(from, to, cc, subject)) {
                     expectedMessage.assertBody(actualMailMessage);
                     if (MultiPartMessage.class.isInstance(expectedMessage)) {
                         ((MultiPartMessage)expectedMessage).assertAttachments(actualMailMessage,

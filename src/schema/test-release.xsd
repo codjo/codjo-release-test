@@ -1020,6 +1020,11 @@
                                 <xs:documentation>Destinataire attendu.</xs:documentation>
                             </xs:annotation>
                         </xs:attribute>
+                        <xs:attribute name="cc" type="xs:string">
+                            <xs:annotation>
+                                <xs:documentation>Destinataire attendu en CC.</xs:documentation>
+                            </xs:annotation>
+                        </xs:attribute>
                         <xs:attribute name="subject" type="xs:string">
                             <xs:annotation>
                                 <xs:documentation>Sujet attendu.</xs:documentation>
@@ -1092,6 +1097,11 @@
                         <xs:attribute name="to" type="xs:string">
                             <xs:annotation>
                                 <xs:documentation>Destinataire attendu.</xs:documentation>
+                            </xs:annotation>
+                        </xs:attribute>
+                        <xs:attribute name="cc" type="xs:string">
+                            <xs:annotation>
+                                <xs:documentation>Destinataire attendu en CC.</xs:documentation>
                             </xs:annotation>
                         </xs:attribute>
                         <xs:attribute name="subject" type="xs:string">
