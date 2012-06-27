@@ -407,6 +407,10 @@ public class SetValueStepTest extends JFCTestCase {
 
     public void test_setValue_jHtmlEditor() throws Exception {
         NativeInterface.open();
+        while (!NativeInterface.isOpen()) {
+            System.out.println(" waiting 100 ms ");
+            sleep(100);
+        }
         try {
             JFrame frame = new JFrame();
             addJHtmlEditorPane(frame.getContentPane());

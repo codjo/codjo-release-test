@@ -37,6 +37,7 @@ public class StepPlayer extends JFCTestCase {
     public StepPlayer(Project project, String testDirectory) {
         this.project = project;
         this.testDirectory = testDirectory;
+        setName("playImpl"); // must be initialized here because public methods need it
     }
 
 
@@ -46,7 +47,6 @@ public class StepPlayer extends JFCTestCase {
         if (testDirectory != null) {
             currentTestContext.setProperty(TEST_DIRECTORY, testDirectory);
         }
-        setName("playImpl");
         try {
             runBare();
         }
