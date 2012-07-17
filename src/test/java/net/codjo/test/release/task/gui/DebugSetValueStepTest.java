@@ -7,6 +7,7 @@ package net.codjo.test.release.task.gui;
 import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 import chrriis.dj.nativeswing.swtimpl.components.JHTMLEditor;
 import java.awt.Container;
+import java.awt.Frame;
 import java.awt.IllegalComponentStateException;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,14 +27,7 @@ public class DebugSetValueStepTest extends JFCTestCase {
         NativeInterface.open();
         try {
             JFrame frame = new JFrame();
-            addJHtmlEditorPane(frame.getContentPane());
-            SwingUtilities.invokeAndWait(new Runnable() {
-                public void run() {
-                    htmlEditor.initializeNativePeer();//Try to debug random failure
-                }
-            });
-            frame.pack();
-            frame.setVisible(true);
+            addJHtmlEditorPane(frame);
             flushAWT();
 
             step.setName(htmlEditor.getName());
@@ -55,7 +49,7 @@ public class DebugSetValueStepTest extends JFCTestCase {
     }
 
 
-    private void addJHtmlEditorPane(final Container panel) {
+    private void addJHtmlEditorPane(final JFrame frame) {
         try {
             SwingUtilities.invokeAndWait(new Runnable() {
                 public void run() {
@@ -73,7 +67,10 @@ public class DebugSetValueStepTest extends JFCTestCase {
                                                  JHTMLEditor.TinyMCEOptions.setOptions(optionMap)
                     );
                     htmlEditor.setName("jHtmlEditor");
-                    panel.add(htmlEditor);
+                    frame.getContentPane().add(htmlEditor);
+                    frame.pack();
+                    frame.setVisible(true);
+
                 }
             });
         }
