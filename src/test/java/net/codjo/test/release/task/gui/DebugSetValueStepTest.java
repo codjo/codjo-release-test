@@ -27,6 +27,11 @@ public class DebugSetValueStepTest extends JFCTestCase {
         try {
             JFrame frame = new JFrame();
             addJHtmlEditorPane(frame.getContentPane());
+            SwingUtilities.invokeAndWait(new Runnable() {
+                public void run() {
+                    htmlEditor.initializeNativePeer();//Try to debug random failure
+                }
+            });
             frame.pack();
             frame.setVisible(true);
             flushAWT();
