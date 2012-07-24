@@ -42,7 +42,7 @@ import net.codjo.test.release.task.gui.metainfo.MyComponentMock;
 import net.codjo.test.release.task.gui.metainfo.MyComponentMockTestBehavior;
 import net.codjo.test.release.task.gui.metainfo.YetAnotherComponentMock;
 /**
- * Classe de test de {@link SetValueStepTest}.
+ * Classe de test de {@link SetValueStep}.
  */
 public class SetValueStepTest extends JFCTestCase {
     private SetValueStep step;
@@ -405,38 +405,6 @@ public class SetValueStepTest extends JFCTestCase {
     }
 
 
-    public void test_setValue_jHtmlEditor() throws Exception {
-        NativeInterface.open();
-        while (!NativeInterface.isOpen()) {
-            System.out.println(" waiting 100 ms ");
-            sleep(100);
-        }
-        try {
-            JFrame frame = new JFrame();
-            addJHtmlEditorPane(frame.getContentPane());
-            frame.pack();
-            frame.setVisible(true);
-            flushAWT();
-
-            step.setName(htmlEditor.getName());
-            step.setValue("Simple text with <strong>bold</strong>");
-            TestContext context = new TestContext(this);
-            step.proceed(context);
-
-            final String[] htmlContent = new String[1];
-            step.runAwtCode(context, new Runnable() {
-                public void run() {
-                    htmlContent[0] = htmlEditor.getHTMLContent();
-                }
-            });
-            assertEquals("<p>Simple text with <strong>bold</strong></p>", htmlContent[0]);
-        }
-        finally {
-            NativeInterface.close();
-        }
-    }
-
-
     private void showFrame() {
         JFrame frame = new JFrame();
 
@@ -458,35 +426,6 @@ public class SetValueStepTest extends JFCTestCase {
         frame.setVisible(true);
         flushAWT();
     }
-
-
-    private void addJHtmlEditorPane(final Container panel) {
-        try {
-            SwingUtilities.invokeAndWait(new Runnable() {
-                public void run() {
-                    Map<String, String> optionMap = new HashMap<String, String>();
-                    optionMap.put("theme_advanced_buttons1",
-                                  "'bold,italic,underline,|,charmap,|,justifyleft,justifycenter,justifyright,justifyfull,|,formatselect,fontselect,fontsizeselect,|,hr,removeformat'");
-                    optionMap.put("theme_advanced_buttons2",
-                                  "'undo,redo,|,link,unlink,anchor,image,cleanup,code,|,cut,copy,paste,pastetext,pasteword,|,search,replace,|,forecolor,backcolor,bullist,numlist,|,outdent,indent,blockquote,|,table'");
-                    optionMap.put("theme_advanced_buttons3", "''");
-                    optionMap.put("theme_advanced_toolbar_location", "'top'");
-                    optionMap.put("theme_advanced_toolbar_align", "'left'");
-
-                    optionMap.put("plugins", "'table,paste,contextmenu'");
-                    htmlEditor = new JHTMLEditor(JHTMLEditor.HTMLEditorImplementation.TinyMCE,
-                                                 JHTMLEditor.TinyMCEOptions.setOptions(optionMap)
-                    );
-                    htmlEditor.setName("jHtmlEditor");
-                    panel.add(htmlEditor);
-                }
-            });
-        }
-        catch (Exception e) {
-            throw new IllegalComponentStateException("Impossible d'initialiser le composant JHtmlEditor");
-        }
-    }
-
 
     private void addSpinner(JPanel panel) {
         spinner = new JSpinner();

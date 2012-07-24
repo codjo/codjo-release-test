@@ -48,6 +48,7 @@ public class AssertTest extends TestCase {
             throws Exception {
         assertion.setTable("FIRST_TABLE");
         assertion.setOrder("COLUMN1");
+        assertion.setNullFirst(false);
         assertion.setProject(new Project());
         jdbcScenario.getScenario().getOutputDataSet().buildTable("FIRST_TABLE");
         jdbcScenario.getScenario().getOutputDataSet().buildTable("SECOND_TABLE");
@@ -112,7 +113,7 @@ public class AssertTest extends TestCase {
 
 
         @Override
-        public boolean verifyOutputs(Connection con, String tableName, String orderClause)
+        public boolean verifyOutputs(Connection con, String tableName, String orderClause, boolean nullFirst)
                 throws SQLException {
             return returnTrue;
         }

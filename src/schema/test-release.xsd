@@ -229,6 +229,13 @@
                     </xs:documentation>
                 </xs:annotation>
             </xs:attribute>
+            <xs:attribute name="nullFirst" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">true si on veut que les valeurs nulles apparaissent en tête lors du tri.
+                        (true par defaut)
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
     <xs:element name="copy-to-inbox">

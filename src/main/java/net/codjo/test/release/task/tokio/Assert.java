@@ -4,11 +4,11 @@
  * Copyright (c) 2001 AGF Asset Management.
  */
 package net.codjo.test.release.task.tokio;
+import java.sql.SQLException;
+import java.util.Iterator;
 import net.codjo.test.release.task.AgfTask;
 import net.codjo.tokio.JDBCScenario;
 import net.codjo.tokio.model.Table;
-import java.sql.SQLException;
-import java.util.Iterator;
 import org.apache.tools.ant.BuildException;
 /**
  */
@@ -17,6 +17,7 @@ public class Assert extends AgfTask {
     private String refId;
     private String table;
     private boolean allTables;
+    private boolean nullFirst = true;
 
 
     public void setOrder(String order) {
@@ -59,6 +60,16 @@ public class Assert extends AgfTask {
     }
 
 
+    public boolean getNullFirst() {
+        return nullFirst;
+    }
+
+
+    public void setNullFirst(boolean nullFirst) {
+        this.nullFirst = nullFirst;
+    }
+
+
     @Override
     public void execute() {
         JDBCScenario jdbcsc = getJdbcsc();
@@ -93,7 +104,7 @@ public class Assert extends AgfTask {
 
     void executeOrderedTableAssert(JDBCScenario jdbcsc) throws SQLException {
         info("Verification de toutes les tables");
-        if (!jdbcsc.verifyOutputs(getConnection(), getTable(), getOrder())) {
+        if (!jdbcsc.verifyOutputs(getConnection(), getTable(), getOrder(), getNullFirst())) {
             throw new IllegalArgumentException("Erreur de comparaison sur la table " + getTable()
                                                + " avec le tri : " + getOrder() + "\n"
                                                + jdbcsc.getLastVerifyOutputsReport());
