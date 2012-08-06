@@ -1,13 +1,20 @@
 package net.codjo.test.release.task.excel;
 
 import java.io.File;
+
 import org.apache.tools.ant.BuildException;
 import org.junit.After;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import com.googlecode.junit.ext.JunitExtRunner;
+import com.googlecode.junit.ext.RunIf;
+
+@RunWith(JunitExtRunner.class)
+@RunIf(value = ExcelChecker.class)
 public class ExcelApplicationManagerTest {
 
     private ExcelApplicationManager excelApplicationManager;
@@ -23,7 +30,9 @@ public class ExcelApplicationManagerTest {
 
     @After
     public void tearDown() throws Exception {
-        excelApplicationManager.quit();
+    	if (excelApplicationManager != null) {
+    		excelApplicationManager.quit();
+    	}
     }
 
 

@@ -21,20 +21,23 @@ public class ExcelApplicationManager {
     private ExcelApplication excelApplication = null;
     private static final Logger LOG = Logger.getLogger(ExcelApplicationManager.class);
     private static final String EXPORT_XLS = "exportExcel_" + System.currentTimeMillis() + ".xls";
-    private File tmpDir = new File(System.getProperty("java.io.tmpdir") + "excel");
+    private File tmpDir = new File(System.getProperty("java.io.tmpdir"), "excel");
 
 
     public ExcelApplicationManager() {
         try {
             tmpDir.mkdir();
             if (!tmpDir.exists()) {
-                throw new IllegalStateException("Impossible de créer le répertoire '" + tmpDir + "'");
+                throw new IllegalStateException("Impossible de cr\u0233er le r\u0233pertoire '" + tmpDir + "'");
             }
 
             excelApplication = new ExcelApplication(new ReleaseManager());
             excelApplication.Visible(true);
         }
         catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        catch (UnsatisfiedLinkError e) {
             throw new RuntimeException(e);
         }
     }
