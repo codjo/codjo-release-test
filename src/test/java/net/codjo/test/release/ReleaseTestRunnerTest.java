@@ -19,6 +19,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
+import org.xml.sax.SAXException;
 
 public class ReleaseTestRunnerTest {
     private static final String XML_PREFIX = ReleaseTestRunner.AntGenerator.XML_PREFIX;
@@ -140,6 +141,44 @@ public class ReleaseTestRunnerTest {
                    + POSTFIX, loadContentResultFile(resultAntFile));
     }
 
+    @Test
+    public void test_callMethod_emptyName() throws Exception {
+        String fileName = "ReleaseTestRunner_call-method_emptyName.xml";
+        try {
+            antGenerator.generateAntFile(getReleaseTestFile(fileName));
+            fail("must throw an IOException");
+        } catch (IOException e) {
+            assertMessageContains(e, fileName, "releaseTestFile's name");
+        }
+    }
+
+    @Test
+    public void test_callMethod_noOptionalParameter() throws Exception {
+        File resultAntFile =
+              antGenerator.generateAntFile(getReleaseTestFile("ReleaseTestRunner_call-method_noOptionalParameter.xml"));
+
+        assertFlat(PREFIX
+                   + "<release-test name=\"NoOptionalParameter\"><description><![CDATA[Testavecunparametreoptionnelnonfourni]]></description><gui-test><group name=\"ReleaseTestRunner_call-method_OptionalAndRequiredParameters.xmf(@requiredParameter@=GABI@notRequiredParameter@=):::test-textdata-group-tag\"><click name=\"GABI\"/></group></gui-test></release-test>"
+                   + POSTFIX, loadContentResultFile(resultAntFile));
+    }
+
+    @Test
+    public void test_callMethod_noRequiredParameter() throws Exception {
+        String fileName = "ReleaseTestRunner_call-method_noRequiredParameter.xml";
+        try {
+            antGenerator.generateAntFile(getReleaseTestFile(fileName));
+            fail("must throw an IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            assertMessageContains(e, fileName, "releaseTestFile's name");
+            assertMessageContains(e, "requiredParameter", "parameter's name");
+        }
+    }
+
+    private void assertMessageContains(Exception e, String messagePart, String messagePartDesc) {
+        if (!e.getMessage().contains(messagePart)) {
+            fail("must throw an " + e.getClass().getSimpleName() + " whose message contains " + messagePartDesc);
+        }
+    }
 
     @Test
     public void test_callMethod_noParameters() throws Exception {

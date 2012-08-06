@@ -258,14 +258,14 @@ public final class ReleaseTestRunner {
             try {
                 String testFileContent = loadContent(releaseTestFile);
                 String testFileContentManaged =
-                      manageMethods(releaseTestFile.getParentFile(), testFileContent);
+                      manageMethods(releaseTestFile.getParentFile(), testFileContent, releaseTestFile.getAbsolutePath());
                 generateAnt(testFileContentManaged, writer);
             }
             catch (ParserConfigurationException e) {
-                throw new IOException(e.getMessage());
+                throwIOException(e);
             }
             catch (SAXException e) {
-                throw new IOException(e.getMessage());
+                throwIOException(e);
             }
             finally {
                 writer.close();
@@ -273,10 +273,15 @@ public final class ReleaseTestRunner {
             return antFile;
         }
 
+        private void throwIOException(Exception rootCause) throws IOException {
+            IOException ioe = new IOException(rootCause.getMessage());
+            ioe.initCause(rootCause);
+            throw ioe;
+        }
 
-        private String manageMethods(File currentDir, String testFileContent)
+        private String manageMethods(File currentDir, String testFileContent, String releaseTestFile)
               throws IOException, ParserConfigurationException, SAXException {
-            XmfManager xmfManager = new XmfManager(currentDir);
+            XmfManager xmfManager = new XmfManager(currentDir, releaseTestFile);
             return xmfManager.parse(testFileContent);
         }
     }
