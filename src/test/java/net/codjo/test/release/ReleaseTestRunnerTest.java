@@ -1,9 +1,5 @@
 package net.codjo.test.release;
 
-import net.codjo.test.common.fixture.CompositeFixture;
-import net.codjo.test.common.fixture.DirectoryFixture;
-import net.codjo.test.common.fixture.SystemExitFixture;
-import net.codjo.util.file.FileUtil;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,13 +9,17 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Properties;
+import net.codjo.test.common.fixture.CompositeFixture;
+import net.codjo.test.common.fixture.DirectoryFixture;
+import net.codjo.test.common.fixture.SystemExitFixture;
+import net.codjo.util.file.FileUtil;
 import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import org.junit.Before;
-import org.junit.Test;
-import org.xml.sax.SAXException;
 
 public class ReleaseTestRunnerTest {
     private static final String XML_PREFIX = ReleaseTestRunner.AntGenerator.XML_PREFIX;
@@ -149,6 +149,36 @@ public class ReleaseTestRunnerTest {
             fail("must throw an IOException");
         } catch (IOException e) {
             assertMessageContains(e, fileName, "releaseTestFile's name");
+        }
+    }
+
+    @Test
+    public void test_callMethod_nestedCall() throws Exception {
+        File resultAntFile =
+              antGenerator.generateAntFile(getReleaseTestFile("ReleaseTestRunner_call-method_nestedCall.xml"));
+
+        String expected = flatten("<release-test name=\"nestedCall\">\n"
+                                  + "    <description><![CDATA[Test appels imbriques]]></description>\n"
+                                  + "\t<gui-test>\n"
+                                  + "\t\t<group name=\"ReleaseTestRunner_call-method_nestedCall_methodA.xmf(@parameterA@=valueA):::group-methodA\">\n"
+                                  + "\t\t\t<click name=\"valueA\"/>\n"
+                                  + "\t\t\t<group name=\"ReleaseTestRunner_call-method_nestedCall_methodB.xmf(@parameterB@=valueB):::group-methodB\">\n"
+                                  + "\t\t\t\t<click name=\"valueB\"/>\n"
+                                  + "\t\t\t</group>\t\t\t\n"
+                                  + "\t\t</group>\n"
+                                  + "\t</gui-test>\t\n"
+                                  + "</release-test>");
+        assertFlat(PREFIX + expected + POSTFIX, loadContentResultFile(resultAntFile));
+    }
+
+    @Test
+    public void test_callMethod_nestedCallWithCycle() throws Exception {
+        String fileName = "ReleaseTestRunner_call-method_nestedCallWithCycle.xml";
+        try {
+            antGenerator.generateAntFile(getReleaseTestFile(fileName));
+            fail("must throw an IllegalStateException");
+        } catch (IllegalStateException e) {
+            assertMessageContains(e, "Too many levels in nested calls", "Too many levels in nested calls");
         }
     }
 

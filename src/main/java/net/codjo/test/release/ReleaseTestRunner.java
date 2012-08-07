@@ -27,6 +27,12 @@ import org.xml.sax.SAXException;
  * @noinspection UseOfSystemOutOrSystemErr, CallToPrintStackTrace
  */
 public final class ReleaseTestRunner {
+    /**
+     * Maximum number of nested calls for methods.
+     * It's used to detect infinite loop.
+     */
+    private static final int MAX_NUMBER_OF_NESTED_CALLS = 10;
+
     private ReleaseTestRunner() {
     }
 
@@ -281,8 +287,22 @@ public final class ReleaseTestRunner {
 
         private String manageMethods(File currentDir, String testFileContent, String releaseTestFile)
               throws IOException, ParserConfigurationException, SAXException {
-            XmfManager xmfManager = new XmfManager(currentDir, releaseTestFile);
-            return xmfManager.parse(testFileContent);
+
+            String result = testFileContent;
+            int nbMethodCalls;
+            int nbLevels = 0;
+            do {
+                XmfManager xmfManager = new XmfManager(currentDir, releaseTestFile);
+                result = xmfManager.parse(result);
+                nbMethodCalls = xmfManager.getNbMethodCalls();
+
+                nbLevels++;
+                if (nbLevels > MAX_NUMBER_OF_NESTED_CALLS) {
+                    throw new IllegalStateException("Too many levels in nested calls (maximum=" + MAX_NUMBER_OF_NESTED_CALLS + "). There might be a cycle in method calls (-> infinite loop).");
+                }
+            } while (nbMethodCalls > 0);
+
+            return result;
         }
     }
 }

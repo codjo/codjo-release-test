@@ -1,12 +1,10 @@
 package net.codjo.test.release;
 
-import java.util.Collection;
-import net.codjo.util.file.FileUtil;
-import net.codjo.variable.basic.BasicVariableReplacer;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +12,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
+import net.codjo.util.file.FileUtil;
+import net.codjo.variable.basic.BasicVariableReplacer;
 import org.apache.commons.lang.StringUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
@@ -28,6 +28,7 @@ public class XmfManager {
     private static final String GROUP_TAG_PATTERN = "<group\\s*name=\"";
     private File currentDir;
     private final String releaseTestFile;
+    private int nbMethodCalls = 0;
 
     public XmfManager(File currentDir, String releaseTestFile) {
         this.currentDir = currentDir;
@@ -45,12 +46,17 @@ public class XmfManager {
                 ReleaseTestBuilder releaseTestBuilder = new ReleaseTestBuilder();
                 readXML(xmlReader, releaseTestBuilder, HEADER + element);
                 output.append(releaseTestBuilder.getOutput());
+                nbMethodCalls += releaseTestBuilder.getNbMethodCalls();
             }
             else {
                 output.append(element);
             }
         }
         return output.toString();
+    }
+
+    public int getNbMethodCalls() {
+        return nbMethodCalls;
     }
 
     private <T extends DefaultHandler> void readXML(XMLReader xmlReader, T handler, String xml)
@@ -112,10 +118,15 @@ public class XmfManager {
         private Map<String, String> parameters = new HashMap<String, String>();
         private String currentParameter;
 
+        private int nbMethodCalls = 0;
+
         public String getOutput() {
             return output;
         }
 
+        public int getNbMethodCalls() {
+            return nbMethodCalls;
+        }
 
         @Override
         public void characters(char[] chars, int start, int length) throws SAXException {
@@ -201,6 +212,8 @@ public class XmfManager {
 
             output += BasicVariableReplacer.replaceKeysPerValues(body, parameters);
             output = completeGroupNameWithMethodeAndParametersValues();
+
+            nbMethodCalls++;
         }
 
         private String completeGroupNameWithMethodeAndParametersValues() {

@@ -1,0 +1,12 @@
+<method>
+    <description>
+        <parameters>
+            <parameter name="parameterB" required="true"/>
+        </parameters>
+    </description>
+    <body>
+        <group name="group-methodB">
+            <click name="@parameterB@"/>
+        </group>
+    </body>
+</method>

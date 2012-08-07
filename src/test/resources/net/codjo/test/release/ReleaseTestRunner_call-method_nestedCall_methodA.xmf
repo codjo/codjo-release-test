@@ -1,0 +1,17 @@
+<method>
+    <description>
+        <parameters>
+            <parameter name="parameterA" required="true"/>
+        </parameters>
+    </description>
+    <body>
+        <gui-test>
+            <group name="group-methodA">
+                <click name="@parameterA@"/>
+                <call-method file="ReleaseTestRunner_call-method_nestedCall_methodB.xmf">
+                    <parameter name="parameterB" value="valueB"/>
+                </call-method>
+            </group>
+        </gui-test>
+    </body>
+</method>

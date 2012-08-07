@@ -1,0 +1,15 @@
+<method>
+    <description>
+        <parameters>
+            <parameter name="parameterB" required="true"/>
+        </parameters>
+    </description>
+    <body>
+        <group name="group-methodB">
+            <click name="@parameterB@"/>
+            <call-method file="ReleaseTestRunner_call-method_nestedCallWithCycle_methodA.xmf">
+                <parameter name="parameterA" value="valueA_cycle"/>
+            </call-method>
+        </group>
+    </body>
+</method>
