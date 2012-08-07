@@ -13,6 +13,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class TestReportTest {
+	private static final String LINE_SEPARATOR = System.getProperty("line.separator");
+		
     private File fileTest;
 
 
@@ -35,7 +37,7 @@ public class TestReportTest {
         assertThat(fileTest.isFile(), equalTo(true));
         assertThat(fileTest.exists(), equalTo(true));
         TestReport report = new TestReport(fileTest.getAbsolutePath(), Arrays.asList("HEADER1", "HEADER2"));
-        assertThat(FileUtil.loadContent(fileTest), equalTo("HEADER1\tHEADER2\t\r\n"));
+        assertThat(FileUtil.loadContent(fileTest), equalTo("HEADER1\tHEADER2\t" + LINE_SEPARATOR));
     }
 
 
@@ -82,13 +84,12 @@ public class TestReportTest {
 
     // TODO A refactorer ??
     static List<String> processLogContent(String logContent) {
-        final String retour = "\r\n";
         List<String> objects = new ArrayList<String>();
         StringTokenizer tokenizer = new StringTokenizer(logContent, TestReport.TAB, false);
         while (tokenizer.hasMoreTokens()) {
             String token = tokenizer.nextToken();
-            if (!(retour.equals(token))) {
-                objects.add(token.replaceAll(retour, ""));
+            if (!(LINE_SEPARATOR.equals(token))) {
+                objects.add(token.replaceAll(LINE_SEPARATOR, ""));
             }
         }
         return objects;
