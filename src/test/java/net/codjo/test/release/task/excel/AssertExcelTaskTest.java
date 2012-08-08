@@ -66,7 +66,7 @@ public class AssertExcelTaskTest {
         }
         catch (BuildException e) {
             assertTrue(e.getLocalizedMessage().startsWith(
-                  "Les deux classeurs Excel ne contiennent pas les m\u0234mes feuilles"));
+                  "Les deux classeurs Excel ne contiennent pas les mêmes feuilles"));
         }
     }
 

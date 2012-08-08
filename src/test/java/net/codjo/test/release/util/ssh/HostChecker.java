@@ -23,6 +23,7 @@ public class HostChecker implements Checker {
 
 		try {
 			socket = new java.net.Socket(host, port);
+            result = true;
 		} catch (UnknownHostException e) {
 			result = false;
 		} catch (IOException e) {
