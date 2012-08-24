@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<release-test name="NoRequiredParameter">
+<release-test name="RequiredParameter_noCDATA_noAttrib">
     <description><![CDATA[Test avec un parametre obligatoire non fourni]]></description>
     <call-method file="ReleaseTestRunner_call-method_OptionalAndRequiredParameters.xmf">
     </call-method>

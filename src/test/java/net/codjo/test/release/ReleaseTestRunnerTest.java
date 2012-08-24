@@ -17,6 +17,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import static net.codjo.test.release.XmfManager.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -143,12 +144,13 @@ public class ReleaseTestRunnerTest {
 
     @Test
     public void test_callMethod_emptyName() throws Exception {
-        String fileName = "ReleaseTestRunner_call-method_emptyName.xml";
+        File file = getReleaseTestFile("ReleaseTestRunner_call-method_emptyName.xml");
+        String fileName = file.getAbsolutePath();
         try {
-            antGenerator.generateAntFile(getReleaseTestFile(fileName));
+            antGenerator.generateAntFile(file);
             fail("must throw an IOException");
         } catch (IOException e) {
-            assertMessageContains(e, fileName, "releaseTestFile's name");
+            assertEquals(XmfManager.computeMessageParameterNameIsEmpty(fileName), e.getMessage());
         }
     }
 
@@ -176,38 +178,83 @@ public class ReleaseTestRunnerTest {
         String fileName = "ReleaseTestRunner_call-method_nestedCallWithCycle.xml";
         try {
             antGenerator.generateAntFile(getReleaseTestFile(fileName));
-            fail("must throw an IllegalStateException");
-        } catch (IllegalStateException e) {
-            assertMessageContains(e, "Too many levels in nested calls", "Too many levels in nested calls");
+            fail("must throw an IOException");
+        } catch (IOException e) {
+            assertEquals(ReleaseTestRunner.getTooManyLevelsMessage(), e.getMessage());
         }
     }
 
     @Test
-    public void test_callMethod_noOptionalParameter() throws Exception {
+    public void test_callMethod_RequiredParameter_noCDATA_Attrib() throws Exception {
         File resultAntFile =
-              antGenerator.generateAntFile(getReleaseTestFile("ReleaseTestRunner_call-method_noOptionalParameter.xml"));
+              antGenerator.generateAntFile(getReleaseTestFile("ReleaseTestRunner_call-method_RequiredParameter_noCDATA_Attrib.xml"));
 
-        assertFlat(PREFIX
-                   + "<release-test name=\"NoOptionalParameter\"><description><![CDATA[Testavecunparametreoptionnelnonfourni]]></description><gui-test><group name=\"ReleaseTestRunner_call-method_OptionalAndRequiredParameters.xmf(@requiredParameter@=GABI@notRequiredParameter@=):::test-textdata-group-tag\"><click name=\"GABI\"/></group></gui-test></release-test>"
-                   + POSTFIX, loadContentResultFile(resultAntFile));
+        String expected = flatten("<release-test name=\"RequiredParameter_noCDATA_Attrib\">"
+                                  + "  <description><![CDATA[Testavecunparametreoptionnelnonfourni]]></description>"
+                                  + "  <gui-test>"
+                                  + "    <group name=\"ReleaseTestRunner_call-method_OptionalAndRequiredParameters.xmf(@requiredParameter@=GABI@notRequiredParameter@=):::test-textdata-group-tag\">"
+                                  + "      <click name=\"GABI\"/>"
+                                  + "    </group>"
+                                  + "  </gui-test>"
+                                  + "</release-test>");
+        assertFlat(PREFIX + expected + POSTFIX, loadContentResultFile(resultAntFile));
     }
 
     @Test
-    public void test_callMethod_noRequiredParameter() throws Exception {
-        String fileName = "ReleaseTestRunner_call-method_noRequiredParameter.xml";
+    public void test_callMethod_RequiredParameter_noCDATA_noAttrib() throws Exception {
+        File file = getReleaseTestFile("ReleaseTestRunner_call-method_RequiredParameter_noCDATA_noAttrib.xml");
+        String fileName = file.getAbsolutePath();
+        try {
+            antGenerator.generateAntFile(file);
+            fail("must throw an IllegalArgumentException");
+        } catch (IOException e) {
+            assertEquals(XmfManager.computeMessageRequiredParameterNotProvided(fileName, "requiredParameter"), e.getMessage());
+        }
+    }
+
+    @Test
+    public void test_callMethod_RequiredParameter_CDATA_Attrib() throws Exception {
+        String fileName = "ReleaseTestRunner_call-method_RequiredParameter_CDATA_Attrib.xml";
         try {
             antGenerator.generateAntFile(getReleaseTestFile(fileName));
             fail("must throw an IllegalArgumentException");
         } catch (IllegalArgumentException e) {
-            assertMessageContains(e, fileName, "releaseTestFile's name");
-            assertMessageContains(e, "requiredParameter", "parameter's name");
+            assertEquals(computeMessageDuplicateParameterValue("requiredParameter"), e.getMessage());
         }
     }
 
-    private void assertMessageContains(Exception e, String messagePart, String messagePartDesc) {
-        if (!e.getMessage().contains(messagePart)) {
-            fail("must throw an " + e.getClass().getSimpleName() + " whose message contains " + messagePartDesc);
-        }
+    @Test
+    public void test_callMethod_RequiredParameter_CDATA_noAttrib() throws Exception {
+        File resultAntFile =
+              antGenerator.generateAntFile(getReleaseTestFile("ReleaseTestRunner_call-method_RequiredParameter_CDATA_noAttrib.xml"));
+
+        String expected = flatten("<release-test name=\"RequiredParameter_CDATA_noAttrib\">"
+                                  + "  <description><![CDATA[Testavecunparametreoptionnelnonfourni]]></description>"
+                                  + "  <gui-test>"
+                                  + "    <groupname=\"ReleaseTestRunner_call-method_OptionalAndRequiredParameters_CDATA.xmf(@notRequiredParameter@=):::test-textdata-group-tag\">"
+                                  + "    </group>"
+                                  + "    <groupname=\"ReleaseTestRunner_call-method_OptionalAndRequiredParameters_CDATA.xmf(@notRequiredParameter@=):::test-textdata-group-tag2\">"
+                                  + "      <argvalue=\"-e\"/><argvalue=\"27042010\"/>"
+                                  + "    </group>"
+                                  + "    </gui-test>"
+                                  + "</release-test>");
+        assertFlat(PREFIX + expected + POSTFIX, loadContentResultFile(resultAntFile));
+    }
+
+    @Test
+    public void test_callMethod_OptionalParameter_withoutValueAttrib() throws Exception {
+        File resultAntFile =
+              antGenerator.generateAntFile(getReleaseTestFile("ReleaseTestRunner_call-method_OptionalParameter_withoutValueAttrib.xml"));
+
+        String expected = flatten("<release-test name=\"RequiredParameter_noCDATA_noAttrib\">\n"
+                                  + "    <description><![CDATA[Testavecunparametreoptionnelnonfourni]]></description>\n"
+                                  + "        <gui-test>\n"
+                                  + "            <group name=\"ReleaseTestRunner_call-method_OptionalAndRequiredParameters.xmf(@requiredParameter@=GABI@notRequiredParameter@=):::test-textdata-group-tag\">\n"
+                                  + "                <click name=\"GABI\"/>\n"
+                                  + "            </group>\n"
+                                  + "        </gui-test>\n"
+                                  + "</release-test>");
+        assertFlat(PREFIX + expected + POSTFIX, loadContentResultFile(resultAntFile));
     }
 
     @Test

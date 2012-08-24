@@ -22,6 +22,7 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
 public class XmfManager {
+    private static final String VARIABLE_NAME_SEPARATOR = "@";
     private static final String CALL_METHOD_TAG = "call-method";
     private static final String HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
     private static final String GROUP_TAG = "<group name=\"";
@@ -111,12 +112,50 @@ public class XmfManager {
         return index + toFind.length();
     }
 
+    static String computeMessageDuplicateParameterValue(String parameterName) {
+        return "The parameter '" + removeVariableNameSeparators(parameterName) + "' is specified as CDATA and as an attribute.";
+    }
+
+    static String computeMessageParameterNameIsEmpty(String releaseTestFile) {
+        return "The parameter's name is blank in " + releaseTestFile;
+    }
+
+    static String computeMessageRequiredParameterNotProvided(String releaseTestFile, String... parameterNames) {
+        StringBuilder requiredParametersNotFilled = new StringBuilder("These parameters are required but not provided in ");
+        requiredParametersNotFilled.append(releaseTestFile).append(" : ");
+        boolean first = true;
+        for (String param : parameterNames) {
+            if (!first) {
+                requiredParametersNotFilled.append(", ");
+            }
+            first = false;
+
+            requiredParametersNotFilled.append('\'').append(param).append('\'');
+        }
+        return requiredParametersNotFilled.toString();
+    }
+
+    private static String completeVariableName(String varName) {
+        return VARIABLE_NAME_SEPARATOR + varName + VARIABLE_NAME_SEPARATOR;
+    }
+
+    private static String removeVariableNameSeparators(String varName) {
+        String result = varName;
+        if (result.startsWith(VARIABLE_NAME_SEPARATOR)) {
+            result = result.substring(VARIABLE_NAME_SEPARATOR.length());
+        }
+        if (result.endsWith(VARIABLE_NAME_SEPARATOR)) {
+            result = result.substring(0, result.length() - VARIABLE_NAME_SEPARATOR.length());
+        }
+        return result;
+    }
 
     public class ReleaseTestBuilder extends DefaultHandler {
         private String output = "";
         private String callMethodFile;
         private Map<String, String> parameters = new HashMap<String, String>();
         private String currentParameter;
+        private boolean currentParameterHasValueAttribute;
 
         private int nbMethodCalls = 0;
 
@@ -132,12 +171,16 @@ public class XmfManager {
         public void characters(char[] chars, int start, int length) throws SAXException {
             String charsToadd = new String(chars, start, length);
             if (currentParameter != null) {
-                String currentValue = parameters.get(currentParameter);
-                if (currentValue == null) {
-                    currentValue = "";
+                if (currentParameterHasValueAttribute) {
+                    throw new IllegalArgumentException(computeMessageDuplicateParameterValue(currentParameter));
+                } else {
+                    String currentValue = parameters.get(currentParameter);
+                    if (currentValue == null) {
+                        currentValue = "";
+                    }
+                    currentValue += charsToadd;
+                    parameters.put(currentParameter, currentValue);
                 }
-                currentValue += charsToadd;
-                parameters.put(currentParameter, currentValue);
             }
         }
 
@@ -151,12 +194,12 @@ public class XmfManager {
             }
             else if ("parameter".equals(qName)) {
                 currentParameter = completeVariableName(attributes.getValue("name"));
-                parameters.put(currentParameter, attributes.getValue("value"));
+                String value = attributes.getValue("value");
+                if (value != null) {
+                    currentParameterHasValueAttribute = true;
+                    parameters.put(currentParameter, value);
+                }
             }
-        }
-
-        private String completeVariableName(String varName) {
-            return '@' + varName + '@';
         }
 
         @Override
@@ -174,6 +217,7 @@ public class XmfManager {
             }
             else if ("parameter".equals(qName)) {
                 currentParameter = null;
+                currentParameterHasValueAttribute = false;
             }
         }
 
@@ -187,23 +231,20 @@ public class XmfManager {
 
             // check required parameters
             // and fill optional ones with an empty string
-            StringBuilder requiredParametersNotFilled = new StringBuilder();
+            List<String> requiredParametersNotFilled = new ArrayList<String>();
             for (Parameter param : templateHandler.getParameters()) {
                 String varName = completeVariableName(param.name);
                 if (!parameters.containsKey(varName)) {
                     if (param.required) {
-                        if (requiredParametersNotFilled.length() > 0) {
-                            requiredParametersNotFilled.append(", ");
-                        }
-                        requiredParametersNotFilled.append(param.name);
+                        requiredParametersNotFilled.add(param.name);
                     } else {
                         parameters.put(varName, "");
                     }
                 }
             }
-            if (requiredParametersNotFilled.length() > 0) {
-                requiredParametersNotFilled.insert(0, "These parameters are required but not provided in " + releaseTestFile + " : ");
-                throw new IllegalArgumentException(requiredParametersNotFilled.toString());
+            if (!requiredParametersNotFilled.isEmpty()) {
+                String[] params = requiredParametersNotFilled.toArray(new String[requiredParametersNotFilled.size()]);
+                throw new IOException(computeMessageRequiredParameterNotProvided(releaseTestFile, params));
             }
 
             int beginIndex = templateFile.indexOf("<body>") + 6;
@@ -278,7 +319,7 @@ public class XmfManager {
                 boolean required = Boolean.parseBoolean(attributes.getValue("required"));
 
                 if (StringUtils.isBlank(name)) {
-                    throw new SAXException("parameter's name is blank in " + releaseTestFile);
+                    throw new SAXException(computeMessageParameterNameIsEmpty(releaseTestFile));
                 }
 
                 parameters.add(new Parameter(name, required));

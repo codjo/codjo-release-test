@@ -149,6 +149,9 @@ public final class ReleaseTestRunner {
               .println("§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§");
     }
 
+    static String getTooManyLevelsMessage() {
+        return "Too many levels in nested calls (maximum=" + MAX_NUMBER_OF_NESTED_CALLS + "). There might be a cycle in method calls (-> infinite loop).";
+    }
 
     static class AntGenerator {
         public static final String XML_PREFIX = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
@@ -298,7 +301,7 @@ public final class ReleaseTestRunner {
 
                 nbLevels++;
                 if (nbLevels > MAX_NUMBER_OF_NESTED_CALLS) {
-                    throw new IllegalStateException("Too many levels in nested calls (maximum=" + MAX_NUMBER_OF_NESTED_CALLS + "). There might be a cycle in method calls (-> infinite loop).");
+                    throw new IOException(getTooManyLevelsMessage());
                 }
             } while (nbMethodCalls > 0);
 

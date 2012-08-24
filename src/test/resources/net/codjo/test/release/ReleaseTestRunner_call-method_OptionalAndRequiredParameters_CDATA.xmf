@@ -1,0 +1,18 @@
+<method>
+    <description>
+        <parameters>
+            <parameter name="requiredParameter" required="true"/>
+            <parameter name="notRequiredParameter" required="false"/>
+        </parameters>
+    </description>
+    <body>
+        <gui-test>
+            <group name="test-textdata-group-tag">
+                @notRequiredParameter@
+            </group>
+            <group name="test-textdata-group-tag2">
+                @requiredParameter@
+            </group>
+        </gui-test>
+    </body>
+</method>
