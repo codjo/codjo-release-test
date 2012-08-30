@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<release-test name="TestParameterNameEmpty">
+    <description>Test appel d'une methode qui declare un nom de parametre vide</description>
+    <call-method file="ReleaseTestRunner_call-method_emptyName.xmf">
+    </call-method>
+</release-test>

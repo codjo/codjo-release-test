@@ -27,6 +27,12 @@ import org.xml.sax.SAXException;
  * @noinspection UseOfSystemOutOrSystemErr, CallToPrintStackTrace
  */
 public final class ReleaseTestRunner {
+    /**
+     * Maximum number of nested calls for methods.
+     * It's used to detect infinite loop.
+     */
+    private static final int MAX_NUMBER_OF_NESTED_CALLS = 10;
+
     private ReleaseTestRunner() {
     }
 
@@ -143,6 +149,9 @@ public final class ReleaseTestRunner {
               .println("§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§");
     }
 
+    static String getTooManyLevelsMessage() {
+        return "Too many levels in nested calls (maximum=" + MAX_NUMBER_OF_NESTED_CALLS + "). There might be a cycle in method calls (-> infinite loop).";
+    }
 
     static class AntGenerator {
         public static final String XML_PREFIX = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
@@ -258,14 +267,14 @@ public final class ReleaseTestRunner {
             try {
                 String testFileContent = loadContent(releaseTestFile);
                 String testFileContentManaged =
-                      manageMethods(releaseTestFile.getParentFile(), testFileContent);
+                      manageMethods(releaseTestFile.getParentFile(), testFileContent, releaseTestFile.getAbsolutePath());
                 generateAnt(testFileContentManaged, writer);
             }
             catch (ParserConfigurationException e) {
-                throw new IOException(e.getMessage());
+                throwIOException(e);
             }
             catch (SAXException e) {
-                throw new IOException(e.getMessage());
+                throwIOException(e);
             }
             finally {
                 writer.close();
@@ -273,11 +282,30 @@ public final class ReleaseTestRunner {
             return antFile;
         }
 
+        private void throwIOException(Exception rootCause) throws IOException {
+            IOException ioe = new IOException(rootCause.getMessage());
+            ioe.initCause(rootCause);
+            throw ioe;
+        }
 
-        private String manageMethods(File currentDir, String testFileContent)
+        private String manageMethods(File currentDir, String testFileContent, String releaseTestFile)
               throws IOException, ParserConfigurationException, SAXException {
-            XmfManager xmfManager = new XmfManager(currentDir);
-            return xmfManager.parse(testFileContent);
+
+            String result = testFileContent;
+            int nbMethodCalls;
+            int nbLevels = 0;
+            do {
+                XmfManager xmfManager = new XmfManager(currentDir, releaseTestFile);
+                result = xmfManager.parse(result);
+                nbMethodCalls = xmfManager.getNbMethodCalls();
+
+                nbLevels++;
+                if (nbLevels > MAX_NUMBER_OF_NESTED_CALLS) {
+                    throw new IOException(getTooManyLevelsMessage());
+                }
+            } while (nbMethodCalls > 0);
+
+            return result;
         }
     }
 }

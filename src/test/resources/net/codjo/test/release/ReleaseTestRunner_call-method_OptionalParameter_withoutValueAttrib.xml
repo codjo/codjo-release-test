@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<release-test name="RequiredParameter_noCDATA_noAttrib">
+    <description><![CDATA[Test avec un parametre optionnel non fourni]]></description>
+    <call-method file="ReleaseTestRunner_call-method_OptionalAndRequiredParameters.xmf">
+        <parameter name="requiredParameter" value="GABI"/>
+        <parameter name="notRequiredParameter"/>
+    </call-method>
+</release-test>

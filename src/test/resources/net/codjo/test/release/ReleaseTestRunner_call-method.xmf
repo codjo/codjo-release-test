@@ -3,7 +3,6 @@
         <parameters>
             <parameter name="user" required="true" comment="le user"/>
             <parameter name="code" comment="code � ex�cuter"/>
-            <parameter name="">fsdf</parameter>
         </parameters>
         <comment>
             Test du call-method

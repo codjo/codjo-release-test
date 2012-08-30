@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<release-test name="RequiredParameter_CDATA_noAttrib">
+    <description><![CDATA[Test avec un parametre optionnel non fourni]]></description>
+    <call-method file="ReleaseTestRunner_call-method_OptionalAndRequiredParameters_CDATA.xmf">
+        <parameter name="requiredParameter">
+            <![CDATA[
+                <arg value="-e"/>
+                <arg value="27042010"/>
+            ]]>
+        </parameter>
+    </call-method>
+</release-test>
