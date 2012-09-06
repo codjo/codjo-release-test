@@ -1,7 +1,22 @@
 package net.codjo.test.release.task.security;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.fail;
+import static net.codjo.database.common.api.confidential.DatabaseTranscoder.LONGVARCHAR;
+import static net.codjo.database.common.api.confidential.DatabaseTranscoder.INTEGER;
+
+import java.io.File;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.List;
+
+import junit.framework.Assert;
 import net.codjo.database.common.api.DatabaseFactory;
+import net.codjo.database.common.api.DatabaseScriptHelper;
 import net.codjo.database.common.api.JdbcFixture;
+import net.codjo.database.common.api.structure.SqlFieldDefinition;
 import net.codjo.database.common.api.structure.SqlTable;
+import net.codjo.database.common.api.structure.SqlTableDefinition;
 import net.codjo.test.common.FileComparator;
 import net.codjo.test.common.LogString;
 import net.codjo.test.common.fixture.DirectoryFixture;
@@ -9,12 +24,7 @@ import net.codjo.test.release.TestEnvironment;
 import net.codjo.test.release.TestEnvironmentMock;
 import net.codjo.test.release.task.util.RemoteCommandMock;
 import net.codjo.util.file.FileUtil;
-import java.io.File;
-import java.io.IOException;
-import java.sql.SQLException;
-import junit.framework.Assert;
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.fail;
+
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.junit.After;
@@ -242,11 +252,31 @@ public class SecurityModelTaskTest {
 
 
     private void createSecurityTable() throws SQLException {
-        jdbc.drop(SqlTable.table("PM_SEC_MODEL"));
-        jdbc.create(SqlTable.table("PM_SEC_MODEL"), "VERSION int  not null,"
-                                                    + "MODEL  text null");
+    	String tableName = "PM_SEC_MODEL";
+        jdbc.drop(SqlTable.table(tableName));
+        
+//        jdbc.create(SqlTable.table(tableName), "VERSION int  not null,"
+//                                                    + "MODEL  text null");
+        SqlTableDefinition sqlTableDefinition = new SqlTableDefinition(tableName);
+        List<SqlFieldDefinition> fields = Arrays.asList(new SqlFieldDefinition[]{
+        		field("VERSION", INTEGER, true, null),
+        		field("MODEL", LONGVARCHAR, false, "200"),
+        });
+        sqlTableDefinition.setSqlFieldDefinitions(fields);
+
+        DatabaseFactory databaseFactory = new DatabaseFactory();        
+        DatabaseScriptHelper sh = databaseFactory.createDatabaseScriptHelper();
+        String sql = sh.buildCreateTableScript(sqlTableDefinition);
+        jdbc.executeUpdate(sql);
     }
 
+    private static SqlFieldDefinition field(String name, String type, boolean required, String precision) {
+    	SqlFieldDefinition def = new SqlFieldDefinition(name);
+    	def.setType(type);
+    	def.setRequired(required);
+    	def.setPrecision(precision);
+    	return def;
+    }
 
     private void createTask() {
         task = new SecurityModelTask();
