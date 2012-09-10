@@ -158,7 +158,7 @@
             <groupId>com.googlecode.junit-ext</groupId>
             <artifactId>junit-ext</artifactId>
             <classifier>junit45</classifier>
-            <version>1.0-RC3</version>
+            <scope>test</scope>
         </dependency>
         
     </dependencies>
@@ -201,14 +201,6 @@
             </plugin>
         </plugins>
     </build>
-
-	<repositories>
-		<repository>
-			<id>repo-junit-ext</id>
-			<name>repository for JUnit-Ext</name>
-			<url>http://us3.maven.org:8081/nexus/content/repositories/public/</url>
-		</repository>
-	</repositories>
 
     <!--
     | Project Information
