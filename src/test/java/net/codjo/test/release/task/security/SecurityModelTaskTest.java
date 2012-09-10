@@ -42,9 +42,9 @@ public class SecurityModelTaskTest {
     public void setUp() throws Exception {
         jdbc = new DatabaseFactory().createJdbcFixture();
         jdbc.doSetUp();
+        directoryFixture.doSetUp();
         createSecurityTable();
         createTask();
-        directoryFixture.doSetUp();
 
         task.setRemoteCommand(new FtpCommandMock(log));
     }
@@ -260,14 +260,27 @@ public class SecurityModelTaskTest {
         SqlTableDefinition sqlTableDefinition = new SqlTableDefinition(tableName);
         List<SqlFieldDefinition> fields = Arrays.asList(new SqlFieldDefinition[]{
         		field("VERSION", INTEGER, true, null),
-        		field("MODEL", LONGVARCHAR, false, "200"),
+        		field("MODEL", LONGVARCHAR, false, null),
         });
         sqlTableDefinition.setSqlFieldDefinitions(fields);
 
         DatabaseFactory databaseFactory = new DatabaseFactory();        
         DatabaseScriptHelper sh = databaseFactory.createDatabaseScriptHelper();
         String sql = sh.buildCreateTableScript(sqlTableDefinition);
-        jdbc.executeUpdate(sql);
+        executeScript(sql);
+    }
+
+    protected void executeScript(String scriptContent) throws SQLException {
+        File scriptFile = new File(directoryFixture, "script.sql");
+        try {
+            FileUtil.saveContent(scriptFile, scriptContent);
+        }
+        catch (IOException e) {
+            SQLException sqle = new SQLException(e.getMessage());
+            sqle.initCause(e);
+            throw sqle;
+        }
+        jdbc.advanced().executeCreateTableScriptFile(scriptFile);
     }
 
     private static SqlFieldDefinition field(String name, String type, boolean required, String precision) {
