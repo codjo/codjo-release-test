@@ -72,9 +72,11 @@ public class SendMailTask extends AgfTask {
 
 //        msg.setDataHandler(new DataHandler(new ByteArrayDataSource(body, "text/html")));
         MimeMultipart mimeMultipart = new MimeMultipart();
-        MimeBodyPart contentsPart = new MimeBodyPart();
-        contentsPart.setContent(body, "text/html; charset=ISO-8859-1");
+        
+        MimeBodyPart contentsPart = new MimeBodyPart();        
+        contentsPart.setContent(body, "text/html; charset=UTF-8");
         mimeMultipart.addBodyPart(contentsPart);
+        
         msg.setContent(mimeMultipart);
 
         addAttachmentsToMultipart(mimeMultipart);
