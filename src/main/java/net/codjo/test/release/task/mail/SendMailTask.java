@@ -19,6 +19,8 @@ import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 import net.codjo.test.release.task.AgfTask;
 import org.apache.tools.ant.BuildException;
+import static net.codjo.test.common.PathUtil.normalize;
+
 /**
  *
  */
@@ -90,15 +92,14 @@ public class SendMailTask extends AgfTask {
     private void addAttachmentsToMultipart(MimeMultipart mimeMultipart) throws IOException, MessagingException {
         for (Attachment attachment : attachments) {
             MimeBodyPart attachmentPart = new MimeBodyPart();
-
-            File attachedFile = new File(attachment.getFile());
+            
+            File attachedFile = new File(normalize(attachment.getFile()));
             attachmentPart.setDataHandler(new DataHandler(new ByteArrayDataSource(new FileInputStream(attachedFile),
                                                                                   attachment.getType())));
             attachmentPart.setFileName(attachedFile.getName());
             mimeMultipart.addBodyPart(attachmentPart);
         }
     }
-
 
     public void setSubject(String subject) {
         this.subject = subject;

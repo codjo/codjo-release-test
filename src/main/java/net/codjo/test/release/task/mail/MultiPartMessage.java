@@ -43,6 +43,6 @@ public class MultiPartMessage extends Message {
 
 
     private String getTempFilename(String tmpDirectory, int attachmentIndex) {
-        return tmpDirectory + "\\" + System.currentTimeMillis() + "multipartFile" + attachmentIndex;
+        return tmpDirectory + File.separator + System.currentTimeMillis() + "multipartFile" + attachmentIndex;
     }
 }
