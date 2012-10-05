@@ -13,9 +13,15 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import com.googlecode.junit.ext.JunitExtRunner;
+import com.googlecode.junit.ext.RunIf;
 /**
  *
  */
+@RunWith(JunitExtRunner.class)
+@RunIf(value = ExcelChecker.class)
 public class AssertExcelTaskTest {
     private AssertExcelTask task;
 

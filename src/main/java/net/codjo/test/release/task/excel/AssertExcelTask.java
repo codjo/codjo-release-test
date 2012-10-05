@@ -49,7 +49,7 @@ public class AssertExcelTask extends AgfTask implements Resource {
 
 
     public void close() {
-        if (excelApplicationManager.isStarted()) {
+        if ((excelApplicationManager != null) && excelApplicationManager.isStarted()) {
             try {
                 excelApplicationManager.quit();
             }

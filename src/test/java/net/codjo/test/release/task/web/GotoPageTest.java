@@ -4,6 +4,8 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
  *
  */
 public class GotoPageTest extends WebStepTestCase {
+	private static final String LINE_SEPARATOR = System.getProperty("line.separator");
+	
     public void test() throws Exception {
         addPage("new.html", wrapHtml("Target title", "Target content"));
         WebContext context = loadPage(wrapHtml("Source content"));
@@ -15,7 +17,7 @@ public class GotoPageTest extends WebStepTestCase {
         step.proceed(context);
 
         HtmlPage newPage = context.getHtmlPage();
-        assertEquals("Target title\r\nTarget content", newPage.asText());
+        assertEquals("Target title" + LINE_SEPARATOR + "Target content", newPage.asText());
     }
 
 

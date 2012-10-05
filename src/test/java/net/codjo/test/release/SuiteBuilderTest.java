@@ -13,6 +13,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class SuiteBuilderTest {
+	private static final String LINE_SEPARATOR = System.getProperty("line.separator");
+	
     private File logFile;
     private String testReleaseDirectoryPath = "./target/fred";
 
@@ -34,13 +36,12 @@ public class SuiteBuilderTest {
 
 
     static List<String> processLogContent(String logContent) {
-        final String retour = "\r\n";
         List<String> objects = new ArrayList<String>();
         StringTokenizer tokenizer = new StringTokenizer(logContent, TestReport.TAB, false);
         while (tokenizer.hasMoreTokens()) {
             String token = tokenizer.nextToken();
-            if (!(retour.equals(token))) {
-                objects.add(token.replaceAll(retour, ""));
+            if (!(LINE_SEPARATOR.equals(token))) {
+                objects.add(token.replaceAll(LINE_SEPARATOR, ""));
             }
         }
         return objects;
@@ -62,7 +63,7 @@ public class SuiteBuilderTest {
 
     @Test
     public void test_processLogContent() throws Exception {
-        String content = "name1\tname2\t\r\nval1\tval2\t\r\n";
+        String content = "name1\tname2\t" + LINE_SEPARATOR + "val1\tval2\t" + LINE_SEPARATOR;
         List<String> elements = processLogContent(content);
         assertThat(elements.size(), equalTo(4));
         assertThat(elements.get(0), equalTo("name1"));

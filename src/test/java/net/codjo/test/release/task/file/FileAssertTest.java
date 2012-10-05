@@ -396,7 +396,7 @@ public class FileAssertTest {
 
     private String toFilePath(String fileName) {
         String resourcePath = PathUtil.findResourcesFileDirectory(getClass()).getPath();
-        return new File(resourcePath, fileName).getPath().replace('/', '\\');
+        return new File(resourcePath, fileName).getPath();
     }
 
 

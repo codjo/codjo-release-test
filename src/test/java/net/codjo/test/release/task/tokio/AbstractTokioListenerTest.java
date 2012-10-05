@@ -1,13 +1,17 @@
 package net.codjo.test.release.task.tokio;
-import static net.codjo.test.common.matcher.JUnitMatchers.*;
-import net.codjo.test.release.TestReport;
-import net.codjo.util.file.FileUtil;
+import static net.codjo.test.common.matcher.JUnitMatchers.assertThat;
+import static net.codjo.test.common.matcher.JUnitMatchers.equalTo;
+
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
+
+import net.codjo.test.release.TestReport;
+import net.codjo.util.file.FileUtil;
+
 import org.apache.tools.ant.BuildEvent;
 import org.apache.tools.ant.Task;
 
@@ -18,7 +22,8 @@ public abstract class AbstractTokioListenerTest {
 
 
     protected static List<String> processLogContent(String logContent) {
-        final String retour = "\r\n";
+        final String retour = System.getProperty("line.separator");
+
         List<String> objects = new ArrayList<String>();
         StringTokenizer tokenizer = new StringTokenizer(logContent, TestReport.TAB, false);
         while (tokenizer.hasMoreTokens()) {

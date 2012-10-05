@@ -142,13 +142,25 @@
             <artifactId>DJNativeSwing</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.eclipse</groupId>
-            <artifactId>swt</artifactId>
+	        <groupId>${swt.groupId}</groupId>
+	        <artifactId>${swt.artifactId}</artifactId>
         </dependency>
+		<dependency>
+		    <groupId>net.java.dev.jna</groupId>
+		    <artifactId>jna</artifactId>
+		</dependency>	    	
         <dependency>
             <groupId>com.moxiecode</groupId>
             <artifactId>tinymce</artifactId>
         </dependency>
+        
+        <dependency>
+            <groupId>com.googlecode.junit-ext</groupId>
+            <artifactId>junit-ext</artifactId>
+            <classifier>junit45</classifier>
+            <scope>test</scope>
+        </dependency>
+        
     </dependencies>
 
     <!--

@@ -17,7 +17,13 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+ 
+import com.googlecode.junit.ext.JunitExtRunner;
+import com.googlecode.junit.ext.RunIf;
+import com.googlecode.junit.ext.checkers.OSChecker;
 
+@RunWith(JunitExtRunner.class)
 public class CleanupTaskTest {
     private CleanupTask cleanupTask;
     private Project project = new Project();
@@ -151,7 +157,12 @@ public class CleanupTaskTest {
     }
 
 
+    /**
+     * Since only Windows is locking files, ignore that test on other OSes.
+     * @throws Exception
+     */
     @Test
+    @RunIf(value = OSChecker.class, arguments = OSChecker.WINDOWS)
     public void test_couldNotDeleteLocalFile() throws Exception {
         File file = new File(localDir, "lockedFile.txt");
         file.createNewFile();

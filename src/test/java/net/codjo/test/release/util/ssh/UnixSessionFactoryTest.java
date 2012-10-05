@@ -1,14 +1,22 @@
 package net.codjo.test.release.util.ssh;
 import static net.codjo.test.release.util.ssh.SshTestConstants.SAM_HOST;
 import static net.codjo.test.release.util.ssh.SshTestConstants.SAM_LOGIN;
-import com.jcraft.jsch.Session;
+import net.codjo.test.release.util.ssh.SshTestConstants.SAMChecker;
+
 import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import com.googlecode.junit.ext.JunitExtRunner;
+import com.googlecode.junit.ext.RunIf;
+import com.jcraft.jsch.Session;
 /**
  *
  */
+@RunWith(JunitExtRunner.class)
 public class UnixSessionFactoryTest {
 
     @Test
+    @RunIf(value = SAMChecker.class)
     public void test_connect_to_wd_sam() throws Exception {
         UnixSessionFactory unixSessionFactory = new UnixSessionFactory(SAM_LOGIN, SAM_HOST);
 
