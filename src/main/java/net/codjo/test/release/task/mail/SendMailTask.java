@@ -19,7 +19,8 @@ import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 import net.codjo.test.release.task.AgfTask;
 import org.apache.tools.ant.BuildException;
-import static net.codjo.test.common.PathUtil.normalize;
+
+import static net.codjo.util.file.PathUtil.normalize;
 
 /**
  *
