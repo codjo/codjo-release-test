@@ -145,10 +145,6 @@
 	        <groupId>${swt.groupId}</groupId>
 	        <artifactId>${swt.artifactId}</artifactId>
         </dependency>
-		<dependency>
-		    <groupId>net.java.dev.jna</groupId>
-		    <artifactId>jna</artifactId>
-		</dependency>	    	
         <dependency>
             <groupId>com.moxiecode</groupId>
             <artifactId>tinymce</artifactId>
