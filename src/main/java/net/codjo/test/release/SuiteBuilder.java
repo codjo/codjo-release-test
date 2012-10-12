@@ -9,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.Enumeration;
+import java.util.List;
 import junit.framework.Test;
 import junit.framework.TestFailure;
 import junit.framework.TestResult;
@@ -52,7 +53,7 @@ public class SuiteBuilder {
     }
 
 
-    public Test createSuite(File baseDir, File testDirectory) {
+    public XTest createSuite(File baseDir, File testDirectory) {
         ReleaseTestHelper helper = new ReleaseTestHelper(baseDir, testDirectory);
         return new CatchErrorTest(helper.getAllTests());
     }
@@ -77,8 +78,9 @@ public class SuiteBuilder {
     }
 
 
-    private class CatchErrorTest implements Test {
+    private class CatchErrorTest implements XTest {
         private TestSuite testSuite;
+        private XTest extendedTest;
 
 
         CatchErrorTest(Test innerTest) {
@@ -86,6 +88,10 @@ public class SuiteBuilder {
             for (int testIndex = 0; testIndex < ((TestSuite)innerTest).testCount(); testIndex++) {
                 Test test = ((TestSuite)innerTest).testAt(testIndex);
                 testSuite.addTest(new LoggerTest(test));
+            }
+
+            if (innerTest instanceof XTest) {
+                extendedTest = (XTest)innerTest;
             }
         }
 
@@ -107,6 +113,11 @@ public class SuiteBuilder {
             finally {
                 testReport.close();
             }
+        }
+
+
+        public List<ReleaseTest> getIgnoredTests() {
+            return (extendedTest == null) ? null : extendedTest.getIgnoredTests();
         }
     }
 

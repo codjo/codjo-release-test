@@ -1,13 +1,17 @@
 package net.codjo.test.release;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import net.codjo.test.common.fixture.CompositeFixture;
 import net.codjo.test.common.fixture.DirectoryFixture;
@@ -17,7 +21,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static net.codjo.test.release.XmfManager.*;
+import static net.codjo.test.release.XmfManager.computeMessageDuplicateParameterValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -44,6 +48,16 @@ public class ReleaseTestRunnerTest {
         fixture.doTearDown();
     }
 
+
+    @Test
+    public void test_NoIgnoredTest() throws Exception {
+        test_IgnoredTests(0);
+    }
+
+    @Test
+    public void test_OneIgnoredTest() throws Exception {
+        test_IgnoredTests(1);
+    }
 
     @Test
     public void test_executeAllTestRelease() throws Exception {
@@ -366,12 +380,52 @@ public class ReleaseTestRunnerTest {
     }
 
 
-    private File createCase(File useCaseDir, String id)
+    private void test_IgnoredTests(int numberOfTestsToIgnore) throws Exception {
+        // create tests
+        File useCaseDir = new File(directory, "uneFonction");
+        useCaseDir.mkdir();
+
+        createCase(useCaseDir, "aCase");
+        createCase(useCaseDir, "anotherCase");
+
+        List<String> ignoredTests = new ArrayList<String>();
+        for (int i = 0; i < numberOfTestsToIgnore; i++) {
+            File f = createCase(useCaseDir, "anIgnoredTest" + i, false);
+            String name = f.getName();
+            File caseFile = new File(f.getParentFile(), name.substring(0, name.lastIndexOf('.') + 1) + "xml");
+            ignoredTests.add(ReleaseTest.computeTestName(caseFile));
+        }
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream out = new PrintStream(baos);
+
+        // run tests
+        new ReleaseTestRunner(out).executeAllReleaseTest(directory);
+
+        // do assertions
+        String actual = baos.toString();
+        String expected = ReleaseTestRunner.buildMessageIgnoredTests(ignoredTests);
+        for (String test : ignoredTests) {
+            // assert that the expected message contains the ignored test name
+            assertContains("expectedMessage", test, expected);
+        }
+        assertContains("output", expected, actual);
+    }
+
+    private void assertContains(String actualName, String expectedSubString, String actual) {
+        assertTrue(actualName + " must contains '" + expectedSubString + "' actual='" + actual + "'", actual.contains(expectedSubString));
+    }
+
+    private File createCase(File useCaseDir, String id) throws IOException {
+        return createCase(useCaseDir, id, true);
+    }
+
+    private File createCase(File useCaseDir, String id, boolean enabled)
           throws IOException {
         File firstTouchedFile = new File(useCaseDir, id + ".txt");
 
         String firstCase;
-        firstCase = "<release-test>";
+        firstCase = "<release-test enabled=\"" + Boolean.toString(enabled) + "\">";
         firstCase += "   <touch file='" + firstTouchedFile + "'/>";
         firstCase += "   <echoproperties destfile='" + firstTouchedFile + "'";
         firstCase += "                   failonerror='false'/>";

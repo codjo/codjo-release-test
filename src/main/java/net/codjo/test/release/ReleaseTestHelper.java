@@ -36,7 +36,7 @@ public class ReleaseTestHelper {
      *
      * @return le test agrégé
      */
-    public Test getAllTests() {
+    public XTest getAllTests() {
         DirectoryScanner ds = new DirectoryScanner();
         ds.setBasedir(srcDir);
         ds.setCaseSensitive(false);
@@ -46,13 +46,15 @@ public class ReleaseTestHelper {
 
         String[] relativeFilePathArray = ds.getIncludedFiles();
 
-        TestSuite suite = new TestSuite();
+        XTestSuite suite = new XTestSuite();
 
         for (String relativeFilePath : relativeFilePathArray) {
             File file = new File(srcDir, relativeFilePath);
             final ReleaseTest releaseTest = new ReleaseTest(baseDir, file);
             if (releaseTest.isEnabled()) {
                 suite.addTest(releaseTest);
+            } else {
+                suite.addIgnoredTest(releaseTest);
             }
         }
 
