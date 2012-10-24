@@ -1,6 +1,5 @@
 package net.codjo.test.release.task.gui.finder;
 
-import static net.codjo.test.common.matcher.JUnitMatchers.*;
 import java.awt.Component;
 import java.awt.Window;
 import javax.swing.JDesktopPane;
@@ -12,6 +11,8 @@ import javax.swing.JPanel;
 import javax.swing.JWindow;
 import javax.swing.RootPaneContainer;
 import junit.extensions.jfcunit.JFCTestCase;
+
+import static net.codjo.test.common.matcher.JUnitMatchers.*;
 
 public class FastGlassPaneComponentFinderTest extends JFCTestCase {
     private static final String TARGET_NAME = "target";
@@ -26,43 +27,42 @@ public class FastGlassPaneComponentFinderTest extends JFCTestCase {
 
 
     public void testNotFindGlassPaneJDialog() {
-        JDialog dialog = new JDialog();
-        dialog.setName(TARGET_NAME);
-        dialog.setVisible(true);
-        assertThat(finder.findOnlyOne(), nullValue());
+        assertGlassPaneNotFound(new JDialog());
     }
 
 
-    public void testFindGlassPaneJDialog() throws InterruptedException {
-        JDialog dialog = new JDialog();
-        assertGlassPaneFound(dialog);
+    public void testFindGlassPaneJDialog() {
+        assertGlassPaneFound(new JDialog());
+    }
+
+
+    public void testNotFindGlassPaneJFrame() {
+        assertGlassPaneNotFound(new JFrame());
     }
 
 
     public void testFindGlassPaneJFrame() {
-        JFrame frame = new JFrame();
-        assertGlassPaneFound(frame);
+        assertGlassPaneFound(new JFrame());
+    }
+
+
+    public void testNotFindGlassPaneJWindow() {
+        assertGlassPaneNotFound(new JWindow());
     }
 
 
     public void testFindGlassPaneJWindow() {
-        JWindow window = new JWindow();
-        assertGlassPaneFound(window);
+        assertGlassPaneFound(new JWindow());
     }
 
 
     public void testFindGlassPaneJInternalFrame() {
-        JFrame frame = new JFrame();
-        JDesktopPane desktop = new JDesktopPane();
-        frame.add(desktop);
-        JInternalFrame internalFrame = new JInternalFrame();
-        desktop.add(internalFrame);
-        internalFrame.setVisible(true);
+        testFindGlassPaneJInternalFrame(true);
+    }
 
-        Component target = buildGlassPane(internalFrame);
-        Component found = findGlassPane(frame);
-        internalFrame.dispose();
-        assertThat(found, is(target));
+
+    public void testNotFindGlassPaneJInternalFrame() {
+        testFindGlassPaneJInternalFrame(false);
     }
 
 
@@ -122,10 +122,28 @@ public class FastGlassPaneComponentFinderTest extends JFCTestCase {
     }
 
 
+    private <T extends Window & RootPaneContainer> void assertGlassPaneNotFound(T window) {
+		try {
+			window.setName(TARGET_NAME);
+			window.setVisible(true);
+			Component found = finder.findOnlyOne();
+			assertThat(found, nullValue());
+		} finally {
+			// It's only needed for JWindow but it doesn't hurt to free resources earlier.
+			window.dispose();
+		}
+    }
+
+
     private <T extends Window & RootPaneContainer> void assertGlassPaneFound(T window) {
-        Component target = buildGlassPane(window);
-        Component found = findGlassPane(window);
-        assertThat(found, is(target));
+		try {
+			Component target = buildGlassPane(window);
+			Component found = findGlassPane(window);
+			assertThat(found, is(target));
+		} finally {
+			// It's not really needed, even for JWindow, but it doesn't hurt to free resources earlier.
+			window.dispose();
+		}
     }
 
 
@@ -161,5 +179,30 @@ public class FastGlassPaneComponentFinderTest extends JFCTestCase {
         frame.add(desktop);
         frame.pack();
         frame.setVisible(true);
+    }
+
+
+    private void testFindGlassPaneJInternalFrame(boolean mustBeFound) {
+        JFrame frame = new JFrame();
+        JDesktopPane desktop = new JDesktopPane();
+        frame.add(desktop);
+        JInternalFrame internalFrame = new JInternalFrame();
+        desktop.add(internalFrame);
+        internalFrame.setVisible(true);
+
+        if (mustBeFound) {
+            // here the glasspane must be found
+            Component target = buildGlassPane(internalFrame);
+            Component found = findGlassPane(frame);
+            internalFrame.dispose();
+            assertThat(found, is(target));
+        }
+        else {
+            // here the glasspane must NOT be found
+            internalFrame.setName(TARGET_NAME);
+            Component found = findGlassPane(frame);
+            internalFrame.dispose();
+            assertThat(found, nullValue());
+        }
     }
 }

@@ -9,15 +9,18 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.PrintStream;
 import java.io.Reader;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
-import junit.framework.Test;
 import junit.framework.TestResult;
 import net.codjo.test.release.ant.AntRunner;
 import net.codjo.test.release.task.tokio.TokioInsertListener;
 import net.codjo.test.release.task.tokio.TokioLoadListener;
 import net.codjo.util.file.FileUtil;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.tools.ant.Project;
 import org.xml.sax.SAXException;
 /**
@@ -33,9 +36,15 @@ public final class ReleaseTestRunner {
      */
     private static final int MAX_NUMBER_OF_NESTED_CALLS = 10;
 
+    private final PrintStream out;
+
     private ReleaseTestRunner() {
+        this(System.out);
     }
 
+    ReleaseTestRunner(PrintStream out) {
+        this.out = out;
+    }
 
     public static void main(String[] args) {
         File pathFile = new File(args[0]);
@@ -62,17 +71,44 @@ public final class ReleaseTestRunner {
         info("Execution des test contenus dans " + releaseTestDirectory.getAbsolutePath());
 
         SuiteBuilder suiteBuilder = new SuiteBuilder();
-        Test testSuite = suiteBuilder.createSuite(new File("."), releaseTestDirectory);
+        XTest testSuite = suiteBuilder.createSuite(new File("."), releaseTestDirectory);
 
         info("" + testSuite.countTestCases() + " tests release trouvés ! ");
 
         TestResult testResult = junit.textui.TestRunner.run(testSuite);
+
+        out.print(buildMessageIgnoredTests(testSuite));
+
         int errorCount = testResult.errorCount();
         if (errorCount != 0) {
             System.exit(-errorCount);
         }
     }
 
+    private String buildMessageIgnoredTests(XTest testSuite) {
+        List<String> tests = new ArrayList<String>();
+        if (CollectionUtils.isNotEmpty(testSuite.getIgnoredTests())) {
+            for (ReleaseTest test : testSuite.getIgnoredTests()) {
+                tests.add(test.getName());
+            }
+        }
+        return buildMessageIgnoredTests(tests);
+    }
+
+    static String buildMessageIgnoredTests(List<String> ignoredTests) {
+        StringBuilder result = new StringBuilder();
+
+        if (CollectionUtils.isNotEmpty(ignoredTests)) {
+            result.append("***************************************\n");
+            result.append("** WARNING : ").append(ignoredTests.size()).append(" tests release ignorés :\n");
+            for (String test : ignoredTests) {
+                result.append("** - ").append(test).append('\n');
+            }
+            result.append("***************************************\n");
+        }
+
+        return result.toString();
+    }
 
     public static void executeTestFile(File baseDir, File releaseTestFile)
           throws IOException {

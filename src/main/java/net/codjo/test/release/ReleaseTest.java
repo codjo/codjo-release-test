@@ -29,11 +29,10 @@ public class ReleaseTest extends TestCase {
         this.baseDir = baseDir;
         this.file = file;
 
-        setName(computeTestName());
+        setName(computeTestName(file));
     }
 
-
-    private String computeTestName() {
+    static String computeTestName(File file) {
         String name = file.getName();
         if (name.endsWith(RELEASE_TEST_EXTENSION)) {
             name = name.substring(0, name.length() - RELEASE_TEST_EXTENSION.length());
