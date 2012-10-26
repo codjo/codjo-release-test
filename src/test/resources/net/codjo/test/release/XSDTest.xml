@@ -128,18 +128,24 @@
     <!-- Tâches web -->
     <web-test url="http://www.example.com/">
         <assertCheckBox id="id" checked="false"/>
+        <assertCheckBox xpath="//id" checked="false"/>
         <assertLink>texte</assertLink>
         <assertLink target="cible.html"/>
         <assertPage title="titre"/>
         <assertPresent id="id" present="false"/>
+        <assertPresent xpath="//a[@id='toto'" present="false"/>
         <assertTable id="id" excludedRows="0,1" excludedColumns="2,3">|table|content|</assertTable>
         <assertTable position="1"/>
         <assertText>texte</assertText>
         <assertText containerId="container" present="false">texte</assertText>
+        <assertText containerXpath="//container" present="false">texte</assertText>
         <clickButton id="id"/>
+        <clickButton xpath="//input[0]"/>
         <clickCheckBox id="id"/>
+        <clickCheckBox xpath="//a"/>
         <clickLink id="id"/>
         <clickLink text="texte"/>
+        <clickLink xpath="texte"/>
         <downloadFile link="lien" target="cible.txt"/>
         <gotoPage url="http://www.example.net"/>
         <refresh/>

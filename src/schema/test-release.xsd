@@ -231,7 +231,8 @@
             </xs:attribute>
             <xs:attribute name="nullFirst" type="xs:boolean">
                 <xs:annotation>
-                    <xs:documentation xml:lang="fr">true si on veut que les valeurs nulles apparaissent en tête lors du tri.
+                    <xs:documentation
+                          xml:lang="fr">true si on veut que les valeurs nulles apparaissent en tête lors du tri.
                         (true par defaut)
                     </xs:documentation>
                 </xs:annotation>
@@ -735,9 +736,14 @@
                 <xs:element name="assertAlert" type="xs:string"/>
                 <xs:element name="assertCheckBox">
                     <xs:complexType>
-                        <xs:attribute name="id" type="xs:string" use="required"/>
+                        <xs:attribute name="id" type="xs:string"/>
+                        <xs:attribute name="xpath" type="xs:string"/>
                         <xs:attribute name="checked" type="xs:boolean" use="required"/>
                     </xs:complexType>
+                    <xs:key name="assertCheckBoxAttribut">
+                        <xs:selector xpath="."/>
+                        <xs:field xpath="@id|@xpath"/>
+                    </xs:key>
                 </xs:element>
                 <xs:element name="assertLink">
                     <xs:complexType>
@@ -761,9 +767,14 @@
                 </xs:element>
                 <xs:element name="assertPresent">
                     <xs:complexType>
-                        <xs:attribute name="id" type="xs:string" use="required"/>
+                        <xs:attribute name="id" type="xs:string"/>
+                        <xs:attribute name="xpath" type="xs:string"/>
                         <xs:attribute name="present" type="xs:boolean"/>
                     </xs:complexType>
+                    <xs:key name="assertPresentAttribut">
+                        <xs:selector xpath="."/>
+                        <xs:field xpath="@id|@xpath"/>
+                    </xs:key>
                 </xs:element>
                 <xs:element name="assertTable">
                     <xs:complexType>
@@ -786,10 +797,15 @@
                         <xs:simpleContent>
                             <xs:extension base="xs:string">
                                 <xs:attribute name="containerId" type="xs:string"/>
+                                <xs:attribute name="containerXpath" type="xs:string"/>
                                 <xs:attribute name="present" type="xs:boolean"/>
                             </xs:extension>
                         </xs:simpleContent>
                     </xs:complexType>
+                    <xs:key name="assertTextAttribut">
+                        <xs:selector xpath="."/>
+                        <xs:field xpath="@containerId|@containerXpath"/>
+                    </xs:key>
                 </xs:element>
                 <xs:element name="assertImage">
                     <xs:complexType>
@@ -865,22 +881,36 @@
                 </xs:element>
                 <xs:element name="clickButton">
                     <xs:complexType>
-                        <xs:attribute name="id" type="xs:string" use="required"/>
+                        <xs:attribute name="id" type="xs:string"/>
+                        <xs:attribute name="xpath" type="xs:string"/>
+                        <xs:attribute name="waitForBackgroundJavaScript" type="xs:integer"/>
                     </xs:complexType>
+                    <xs:key name="clickButtonAttribut">
+                        <xs:selector xpath="."/>
+                        <xs:field xpath="@id|@xpath"/>
+                    </xs:key>
+
                 </xs:element>
                 <xs:element name="clickCheckBox">
                     <xs:complexType>
                         <xs:attribute name="id" type="xs:string"/>
+                        <xs:attribute name="xpath" type="xs:string"/>
                     </xs:complexType>
+                    <xs:key name="clickCheckboxAttribut">
+                        <xs:selector xpath="."/>
+                        <xs:field xpath="@id|@xpath"/>
+                    </xs:key>
                 </xs:element>
                 <xs:element name="clickLink">
                     <xs:complexType>
                         <xs:attribute name="id" type="xs:string"/>
                         <xs:attribute name="text" type="xs:string"/>
+                        <xs:attribute name="xpath" type="xs:string"/>
+                        <xs:attribute name="waitForBackgroundJavaScript" type="xs:integer"/>
                     </xs:complexType>
                     <xs:key name="clickLinkAttribut">
                         <xs:selector xpath="."/>
-                        <xs:field xpath="@id|@text"/>
+                        <xs:field xpath="@id|@text|@xpath"/>
                     </xs:key>
                 </xs:element>
                 <xs:element name="downloadFile">
