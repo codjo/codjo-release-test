@@ -141,6 +141,8 @@
         <assertText containerXpath="//container" present="false">texte</assertText>
         <clickButton id="id"/>
         <clickButton xpath="//input[0]"/>
+        <click id="id"/>
+        <click xpath="//input[0]"/>
         <clickCheckBox id="id"/>
         <clickCheckBox xpath="//a"/>
         <clickLink id="id"/>

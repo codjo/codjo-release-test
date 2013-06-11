@@ -889,7 +889,17 @@
                         <xs:selector xpath="."/>
                         <xs:field xpath="@id|@xpath"/>
                     </xs:key>
-
+                </xs:element>
+                <xs:element name="click">
+                    <xs:complexType>
+                        <xs:attribute name="id" type="xs:string"/>
+                        <xs:attribute name="xpath" type="xs:string"/>
+                        <xs:attribute name="waitForBackgroundJavaScript" type="xs:integer"/>
+                    </xs:complexType>
+                    <xs:key name="clickAttribut">
+                        <xs:selector xpath="."/>
+                        <xs:field xpath="@id|@xpath"/>
+                    </xs:key>
                 </xs:element>
                 <xs:element name="clickCheckBox">
                     <xs:complexType>
@@ -912,7 +922,7 @@
                         <xs:selector xpath="."/>
                         <xs:field xpath="@id|@text|@xpath"/>
                     </xs:key>
-                </xs:element>
+                    </xs:element>
                 <xs:element name="downloadFile">
                     <xs:complexType>
                         <xs:attribute name="link" type="xs:string" use="required"/>
