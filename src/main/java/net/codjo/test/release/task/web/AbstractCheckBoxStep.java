@@ -1,6 +1,5 @@
 package net.codjo.test.release.task.web;
 import com.gargoylesoftware.htmlunit.ElementNotFoundException;
-import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlCheckBoxInput;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import java.io.IOException;
@@ -16,7 +15,7 @@ public abstract class AbstractCheckBoxStep implements WebStep {
 
     public void proceed(WebContext context) throws IOException {
         HtmlElement element;
-        ComponentFinder<HtmlAnchor> finder = new ComponentFinder<HtmlAnchor>(null, id, xpath);
+        ComponentFinder<HtmlElement> finder = new ComponentFinder<HtmlElement>(null, id, xpath);
         final ResultHandler resultHandler = buildResultHandler();
         try {
             element = finder.find(context, resultHandler);
