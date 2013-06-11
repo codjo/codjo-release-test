@@ -20,11 +20,11 @@ public class ClickLink implements WebStep {
 
     public void proceed(WebContext context) throws IOException {
         try {
-            HtmlAnchor anchor = findAnchor(context);
+            HtmlElement element = findAnchor(context);
             if (waitForBackgroundJavaScript != null) {
                 context.getWebClient().waitForBackgroundJavaScript(waitForBackgroundJavaScript);
             }
-            HtmlPage click = (HtmlPage)anchor.click();
+            HtmlPage click = (HtmlPage)element.click();
             context.setPage(click);
         }
         catch (FailingHttpStatusCodeException e) {
@@ -34,8 +34,8 @@ public class ClickLink implements WebStep {
     }
 
 
-    private HtmlAnchor findAnchor(WebContext context) {
-        ComponentFinder<HtmlAnchor> finder = new ComponentFinder<HtmlAnchor>(text, id, xpath);
+    private HtmlElement findAnchor(WebContext context) {
+        ComponentFinder<HtmlElement> finder = new ComponentFinder<HtmlElement>(text, id, xpath);
         final ResultHandler resultHandler = buildResultHandler();
         try {
             return finder.find(context, resultHandler);

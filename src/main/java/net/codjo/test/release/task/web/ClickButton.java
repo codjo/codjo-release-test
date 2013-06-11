@@ -1,6 +1,5 @@
 package net.codjo.test.release.task.web;
 import com.gargoylesoftware.htmlunit.ElementNotFoundException;
-import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlButtonInput;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -19,11 +18,10 @@ public class ClickButton implements WebStep {
     public void proceed(WebContext context) throws IOException {
         try {
             HtmlElement element = findButton(context);
-            HtmlButtonInput button = (HtmlButtonInput)element;
             if (waitForBackgroundJavaScript != null) {
                 context.getWebClient().waitForBackgroundJavaScript(waitForBackgroundJavaScript);
             }
-            context.setPage((HtmlPage)button.click());
+            context.setPage((HtmlPage)element.click());
         }
         catch (ElementNotFoundException e) {
             throw new WebException("Aucun élément trouvé avec l'identifiant: " + id);
@@ -32,7 +30,7 @@ public class ClickButton implements WebStep {
 
 
     private HtmlElement findButton(WebContext context) {
-        ComponentFinder<HtmlAnchor> finder = new ComponentFinder<HtmlAnchor>(null, id, xpath);
+        ComponentFinder<HtmlElement> finder = new ComponentFinder<HtmlElement>(null, id, xpath);
         final ResultHandler resultHandler = buildResultHandler();
         try {
             return finder.find(context, resultHandler);
