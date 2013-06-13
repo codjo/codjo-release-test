@@ -12,15 +12,11 @@ import net.codjo.test.release.task.web.finder.ResultHandler;
 public class ClickButton implements WebStep {
     private String id;
     private String xpath;
-    private Integer waitForBackgroundJavaScript=null;
 
 
     public void proceed(WebContext context) throws IOException {
         try {
             HtmlElement element = findButton(context);
-            if (waitForBackgroundJavaScript != null) {
-                context.getWebClient().waitForBackgroundJavaScript(waitForBackgroundJavaScript);
-            }
             context.setPage((HtmlPage)element.click());
         }
         catch (ElementNotFoundException e) {
@@ -48,11 +44,6 @@ public class ClickButton implements WebStep {
 
     public void setXpath(String xpath) {
         this.xpath = xpath;
-    }
-
-
-    public void setWaitForBackgroundJavaScript(Integer waitForBackgroundJavaScript) {
-        this.waitForBackgroundJavaScript = waitForBackgroundJavaScript;
     }
 
 

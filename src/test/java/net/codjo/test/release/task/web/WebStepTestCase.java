@@ -20,6 +20,7 @@ public abstract class WebStepTestCase extends TestCase {
         server = getServer();
         String path = getName() + ".html";
         server.addPage(path, content);
+        //TODO - Beware this WebClient is Internet Explorer 7 by default see WebTask.getWebContext()
         WebClient webClient = new WebClient();
         String url = server.getUrl(path);
         return new WebContext(webClient.getPage(url), webClient, project);

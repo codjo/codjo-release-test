@@ -3,29 +3,50 @@ import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import java.io.IOException;
+import java.util.Map;
 import net.codjo.test.release.task.web.finder.ComponentFinder;
 import net.codjo.test.release.task.web.finder.ResultHandler;
 /**
  *
  */
-public class Click implements WebStep {
-    private String id;
-    private String xpath;
+public class DragAndDrop implements WebStep {
+    private DragAndDropArg origin;
+    private DragAndDropArg destination;
 
 
-    public void proceed(WebContext context) throws IOException {
-        try {
-            HtmlElement element = findElement(context);
-            context.setPage((HtmlPage)element.click());
-        }
-        catch (ElementNotFoundException e) {
-            throw new WebException("Aucun élément trouvé avec l'identifiant: " + id);
-        }
+    public DragAndDrop() {
     }
 
 
-    private HtmlElement findElement(WebContext context) {
-        ComponentFinder<HtmlElement> finder = new ComponentFinder<HtmlElement>(null, id, xpath);
+    public void proceed(WebContext context) throws IOException {
+        validateParameters();
+        HtmlElement originElement = findElement(context, origin);
+        HtmlElement destinationElement = findElement(context, destination);
+
+        context.setPage((HtmlPage)originElement.mouseDown());
+        context.setPage((HtmlPage)destinationElement.mouseMove());
+        context.setPage((HtmlPage)destinationElement.mouseUp());
+    }
+
+
+    void validateParameters() throws WebException {
+    }
+
+
+    public void addOrigin(DragAndDropArg arg) {
+        this.origin = arg;
+    }
+
+
+    public void addDestination(DragAndDropArg arg) {
+        this.destination = arg;
+    }
+
+
+    private HtmlElement findElement(WebContext context, DragAndDropArg element) {
+        Map<String, String> parameters = DragAndDropArg.toArgumentMap(element);
+
+        ComponentFinder<HtmlElement> finder = new ComponentFinder<HtmlElement>(parameters);
         final ResultHandler resultHandler = buildResultHandler();
         try {
             return finder.find(context, resultHandler);
@@ -36,16 +57,6 @@ public class Click implements WebStep {
     }
 
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-
-    public void setXpath(String xpath) {
-        this.xpath = xpath;
-    }
-
-
     private ResultHandler buildResultHandler() {
         return new ResultHandler() {
             public void handleElementFound(HtmlElement element, String key) throws WebException {
@@ -53,14 +64,7 @@ public class Click implements WebStep {
 
 
             public String getErrorMessage(final String key) {
-                String type = "";
-                if (id != null) {
-                    type = "l'identifiant: ";
-                }
-                if (xpath != null) {
-                    type = "l'expression xpath: ";
-                }
-                return "Aucun élément trouvé avec " + type + key;
+                return "Aucun élément trouvé avec la clé: " + key;
             }
 
 

@@ -15,15 +15,11 @@ public class ClickLink implements WebStep {
     private String text;
     private String id;
     private String xpath;
-    private Integer waitForBackgroundJavaScript=null;
 
 
     public void proceed(WebContext context) throws IOException {
         try {
             HtmlElement element = findAnchor(context);
-            if (waitForBackgroundJavaScript != null) {
-                context.getWebClient().waitForBackgroundJavaScript(waitForBackgroundJavaScript);
-            }
             HtmlPage click = (HtmlPage)element.click();
             context.setPage(click);
         }
@@ -58,11 +54,6 @@ public class ClickLink implements WebStep {
 
     public void setXpath(String xpath) {
         this.xpath = xpath;
-    }
-
-
-    public void setWaitForBackgroundJavaScript(Integer waitForBackgroundJavaScript) {
-        this.waitForBackgroundJavaScript = waitForBackgroundJavaScript;
     }
 
 

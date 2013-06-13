@@ -730,6 +730,82 @@
             <xs:documentation xml:lang="fr">Vide la liste des cookies</xs:documentation>
         </xs:annotation>
     </xs:element>
+    <xs:element name="origin">
+        <xs:complexType>
+            <xs:annotation>
+                <xs:documentation xml:lang="fr">
+                    représente l'element html a deplacer.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:attribute name="id" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Id du composant html.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="cssClass" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Nom de la classe css du composant html.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="xpath" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Chemin xpath du composant html.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="index" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation
+                          xml:lang="fr">Numéro d'index du composant dans la liste si l'attribut cssClass renvoie plusieurs valeurs.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+        <xs:key name="dragAndDropOriginAttribut">
+            <xs:selector xpath="."/>
+            <xs:field xpath="@id|@xpath|@cssClass|@index"/>
+        </xs:key>
+    </xs:element>
+    <xs:element name="destination">
+        <xs:complexType>
+            <xs:annotation>
+                <xs:documentation xml:lang="fr">
+                    représente l'element html a deplacer.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:attribute name="id" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Id du composant html.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="cssClass" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Nom de la classe css du composant html.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="xpath" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Chemin xpath du composant html.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="index" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation
+                          xml:lang="fr">Numéro d'index du composant dans la liste si l'attribut cssClass renvoie plusieurs valeurs.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+        <xs:key name="dragAndDropDestinationAttribut">
+            <xs:selector xpath="."/>
+            <xs:field xpath="@id|@xpath|@cssClass|@index"/>
+        </xs:key>
+    </xs:element>
     <xs:element name="web-test">
         <xs:complexType>
             <xs:choice minOccurs="0" maxOccurs="unbounded">
@@ -883,7 +959,6 @@
                     <xs:complexType>
                         <xs:attribute name="id" type="xs:string"/>
                         <xs:attribute name="xpath" type="xs:string"/>
-                        <xs:attribute name="waitForBackgroundJavaScript" type="xs:integer"/>
                     </xs:complexType>
                     <xs:key name="clickButtonAttribut">
                         <xs:selector xpath="."/>
@@ -894,7 +969,6 @@
                     <xs:complexType>
                         <xs:attribute name="id" type="xs:string"/>
                         <xs:attribute name="xpath" type="xs:string"/>
-                        <xs:attribute name="waitForBackgroundJavaScript" type="xs:integer"/>
                     </xs:complexType>
                     <xs:key name="clickAttribut">
                         <xs:selector xpath="."/>
@@ -916,13 +990,45 @@
                         <xs:attribute name="id" type="xs:string"/>
                         <xs:attribute name="text" type="xs:string"/>
                         <xs:attribute name="xpath" type="xs:string"/>
-                        <xs:attribute name="waitForBackgroundJavaScript" type="xs:integer"/>
                     </xs:complexType>
                     <xs:key name="clickLinkAttribut">
                         <xs:selector xpath="."/>
                         <xs:field xpath="@id|@text|@xpath"/>
                     </xs:key>
                     </xs:element>
+                <xs:element name="dragAndDrop">
+                <xs:annotation>
+                        <xs:documentation xml:lang="fr">
+                            Simule un drag and drop, on clique sur le composant origine que l'on deplace sur le composant cible.
+                            <p>
+                                <i>Exemple :</i>
+                                <pre>
+
+                                    &lt;dragAndDrop&gt;
+                                    &lt;origin id="maBoite1"/&gt;
+                                    &lt;destination id="maBoite2"/&gt;
+                                    &lt;/dragAndDrop&gt;
+
+                                    &lt;dragAndDrop&gt;
+                                    &lt;origin cssClass="brinDansTableau" index="1"/&gt;
+                                    &lt;destination cssClass="panelDeGauche"/&gt;
+                                    &lt;/dragAndDrop&gt;
+
+                                    &lt;dragAndDrop&gt;
+                                    &lt;origin originXpath="//div[contains(@class,'PRODUCTION')]" index="1"/&gt;
+                                    &lt;destination originXpath="//div[contains(@class,'PRODUCTION')]" index="3"/&gt;
+                                    &lt;/dragAndDrop&gt;
+                                </pre>
+                            </p>
+                        </xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element ref="origin"/>
+                            <xs:element ref="destination"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
                 <xs:element name="downloadFile">
                     <xs:complexType>
                         <xs:attribute name="link" type="xs:string" use="required"/>

@@ -54,7 +54,7 @@ public class ClickLinkTest extends WebStepTestCase {
             fail();
         }
         catch (BuildException e) {
-            assertEquals("Les champs 'text', 'id' et 'xpath' ne doivent pas être utilisés en même temps",
+            assertEquals("Les champs 'id', 'text' et 'xpath' ne doivent pas être utilisés en même temps",
                          e.getMessage());
         }
     }
@@ -75,7 +75,7 @@ public class ClickLinkTest extends WebStepTestCase {
             fail();
         }
         catch (BuildException e) {
-            assertEquals("Le champ 'text', 'id' ou 'xpath' doit être spécifié", e.getMessage());
+            assertEquals("Le champ 'id', 'text' ou 'xpath' doit être spécifié", e.getMessage());
         }
     }
 

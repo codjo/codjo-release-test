@@ -10,10 +10,17 @@ import net.codjo.test.release.task.web.WebException;
  */
 public class XpathComponentFinder<T> implements IComponentFinder<T> {
     private String xpath;
+    private Integer index;
 
 
     public XpathComponentFinder(String xpath) {
+        this(xpath, null);
+    }
+
+
+    public XpathComponentFinder(String xpath, Integer index) {
         this.xpath = xpath;
+        this.index = index;
     }
 
 
@@ -25,24 +32,44 @@ public class XpathComponentFinder<T> implements IComponentFinder<T> {
                 resultHandler.handleElementNotFound(new ElementNotFoundException("", "", this.xpath), this.xpath);
                 return null;
             }
-            else if (elementList.size() == 1) {
-                HtmlElement element = (HtmlElement)elementList.get(0);
-                if (resultHandler != null) {
-                    resultHandler.handleElementFound(element, this.xpath);
-                }
-                return (T)element;
-            }
             else {
-                StringBuilder message = new StringBuilder(
-                      "Ambiguité, plusieurs éléments ont été trouvé avec l'expression xpath:'" + this.xpath + "'\n");
-                for (Object o : elementList) {
-                    message.append("\tobject : ").append(o.toString()).append("\n");
+                final int listSize = elementList.size();
+                if (onlyOneResult(listSize) || indexHasBeenSet(listSize)) {
+                    final int indexInList = index == null ? 0 : index - 1;
+                    if (indexInList > listSize) {
+                        throw new WebException(
+                              "Impossible de trouver l'index " + index + " dans la liste des résultats de taille "
+                              + listSize + ", pour l'expression xpath: " + xpath + " ");
+                    }
+                    HtmlElement element = (HtmlElement)elementList.get(indexInList);
+                    if (resultHandler != null) {
+                        resultHandler.handleElementFound(element, this.xpath);
+                    }
+                    return (T)element;
                 }
-                throw new WebException(message.toString());
+                else {
+                    StringBuilder message = new StringBuilder(
+                          "Ambiguité, plusieurs éléments ont été trouvé avec l'expression xpath:'" + this.xpath
+                          + "'\n");
+                    for (Object o : elementList) {
+                        message.append("\tobject : ").append(o.toString()).append("\n");
+                    }
+                    throw new WebException(message.toString());
+                }
             }
         }
         else {
             return null;
         }
+    }
+
+
+    private boolean indexHasBeenSet(int listSize) {
+        return (listSize > 0 && index != null);
+    }
+
+
+    private boolean onlyOneResult(int listSize) {
+        return listSize == 1;
     }
 }

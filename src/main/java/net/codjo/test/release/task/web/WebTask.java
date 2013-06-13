@@ -178,6 +178,11 @@ public class WebTask extends AgfTask implements Resource {
     }
 
 
+    public void addDragAndDrop(DragAndDrop step) {
+        steps.add(step);
+    }
+
+
     public void addClickCheckBox(ClickCheckBox step) {
         steps.add(step);
     }

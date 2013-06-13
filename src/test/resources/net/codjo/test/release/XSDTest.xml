@@ -170,6 +170,10 @@
         <editForm position="1">
             <clickSubmit value="texte"/>
         </editForm>
+        <dragAndDrop>
+            <origin id="firstBox"/>
+            <destination cssClass="targetClass" index="1"/>
+        </dragAndDrop>
     </web-test>
 
     <!-- Continuation d'un session ouverte précédement -->
