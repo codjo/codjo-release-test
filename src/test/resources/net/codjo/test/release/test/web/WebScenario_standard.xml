@@ -35,6 +35,8 @@
 
                 <clickButton id="mail_yoda_translate"/>
 
+                <click id="mail_yoda_translate"/>
+
                 <assertTable id="mailbox" excludedColumns="0,3,4">
                     <![CDATA[
                        | De         | Sujet            |
@@ -61,6 +63,16 @@
 
                 <assertPage title="Mes messages"/>
 
+                <click id="dragAndDropPageLink"/>
+
+                <assertPage title="Drag and drop page"/>
+
+                <dragAndDrop>
+                    <origin id="originBox"/>
+                    <destination cssClass="destinationBoxClass" index="1"/>
+                </dragAndDrop>
+
+                <assertAlert>originBox has moved: true</assertAlert>
             </web-test>
         </release-test>
     </target>

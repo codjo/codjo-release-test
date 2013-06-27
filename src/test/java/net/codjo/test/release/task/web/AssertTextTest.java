@@ -28,14 +28,19 @@ public class AssertTextTest extends WebStepTestCase {
 
     public void test_containerOK() throws Exception {
         assertText("blah blah <div id='parent'>bloh bloh</div> <a href='toto.html'>bluh bluh</a>", "bloh",
-                   "parent");
+                   "parent", null);
+    }
+
+    public void test_containerOKWithXpath() throws Exception {
+        assertText("blah blah <div id='parent'>bloh bloh</div> <a href='toto.html'>bluh bluh</a>", "bloh",
+                   null, "//div[@id='parent']");
     }
 
 
     public void test_containerKO() throws Exception {
         try {
             assertText("blah blah <div id='parent'>bloh bloh</div> <a href='toto.html'>bluh bluh</a>", "blah",
-                       "parent");
+                       "parent", null);
             fail();
         }
         catch (Exception e) {
@@ -46,11 +51,25 @@ public class AssertTextTest extends WebStepTestCase {
         }
     }
 
+    public void test_containerKoWithXpath() throws Exception {
+        try {
+            assertText("blah blah <div id='parent'>bloh bloh</div> <a href='toto.html'>bluh bluh</a>", "blah",
+                       null,"//div[@id='parent']");
+            fail();
+        }
+        catch (Exception e) {
+            assertEquals(
+                  "Texte 'blah' non présent dans le container '//div[@id='parent']' de la page "
+                  + "'http://localhost:8181/test_containerKoWithXpath.html'",
+                  e.getMessage());
+        }
+    }
+
 
     public void test_containerNotFound() throws Exception {
         try {
             assertText("blah blah <div id='parent'>bloh bloh</div> <a href='toto.html'>bluh bluh</a>", "blah",
-                       "papa");
+                       "papa",null);
             fail();
         }
         catch (Exception e) {
@@ -83,7 +102,7 @@ public class AssertTextTest extends WebStepTestCase {
 
     public void test_error() throws Exception {
         try {
-            assertText("blah", "unknown", null);
+            assertText("blah", "unknown", null, null);
             fail();
         }
         catch (BuildException e) {
@@ -101,26 +120,27 @@ public class AssertTextTest extends WebStepTestCase {
 
 
     private void assertText(String actual, String expected) throws Exception {
-        runStep(actual, null, expected, null);
+        runStep(actual, null, null, expected, null);
     }
 
 
-    private void assertText(String actual, String expected, String containerId) throws Exception {
-        runStep(actual, containerId, expected, null);
+    private void assertText(String actual, String expected, String containerId, String containerXpath) throws Exception {
+        runStep(actual, containerId, containerXpath, expected, null);
     }
 
 
     private void assertTextNotFound(String actual, String expected, String containerId) throws Exception {
-        runStep(actual, containerId, expected, false);
+        runStep(actual, containerId, null, expected, false);
     }
 
 
-    private void runStep(String actual, String containerId, String expected, Boolean present)
+    private void runStep(String actual, String containerId, String containerXpath, String expected, Boolean present)
           throws Exception {
         WebContext context = loadPage(wrapHtml(actual));
 
         AssertText step = new AssertText();
         step.setContainerId(containerId);
+        step.setContainerXpath(containerXpath);
         step.addText(expected);
         step.setPresent(present);
         step.proceed(context);

@@ -1,0 +1,40 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+      "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>Drag and drop page</title>
+</head>
+<body>
+<!-- la boîte -->
+<div id="emptyBox" class='originBoxClass'>
+    <div id="originBox" class='originBoxClass'>
+        <h5 id="handle">originBox</h5> <!-- la poignée -->
+        <p>cette boîte-ci doit être saisie par son titre</p>
+    </div>
+
+
+    <div id="destinationBox" class="destinationBoxClass">
+        <h5 id="handle">originBox</h5> <!-- la poignée -->
+        <p>cette boîte-ci doit être saisie par son titre</p>
+    </div>
+
+
+    <!-- on charge le script "dragOn" -->
+    <script src="/dragAndDropImplementation.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+        var draggable = document.getElementById('originBox');
+        originBoxPosition = getPos(draggable).r;
+        var options = {};
+        dragOn.apply(draggable, options);
+
+        addEvent(document, 'mouseup',
+                             function() {
+                                 var dragged = document.getElementById('originBox');
+                                 alert('originBox has moved: ' + ((originBoxPosition - getPos(dragged).r) != 0));
+                             }
+        );
+    </script>
+</div>
+</body>
+</html>

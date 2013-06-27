@@ -3,6 +3,9 @@ import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import net.codjo.test.release.task.web.finder.ComponentFinder;
+import net.codjo.test.release.task.web.finder.ResultHandler;
 /**
  *
  */
@@ -10,18 +13,19 @@ public class AssertText implements WebStep {
     private String value = "";
     private String containerId = null;
     private Boolean present = Boolean.TRUE;
+    private String containerXpath = null;
 
 
     public void proceed(WebContext context) throws IOException {
         HtmlPage page = context.getHtmlPage();
-
         String expected = context.replaceProperties(value);
 
-        String content = getContent(page);
+        String content = getContent(page, context);
         if (content.contains(expected) != present) {
-            if (containerId != null) {
+            if (containerId != null || containerXpath != null) {
                 throw new WebException(
-                      "Texte '" + expected + "' " + getErrorText() + " dans le container '" + containerId
+                      "Texte '" + expected + "' " + getErrorText() + " dans le container '"
+                      + (containerId != null ? containerId : containerXpath)
                       + "' de la page '" + page.getFullyQualifiedUrl("") + "'");
             }
             throw new WebException("Texte '" + expected + "' " + getErrorText() + " "
@@ -31,18 +35,26 @@ public class AssertText implements WebStep {
     }
 
 
-    private String getContent(HtmlPage page) throws IOException {
-        if (containerId == null) {
+    private String getContent(HtmlPage page, WebContext context) throws IOException {
+        if (containerId == null && containerXpath == null) {
             return page.asText();
         }
+        final HtmlElement container = findContainer(page, context);
+        if (container != null) {
+            return container.asText();
+        }
+        return page.asText();
+    }
+
+
+    private HtmlElement findContainer(HtmlPage page, WebContext context) {
+        ComponentFinder<HtmlElement> finder = new ComponentFinder<HtmlElement>(null, containerId, containerXpath);
+        final ResultHandler resultHandler = buildResultHandler(page);
         try {
-            return page.<HtmlElement>getHtmlElementById(containerId).asText();
+            return finder.find(context, resultHandler);
         }
         catch (ElementNotFoundException e) {
-            throw new WebException(
-                  "Container '" + containerId + "' " + getErrorText() + " dans la page '"
-                  + page.getFullyQualifiedUrl("")
-                  + "'");
+            throw new WebException(resultHandler.getErrorMessage(e.getAttributeValue()));
         }
     }
 
@@ -64,5 +76,38 @@ public class AssertText implements WebStep {
 
     public void setPresent(Boolean present) {
         this.present = present != null ? present : Boolean.TRUE;
+    }
+
+
+    public void setContainerXpath(String containerXpath) {
+        this.containerXpath = containerXpath;
+    }
+
+
+    private ResultHandler buildResultHandler(final HtmlPage page) {
+        return new ResultHandler() {
+            public void handleElementFound(HtmlElement element, String key) throws WebException {
+            }
+
+
+            public String getErrorMessage(final String key) {
+                return "Container '" + key + "' " + getErrorText() + " dans la page '" + getPageUrl(page) + "'";
+            }
+
+
+            public void handleElementNotFound(ElementNotFoundException e, String id) throws WebException {
+                throw new WebException(getErrorMessage(id));
+            }
+        };
+    }
+
+
+    private String getPageUrl(HtmlPage page) {
+        try {
+            return page.getFullyQualifiedUrl("").toString();
+        }
+        catch (MalformedURLException e) {
+            return "";
+        }
     }
 }

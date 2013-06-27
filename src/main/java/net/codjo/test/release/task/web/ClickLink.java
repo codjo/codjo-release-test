@@ -5,6 +5,8 @@ import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import java.io.IOException;
+import net.codjo.test.release.task.web.finder.ComponentFinder;
+import net.codjo.test.release.task.web.finder.ResultHandler;
 /**
  *
  */
@@ -12,16 +14,14 @@ public class ClickLink implements WebStep {
 
     private String text;
     private String id;
+    private String xpath;
 
 
     public void proceed(WebContext context) throws IOException {
-        if ((text != null) && (id != null)) {
-            throw new WebException("Les champs 'text' et 'id' ne doivent pas être utilisés en même temps");
-        }
-
         try {
-            HtmlAnchor anchor = findAnchor(context);
-            context.setPage((HtmlPage)anchor.click());
+            HtmlElement element = findAnchor(context);
+            HtmlPage click = (HtmlPage)element.click();
+            context.setPage(click);
         }
         catch (FailingHttpStatusCodeException e) {
             throw new WebException("Erreur lors du click sur le lien '" + text +
@@ -30,30 +30,15 @@ public class ClickLink implements WebStep {
     }
 
 
-    private HtmlAnchor findAnchor(WebContext context) {
-        HtmlPage page = context.getHtmlPage();
-        if (text != null) {
-            text = context.replaceProperties(text);
-            try {
-                return page.getAnchorByText(text);
-            }
-            catch (ElementNotFoundException e) {
-                throw new WebException("Aucun lien trouvé avec le texte: " + text);
-            }
+    private HtmlElement findAnchor(WebContext context) {
+        ComponentFinder<HtmlElement> finder = new ComponentFinder<HtmlElement>(text, id, xpath);
+        final ResultHandler resultHandler = buildResultHandler();
+        try {
+            return finder.find(context, resultHandler);
         }
-        if (id != null) {
-            try {
-                HtmlElement element = page.getHtmlElementById(id);
-                if (!(element instanceof HtmlAnchor)) {
-                    throw new WebException("L'élément '" + id + "' n'est pas un lien <a ...>");
-                }
-                return (HtmlAnchor)element;
-            }
-            catch (ElementNotFoundException e) {
-                throw new WebException("Aucun lien trouvé avec l'identifiant: " + id);
-            }
+        catch (ElementNotFoundException e) {
+            throw new WebException(resultHandler.getErrorMessage(e.getAttributeValue()));
         }
-        throw new WebException("Le champ 'text' ou 'id' doit être spécifié");
     }
 
 
@@ -64,5 +49,41 @@ public class ClickLink implements WebStep {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+
+    public void setXpath(String xpath) {
+        this.xpath = xpath;
+    }
+
+
+    private ResultHandler buildResultHandler() {
+        return new ResultHandler() {
+            public void handleElementFound(HtmlElement element, String key) throws WebException {
+                if (!(element instanceof HtmlAnchor)) {
+                    throw new WebException("L'élément '" + key + "' n'est pas un lien <a ...>");
+                }
+            }
+
+
+            public String getErrorMessage(final String key) {
+                String type = "";
+                if (text != null) {
+                    type = "le texte: ";
+                }
+                if (id != null) {
+                    type = "l'identifiant: ";
+                }
+                if (xpath != null) {
+                    type = "l'expression xpath: ";
+                }
+                return "Aucun lien trouvé avec " + type + key;
+            }
+
+
+            public void handleElementNotFound(ElementNotFoundException e, String id) throws WebException{
+                throw new WebException(getErrorMessage(id));
+            }
+        };
     }
 }

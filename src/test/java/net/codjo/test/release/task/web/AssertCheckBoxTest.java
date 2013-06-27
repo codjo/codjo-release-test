@@ -9,15 +9,23 @@ public class AssertCheckBoxTest extends WebStepTestCase {
         WebContext context = loadPage(wrapHtml(
               "  <input type='checkbox' id='checkbox1' checked>"
               + "  <input type='checkbox' id='checkbox2'>"));
-        assertCheckBox(context, "checkbox1", "true");
-        assertCheckBox(context, "checkbox2", "false");
+        assertCheckBox(context, "checkbox1", null, "true");
+        assertCheckBox(context, "checkbox2", null, "false");
+    }
+
+    public void test_defaultCaseWithXpath() throws Exception {
+        WebContext context = loadPage(wrapHtml(
+              "  <input type='checkbox' id='checkbox1' checked>"
+              + "  <input type='checkbox' id='checkbox2'>"));
+        assertCheckBox(context, null, "//input[@id='checkbox1']", "true");
+        assertCheckBox(context, null, "//input[@id='checkbox2']", "false");
     }
 
 
     public void test_errorMessage() throws Exception {
         WebContext context = loadPage(wrapHtml("<input type='checkbox' id='checkbox1' checked>"));
         try {
-            assertCheckBox(context, "checkbox1", "false");
+            assertCheckBox(context, "checkbox1", null, "false");
             fail();
         }
         catch (AssertionFailedError e) {
@@ -29,7 +37,7 @@ public class AssertCheckBoxTest extends WebStepTestCase {
     public void test_checkBoxNotFound() throws Exception {
         WebContext context = loadPage(wrapHtml("<input type='checkbox' id='checkbox1'>"));
         try {
-            assertCheckBox(context, "unknown", "true");
+            assertCheckBox(context, "unknown", null, "true");
             fail();
         }
         catch (WebException e) {
@@ -37,10 +45,21 @@ public class AssertCheckBoxTest extends WebStepTestCase {
         }
     }
 
+    public void test_checkBoxNotFoundWithXpath() throws Exception {
+        WebContext context = loadPage(wrapHtml("<input type='checkbox' id='checkbox1'>"));
+        try {
+            assertCheckBox(context, null, "//unknown", "true");
+            fail();
+        }
+        catch (WebException e) {
+            assertEquals("L'élément '//unknown' est introuvable.", e.getMessage());
+        }
+    }
+
     public void test_notACheckBox() throws Exception {
         WebContext context = loadPage(wrapHtml("<input type='button' id='checkbox1'>"));
         try {
-            assertCheckBox(context, "checkbox1", "true");
+            assertCheckBox(context, "checkbox1", null, "true");
             fail();
         }
         catch (WebException e) {
@@ -48,10 +67,22 @@ public class AssertCheckBoxTest extends WebStepTestCase {
         }
     }
 
+    public void test_notACheckBoxWithXpath() throws Exception {
+        WebContext context = loadPage(wrapHtml("<input type='button' id='checkbox1'>"));
+        try {
+            assertCheckBox(context, null, "//input", "true");
+            fail();
+        }
+        catch (WebException e) {
+            assertEquals("L'élément '//input' n'est pas une checkbox.", e.getMessage());
+        }
+    }
 
-    private void assertCheckBox(WebContext context, String id, String expectedState) throws IOException {
+
+    private void assertCheckBox(WebContext context, String id, String xpath, String expectedState) throws IOException {
         AssertCheckBox checkBox = new AssertCheckBox();
         checkBox.setId(id);
+        checkBox.setXpath(xpath);
         checkBox.setChecked(expectedState);
         checkBox.proceed(context);
     }

@@ -89,7 +89,12 @@ public class DummyWebServer {
                 return;
             }
 
-            response.setContentType("text/html");
+            if (path.endsWith(".js")) {
+                response.setContentType("application/javascript");
+            }
+            else {
+                response.setContentType("text/html");
+            }
             response.getWriter().print(content);
             response.setStatus(HttpServletResponse.SC_OK);
         }
