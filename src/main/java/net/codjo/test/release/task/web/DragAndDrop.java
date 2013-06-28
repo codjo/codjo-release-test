@@ -10,6 +10,7 @@ import net.codjo.test.release.task.web.finder.ResultHandler;
  *
  */
 public class DragAndDrop implements WebStep {
+    private static final int WAIT_FOR_JAVASCRIPT = 100;
     private DragAndDropArg origin;
     private DragAndDropArg destination;
 
@@ -24,8 +25,11 @@ public class DragAndDrop implements WebStep {
         HtmlElement destinationElement = findElement(context, destination);
 
         context.setPage((HtmlPage)originElement.mouseDown());
+        context.getWebClient().waitForBackgroundJavaScript(WAIT_FOR_JAVASCRIPT);
         context.setPage((HtmlPage)destinationElement.mouseMove());
+        context.getWebClient().waitForBackgroundJavaScript(WAIT_FOR_JAVASCRIPT);
         context.setPage((HtmlPage)destinationElement.mouseUp());
+        context.getWebClient().waitForBackgroundJavaScript(WAIT_FOR_JAVASCRIPT);
     }
 
 
