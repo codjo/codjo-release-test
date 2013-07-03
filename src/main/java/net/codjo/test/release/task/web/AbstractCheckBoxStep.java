@@ -14,18 +14,20 @@ public abstract class AbstractCheckBoxStep implements WebStep {
 
 
     public void proceed(WebContext context) throws IOException {
-        HtmlElement element;
+        HtmlCheckBoxInput checkbox = (HtmlCheckBoxInput)findElement(context);
+        run(checkbox, context);
+    }
+
+
+    private HtmlElement findElement(WebContext context) {
         ComponentFinder<HtmlElement> finder = new ComponentFinder<HtmlElement>(null, id, xpath);
         final ResultHandler resultHandler = buildResultHandler();
         try {
-            element = finder.find(context, resultHandler);
+            return finder.find(context, resultHandler);
         }
         catch (ElementNotFoundException e) {
             throw new WebException(resultHandler.getErrorMessage(e.getAttributeValue()));
         }
-
-        HtmlCheckBoxInput checkbox = (HtmlCheckBoxInput)element;
-        run(checkbox, context);
     }
 
 

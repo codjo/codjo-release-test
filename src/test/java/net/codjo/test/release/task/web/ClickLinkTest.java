@@ -87,7 +87,7 @@ public class ClickLinkTest extends WebStepTestCase {
             fail();
         }
         catch (BuildException e) {
-            assertEquals("Aucun lien trouvé avec le texte: unknown text", e.getMessage());
+            assertEquals("Aucun élément trouvé avec le texte: unknown text", e.getMessage());
         }
     }
 
@@ -99,7 +99,7 @@ public class ClickLinkTest extends WebStepTestCase {
             fail();
         }
         catch (BuildException e) {
-            assertEquals("Aucun lien trouvé avec l'identifiant: unknown", e.getMessage());
+            assertEquals("Aucun élément trouvé avec l'identifiant: unknown", e.getMessage());
         }
     }
 
@@ -111,7 +111,7 @@ public class ClickLinkTest extends WebStepTestCase {
             fail();
         }
         catch (BuildException e) {
-            assertEquals("Aucun lien trouvé avec l'expression xpath: //nada", e.getMessage());
+            assertEquals("Aucun élément trouvé avec l'expression xpath: //nada", e.getMessage());
         }
     }
 

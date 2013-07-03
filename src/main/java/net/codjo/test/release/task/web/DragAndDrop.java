@@ -10,7 +10,6 @@ import net.codjo.test.release.task.web.finder.ResultHandler;
  *
  */
 public class DragAndDrop implements WebStep {
-    private static final int WAIT_FOR_JAVASCRIPT = 100;
     private DragAndDropArg origin;
     private DragAndDropArg destination;
 
