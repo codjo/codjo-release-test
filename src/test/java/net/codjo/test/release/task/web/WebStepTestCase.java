@@ -1,4 +1,5 @@
 package net.codjo.test.release.task.web;
+import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.WebClient;
 import junit.framework.TestCase;
 import net.codjo.test.release.test.web.DummyWebServer;
@@ -20,7 +21,6 @@ public abstract class WebStepTestCase extends TestCase {
         server = getServer();
         String path = getName() + ".html";
         server.addPage(path, content);
-        //TODO - Beware this WebClient is Internet Explorer 7 by default see WebTask.getWebContext()
         WebClient webClient = new WebClient();
         String url = server.getUrl(path);
         return new WebContext(webClient.getPage(url), webClient, project);
@@ -50,6 +50,13 @@ public abstract class WebStepTestCase extends TestCase {
                + content
                + "</body>"
                + "</html>";
+    }
+
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        BrowserVersion.setDefault(BrowserVersion.FIREFOX_2);
     }
 
 

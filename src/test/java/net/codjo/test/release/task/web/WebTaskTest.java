@@ -125,6 +125,7 @@ public class WebTaskTest extends WebStepTestCase {
 
     @Override
     protected void setUp() throws Exception {
+        super.setUp();
         task = new WebTask();
         task.setProject(new Project());
         task.open();

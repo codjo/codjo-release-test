@@ -117,7 +117,7 @@ public class DragAndDropTest extends WebStepTestCase {
               + "    var options = {};\n"
               + "    dragOn.apply(draggable, options);\n"
               + "\n"
-              + "    document.attachEvent('onmouseup', \n"
+              + "    addEvent(document,'mouseup', \n"
               + "     function() {\n"
               + "         var dragged = document.getElementById('originBox');\n"
               + "         alert('originBox has moved: ' + ((originBoxPosition - getPos(dragged).r)!=0));\n"

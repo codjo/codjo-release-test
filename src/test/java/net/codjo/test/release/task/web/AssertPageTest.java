@@ -22,7 +22,6 @@ public class AssertPageTest extends WebStepTestCase {
 
     public void test_errorCode() throws Exception {
         String url = getServer().getUrl("noPage.html");
-        //TODO - Beware this WebClient is Internet Explorer 7 by default see WebTask.getWebContext()
         WebClient webClient = new WebClient();
         webClient.setThrowExceptionOnFailingStatusCode(false);
         WebContext context = new WebContext(webClient.getPage(url), webClient, project);
@@ -35,7 +34,6 @@ public class AssertPageTest extends WebStepTestCase {
 
     public void test_errorCode_fail() throws Exception {
         String url = getServer().getUrl("noPage.html");
-        //TODO - Beware this WebClient is Internet Explorer 7 by default see WebTask.getWebContext()
         WebClient webClient = new WebClient();
         webClient.setThrowExceptionOnFailingStatusCode(false);
         WebContext context = new WebContext(webClient.getPage(url), webClient, project);
