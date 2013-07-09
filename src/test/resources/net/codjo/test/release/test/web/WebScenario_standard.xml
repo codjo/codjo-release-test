@@ -71,8 +71,12 @@
                     <origin id="originBox"/>
                     <destination cssClass="destinationBoxClass" index="1"/>
                 </dragAndDrop>
-
                 <assertAlert>originBox has moved: true</assertAlert>
+
+                <assertText containerCssClass="backToHomePage">Retour</assertText>
+                <clickLink cssClass="backBouton" index="3"/>
+
+                <assertPage title="Mes messages"/>
             </web-test>
         </release-test>
     </target>

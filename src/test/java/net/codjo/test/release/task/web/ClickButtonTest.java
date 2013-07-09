@@ -13,7 +13,7 @@ public class ClickButtonTest extends WebStepTestCase {
                                 + "<input id='myButton' type='button' "
                                 + "onClick='document.getElementById(\"destination\").value=document.getElementById(\"source\").value' "
                                 + "value='Edit'/>"));
-        click("myButton", null, context);
+        click("myButton", (String)null, context);
         HtmlInput destination = (HtmlInput)context.getHtmlPage().getHtmlElementById("destination");
         assertEquals("Luke!", destination.getValueAttribute());
     }
@@ -22,7 +22,7 @@ public class ClickButtonTest extends WebStepTestCase {
     public void test_idNotFound() throws Exception {
         WebContext context = loadPage(wrapHtml("<input id='myButton' type='button' value='Edit'/>"));
         try {
-            click("unknownId", null, context);
+            click("unknownId", (String)null, context);
             fail();
         }
         catch (WebException e) {
@@ -34,7 +34,7 @@ public class ClickButtonTest extends WebStepTestCase {
     public void test_idDoesNotReferToAButtonInput() throws Exception {
         WebContext context = loadPage(wrapHtml("<a href='target.html' id='link'>go!</a>"));
         try {
-            click("link", null, context);
+            click("link", (String)null, context);
             fail();
         }
         catch (WebException e) {
@@ -79,11 +79,31 @@ public class ClickButtonTest extends WebStepTestCase {
         }
     }
 
+    public void test_clickButtonwithCssClass() throws Exception {
+        WebContext context =
+              loadPage(wrapHtml("<input type='text' id='source' value='Luke!'>"
+                                + "<input type='text' id='destination' class='classOne classTwo'>"
+                                + "<input id='myButton' type='button' class='classTwo classThree' "
+                                + "onClick='document.getElementById(\"destination\").value=document.getElementById(\"source\").value' "
+                                + "value='Edit'/>"));
+        click("classTwo", 2, context);
+        HtmlInput destination = (HtmlInput)context.getHtmlPage().getHtmlElementById("destination");
+        assertEquals("Luke!", destination.getValueAttribute());
+    }
+
 
     private void click(String id, String xpath, WebContext context) throws IOException {
         ClickButton step = new ClickButton();
         step.setId(id);
         step.setXpath(xpath);
+        step.proceed(context);
+    }
+
+
+    private void click(String cssClass, Integer index, WebContext context) throws IOException {
+        ClickButton step = new ClickButton();
+        step.setCssClass(cssClass);
+        step.setIndex(index);
         step.proceed(context);
     }
 }

@@ -874,13 +874,15 @@
                             <xs:extension base="xs:string">
                                 <xs:attribute name="containerId" type="xs:string"/>
                                 <xs:attribute name="containerXpath" type="xs:string"/>
+                                <xs:attribute name="containerCssClass" type="xs:string"/>
+                                <xs:attribute name="containerIndex" type="xs:integer"/>
                                 <xs:attribute name="present" type="xs:boolean"/>
                             </xs:extension>
                         </xs:simpleContent>
                     </xs:complexType>
                     <xs:key name="assertTextAttribut">
                         <xs:selector xpath="."/>
-                        <xs:field xpath="@containerId|@containerXpath"/>
+                        <xs:field xpath="@containerId|@containerXpath|@containerCssClass|@containerIndex"/>
                     </xs:key>
                 </xs:element>
                 <xs:element name="assertImage">
@@ -959,20 +961,24 @@
                     <xs:complexType>
                         <xs:attribute name="id" type="xs:string"/>
                         <xs:attribute name="xpath" type="xs:string"/>
+                        <xs:attribute name="cssClass" type="xs:string"/>
+                        <xs:attribute name="index" type="xs:integer"/>
                     </xs:complexType>
                     <xs:key name="clickButtonAttribut">
                         <xs:selector xpath="."/>
-                        <xs:field xpath="@id|@xpath"/>
+                        <xs:field xpath="@id|@xpath|@cssClass|@index"/>
                     </xs:key>
                 </xs:element>
                 <xs:element name="click">
                     <xs:complexType>
                         <xs:attribute name="id" type="xs:string"/>
                         <xs:attribute name="xpath" type="xs:string"/>
+                        <xs:attribute name="cssClass" type="xs:string"/>
+                        <xs:attribute name="index" type="xs:integer"/>
                     </xs:complexType>
                     <xs:key name="clickAttribut">
                         <xs:selector xpath="."/>
-                        <xs:field xpath="@id|@xpath"/>
+                        <xs:field xpath="@id|@xpath|@cssClass|@index"/>
                     </xs:key>
                 </xs:element>
                 <xs:element name="clickCheckBox">
@@ -990,14 +996,16 @@
                         <xs:attribute name="id" type="xs:string"/>
                         <xs:attribute name="text" type="xs:string"/>
                         <xs:attribute name="xpath" type="xs:string"/>
+                        <xs:attribute name="cssClass" type="xs:string"/>
+                        <xs:attribute name="index" type="xs:integer"/>
                     </xs:complexType>
                     <xs:key name="clickLinkAttribut">
                         <xs:selector xpath="."/>
-                        <xs:field xpath="@id|@text|@xpath"/>
+                        <xs:field xpath="@id|@text|@xpath|@cssClass|@index"/>
                     </xs:key>
-                    </xs:element>
+                </xs:element>
                 <xs:element name="dragAndDrop">
-                <xs:annotation>
+                    <xs:annotation>
                         <xs:documentation xml:lang="fr">
                             Simule un drag and drop, on clique sur le composant origine que l'on deplace sur le composant cible.
                             <p>
