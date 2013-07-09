@@ -10,8 +10,8 @@ import net.codjo.test.release.task.web.finder.ResultHandler;
  *
  */
 public class DragAndDrop implements WebStep {
-    private DragAndDropArg origin;
-    private DragAndDropArg destination;
+    private ComponentIdentifier origin;
+    private ComponentIdentifier destination;
 
 
     public DragAndDrop() {
@@ -36,18 +36,18 @@ public class DragAndDrop implements WebStep {
     }
 
 
-    public void addOrigin(DragAndDropArg arg) {
+    public void addOrigin(ComponentIdentifier arg) {
         this.origin = arg;
     }
 
 
-    public void addDestination(DragAndDropArg arg) {
+    public void addDestination(ComponentIdentifier arg) {
         this.destination = arg;
     }
 
 
-    private HtmlElement findElement(WebContext context, DragAndDropArg element) {
-        Map<String, String> parameters = DragAndDropArg.toArgumentMap(element);
+    private HtmlElement findElement(WebContext context, ComponentIdentifier element) {
+        Map<String, String> parameters = ComponentIdentifier.toArgumentMap(element);
 
         ComponentFinder<HtmlElement> finder = new ComponentFinder<HtmlElement>(parameters);
         final ResultHandler resultHandler = buildResultHandler();

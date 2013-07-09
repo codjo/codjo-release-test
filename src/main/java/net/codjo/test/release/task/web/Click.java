@@ -4,7 +4,6 @@ import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import net.codjo.test.release.task.web.finder.ComponentFinder;
 import net.codjo.test.release.task.web.finder.ResultHandler;
@@ -13,10 +12,7 @@ import net.codjo.test.release.task.web.finder.ResultHandler;
  */
 public class Click implements WebStep {
     private String text = null;
-    private String id;
-    private String xpath;
-    private String cssClass;
-    private Integer index;
+    private ComponentIdentifier identifier = new ComponentIdentifier();
 
 
     public void proceed(WebContext context) throws IOException {
@@ -26,7 +22,7 @@ public class Click implements WebStep {
             context.getWebClient().waitForBackgroundJavaScript(WAIT_FOR_JAVASCRIPT);
         }
         catch (ElementNotFoundException e) {
-            throw new WebException("Aucun élément trouvé avec l'identifiant: " + id);
+            throw new WebException("Aucun élément trouvé avec l'identifiant: " + identifier.getArgValue());
         }
         catch (FailingHttpStatusCodeException e) {
             throw new WebException("Erreur lors du click sur le lien '" + text + "' : " + e.getMessage());
@@ -52,24 +48,23 @@ public class Click implements WebStep {
 
 
     public void setId(String id) {
-        this.id = id;
+        identifier.setId(id);
     }
 
 
     public void setXpath(String xpath) {
-        this.xpath = xpath;
+        identifier.setXpath(xpath);
     }
 
 
     public void setCssClass(String cssClass) {
-        this.cssClass = cssClass;
+        identifier.setCssClass(cssClass);
     }
 
 
     public void setIndex(Integer index) {
-        this.index = index;
+        identifier.setIndex(index);
     }
-
 
 
     protected ResultHandler buildResultHandler() {
@@ -78,12 +73,8 @@ public class Click implements WebStep {
 
 
     private Map<String, String> toArgumentMap() {
-        final HashMap<String, String> result = new HashMap<String, String>();
-        result.put("id", id);
+        final Map<String, String> result = ComponentIdentifier.toArgumentMap(identifier);
         result.put("text", text);
-        result.put("xpath", xpath);
-        result.put("cssClass", cssClass);
-        result.put("index", ((index != null) ? String.valueOf(index) : null));
         return result;
     }
 
@@ -98,13 +89,13 @@ public class Click implements WebStep {
             if (text != null) {
                 type = "le texte: ";
             }
-            if (id != null) {
+            if (identifier.getId() != null) {
                 type = "l'identifiant: ";
             }
-            if (xpath != null) {
+            if (identifier.getXpath() != null) {
                 type = "l'expression xpath: ";
             }
-            if (cssClass != null) {
+            if (identifier.getCssClass() != null) {
                 type = "la classe css: ";
             }
             return "Aucun élément trouvé avec " + type + key;
