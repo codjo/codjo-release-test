@@ -134,20 +134,25 @@
         <assertPage title="titre"/>
         <assertPresent id="id" present="false"/>
         <assertPresent xpath="//a[@id='toto'" present="false"/>
+        <assertPresent cssClass="myClass" index="2" present="false"/>
         <assertTable id="id" excludedRows="0,1" excludedColumns="2,3">|table|content|</assertTable>
         <assertTable position="1"/>
         <assertText>texte</assertText>
         <assertText containerId="container" present="false">texte</assertText>
         <assertText containerXpath="//container" present="false">texte</assertText>
+        <assertText containerCssClass="myClass" containerId="4" present="false">texte</assertText>
         <clickButton id="id"/>
         <clickButton xpath="//input[0]"/>
         <click id="id"/>
         <click xpath="//input[0]"/>
+        <click cssClass="myClass" index="2"/>
         <clickCheckBox id="id"/>
         <clickCheckBox xpath="//a"/>
+        <clickCheckBox cssClass="myClass" index="2"/>
         <clickLink id="id"/>
         <clickLink text="texte"/>
         <clickLink xpath="texte"/>
+        <clickLink cssClass="myClass" index="2"/>
         <downloadFile link="lien" target="cible.txt"/>
         <gotoPage url="http://www.example.net"/>
         <refresh/>
@@ -157,12 +162,12 @@
         <setConfirmation accept="false"/>
         <!-- Form -->
         <editForm id="id">
-            <assertCheckBox name="nom" checked="false"/>
+            <assertCheckBox id="nom" checked="false"/>
             <assertField name="nom" value="valeur"/>
             <assertSelectOptions name="nom">
                 <option>valeur</option>
             </assertSelectOptions>
-            <clickCheckBox name="nom"/>
+            <clickCheckBox id="nom"/>
             <clickSubmit name="nom"/>
             <select name="nom" value="valeur"/>
             <setField name="nom" value="valeur"/>

@@ -810,15 +810,10 @@
         <xs:complexType>
             <xs:choice minOccurs="0" maxOccurs="unbounded">
                 <xs:element name="assertAlert" type="xs:string"/>
-                <xs:element name="assertCheckBox">
-                    <xs:complexType>
-                        <xs:attribute name="id" type="xs:string"/>
-                        <xs:attribute name="xpath" type="xs:string"/>
-                        <xs:attribute name="checked" type="xs:boolean" use="required"/>
-                    </xs:complexType>
+                <xs:element name="assertCheckBox" type="identifiableChecked">
                     <xs:key name="assertCheckBoxAttribut">
                         <xs:selector xpath="."/>
-                        <xs:field xpath="@id|@xpath"/>
+                        <xs:field xpath="@id|@xpath|@cssClass|@index"/>
                     </xs:key>
                 </xs:element>
                 <xs:element name="assertLink">
@@ -841,15 +836,10 @@
                         <xs:field xpath="@title|@statusCode"/>
                     </xs:key>
                 </xs:element>
-                <xs:element name="assertPresent">
-                    <xs:complexType>
-                        <xs:attribute name="id" type="xs:string"/>
-                        <xs:attribute name="xpath" type="xs:string"/>
-                        <xs:attribute name="present" type="xs:boolean"/>
-                    </xs:complexType>
+                <xs:element name="assertPresent" type="identifiablePresent">
                     <xs:key name="assertPresentAttribut">
                         <xs:selector xpath="."/>
-                        <xs:field xpath="@id|@xpath"/>
+                        <xs:field xpath="@id|@xpath|@cssClass|@index"/>
                     </xs:key>
                 </xs:element>
                 <xs:element name="assertTable">
@@ -926,16 +916,17 @@
                                 </xs:complexType>
                             </xs:element>
                             <xs:element name="select" type="valueNameAttributs"/>
-                            <xs:element name="assertCheckBox">
-                                <xs:complexType>
-                                    <xs:attribute name="name" type="xs:string" use="required"/>
-                                    <xs:attribute name="checked" type="xs:boolean" use="required"/>
-                                </xs:complexType>
+                            <xs:element name="assertCheckBox" type="identifiableChecked">
+                                <xs:key name="assertCheckBoxAttributInEditForm">
+                                    <xs:selector xpath="."/>
+                                    <xs:field xpath="@id|@xpath|@cssClass|@index"/>
+                                </xs:key>
                             </xs:element>
-                            <xs:element name="clickCheckBox">
-                                <xs:complexType>
-                                    <xs:attribute name="name" type="xs:string" use="required"/>
-                                </xs:complexType>
+                            <xs:element name="clickCheckBox" type="identifiable">
+                                <xs:key name="clickCheckboxAttributInEditForm">
+                                    <xs:selector xpath="."/>
+                                    <xs:field xpath="@id|@xpath|@cssClass|@index"/>
+                                </xs:key>
                             </xs:element>
                             <xs:element name="clickRadioButton">
                                 <xs:complexType>
@@ -957,38 +948,22 @@
                         <xs:attribute name="accept" type="xs:boolean"/>
                     </xs:complexType>
                 </xs:element>
-                <xs:element name="clickButton">
-                    <xs:complexType>
-                        <xs:attribute name="id" type="xs:string"/>
-                        <xs:attribute name="xpath" type="xs:string"/>
-                        <xs:attribute name="cssClass" type="xs:string"/>
-                        <xs:attribute name="index" type="xs:integer"/>
-                    </xs:complexType>
+                <xs:element name="clickButton" type="identifiable">
                     <xs:key name="clickButtonAttribut">
                         <xs:selector xpath="."/>
                         <xs:field xpath="@id|@xpath|@cssClass|@index"/>
                     </xs:key>
                 </xs:element>
-                <xs:element name="click">
-                    <xs:complexType>
-                        <xs:attribute name="id" type="xs:string"/>
-                        <xs:attribute name="xpath" type="xs:string"/>
-                        <xs:attribute name="cssClass" type="xs:string"/>
-                        <xs:attribute name="index" type="xs:integer"/>
-                    </xs:complexType>
+                <xs:element name="click" type="identifiable">
                     <xs:key name="clickAttribut">
                         <xs:selector xpath="."/>
                         <xs:field xpath="@id|@xpath|@cssClass|@index"/>
                     </xs:key>
                 </xs:element>
-                <xs:element name="clickCheckBox">
-                    <xs:complexType>
-                        <xs:attribute name="id" type="xs:string"/>
-                        <xs:attribute name="xpath" type="xs:string"/>
-                    </xs:complexType>
+                <xs:element name="clickCheckBox" type="identifiable">
                     <xs:key name="clickCheckboxAttribut">
                         <xs:selector xpath="."/>
-                        <xs:field xpath="@id|@xpath"/>
+                        <xs:field xpath="@id|@xpath|@cssClass|@index"/>
                     </xs:key>
                 </xs:element>
                 <xs:element name="clickLink">
@@ -3429,5 +3404,28 @@
             </xs:simpleType>
         </xs:union>
     </xs:simpleType>
+
+    <xs:complexType name="identifiable">
+        <xs:attribute name="id" type="xs:string"/>
+        <xs:attribute name="xpath" type="xs:string"/>
+        <xs:attribute name="cssClass" type="xs:string"/>
+        <xs:attribute name="index" type="xs:integer"/>
+    </xs:complexType>
+
+    <xs:complexType name="identifiableChecked">
+        <xs:attribute name="id" type="xs:string"/>
+        <xs:attribute name="xpath" type="xs:string"/>
+        <xs:attribute name="cssClass" type="xs:string"/>
+        <xs:attribute name="index" type="xs:integer"/>
+        <xs:attribute name="checked" type="xs:boolean" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="identifiablePresent">
+        <xs:attribute name="id" type="xs:string"/>
+        <xs:attribute name="xpath" type="xs:string"/>
+        <xs:attribute name="cssClass" type="xs:string"/>
+        <xs:attribute name="index" type="xs:integer"/>
+        <xs:attribute name="present" type="xs:boolean"/>
+    </xs:complexType>
 
 </xs:schema>

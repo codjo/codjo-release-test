@@ -9,8 +9,7 @@ import net.codjo.test.release.task.web.finder.ResultHandler;
  *
  */
 public abstract class AbstractCheckBoxStep implements WebStep {
-    protected String id;
-    private String xpath;
+    private ComponentIdentifier identifier = new ComponentIdentifier();
 
 
     public void proceed(WebContext context) throws IOException {
@@ -20,7 +19,8 @@ public abstract class AbstractCheckBoxStep implements WebStep {
 
 
     private HtmlElement findElement(WebContext context) {
-        ComponentFinder<HtmlElement> finder = new ComponentFinder<HtmlElement>(null, id, xpath);
+        ComponentFinder<HtmlElement> finder = new ComponentFinder<HtmlElement>(ComponentIdentifier.toArgumentMap(
+              identifier));
         final ResultHandler resultHandler = buildResultHandler();
         try {
             return finder.find(context, resultHandler);
@@ -35,14 +35,27 @@ public abstract class AbstractCheckBoxStep implements WebStep {
 
 
     public void setId(String id) {
-        this.id = id;
+        identifier.setId(id);
     }
 
 
     public void setXpath(String xpath) {
-        this.xpath = xpath;
+        identifier.setXpath(xpath);
     }
 
+
+    public void setCssClass(String cssClass) {
+        identifier.setCssClass(cssClass);
+    }
+
+
+    public void setIndex(Integer index) {
+        identifier.setIndex(index);
+    }
+
+    protected String getArgValue() {
+        return identifier.getArgValue();
+    }
 
     private ResultHandler buildResultHandler() {
         return new ResultHandler() {

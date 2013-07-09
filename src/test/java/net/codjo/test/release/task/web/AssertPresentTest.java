@@ -58,6 +58,10 @@ public class AssertPresentTest extends WebStepTestCase {
         checkPageWithXpath("<span id='container'/>", "//span[@id='container']", true);
     }
 
+    public void test_ok_withCssClass() throws Exception {
+        checkPageWithCssClass("<span class='class1'/><span class='class1'/>", "class1",2, true);
+    }
+
 
     public void test_foundButAmbigous() {
         try {
@@ -112,6 +116,17 @@ public class AssertPresentTest extends WebStepTestCase {
         WebContext context = loadPage(wrapHtml("title", content));
         AssertPresent step = new AssertPresent();
         step.setXpath(xpath);
+        step.setPresent(isPresent);
+        step.proceed(context);
+    }
+
+
+    private void checkPageWithCssClass(String content, String cssClass, Integer index, boolean isPresent)
+          throws Exception {
+        WebContext context = loadPage(wrapHtml("title", content));
+        AssertPresent step = new AssertPresent();
+        step.setCssClass(cssClass);
+        step.setIndex(index);
         step.setPresent(isPresent);
         step.proceed(context);
     }

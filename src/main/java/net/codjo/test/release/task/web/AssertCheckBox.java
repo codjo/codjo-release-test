@@ -13,7 +13,7 @@ public class AssertCheckBox extends AbstractCheckBoxStep {
     @Override
     protected void run(HtmlCheckBoxInput checkBox, WebContext context) throws IOException {
         boolean expected = "true".equals(checked);
-        Assert.assertEquals("Etat invalide pour la checkBox '" + id + "'", expected, checkBox.isChecked());
+        Assert.assertEquals("Etat invalide pour la checkBox '" + getArgValue() + "'", expected, checkBox.isChecked());
     }
 
 
