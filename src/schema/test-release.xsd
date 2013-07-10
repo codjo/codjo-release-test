@@ -3413,19 +3413,19 @@
     </xs:complexType>
 
     <xs:complexType name="identifiableChecked">
-        <xs:attribute name="id" type="xs:string"/>
-        <xs:attribute name="xpath" type="xs:string"/>
-        <xs:attribute name="cssClass" type="xs:string"/>
-        <xs:attribute name="index" type="xs:integer"/>
-        <xs:attribute name="checked" type="xs:boolean" use="required"/>
+        <xs:complexContent>
+            <xs:extension base="identifiable">
+                <xs:attribute name="checked" type="xs:boolean" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
     </xs:complexType>
 
     <xs:complexType name="identifiablePresent">
-        <xs:attribute name="id" type="xs:string"/>
-        <xs:attribute name="xpath" type="xs:string"/>
-        <xs:attribute name="cssClass" type="xs:string"/>
-        <xs:attribute name="index" type="xs:integer"/>
-        <xs:attribute name="present" type="xs:boolean"/>
+        <xs:complexContent>
+            <xs:extension base="identifiable">
+                <xs:attribute name="present" type="xs:boolean"/>
+            </xs:extension>
+        </xs:complexContent>
     </xs:complexType>
 
 </xs:schema>
