@@ -808,236 +808,16 @@
     </xs:element>
     <xs:element name="web-test">
         <xs:complexType>
-            <xs:choice minOccurs="0" maxOccurs="unbounded">
-                <xs:element name="assertAlert" type="xs:string"/>
-                <xs:element name="assertCheckBox" type="identifiableChecked">
-                    <xs:key name="assertCheckBoxAttribut">
-                        <xs:selector xpath="."/>
-                        <xs:field xpath="@id|@xpath|@cssClass|@index"/>
-                    </xs:key>
-                </xs:element>
-                <xs:element name="assertLink">
-                    <xs:complexType>
-                        <xs:simpleContent>
-                            <xs:extension base="xs:string">
-                                <xs:attribute name="target" type="xs:string"/>
-                                <xs:attribute name="present" type="xs:boolean"/>
-                            </xs:extension>
-                        </xs:simpleContent>
-                    </xs:complexType>
-                </xs:element>
-                <xs:element name="assertPage">
-                    <xs:complexType>
-                        <xs:attribute name="title" type="xs:string"/>
-                        <xs:attribute name="statusCode" type="xs:int"/>
-                    </xs:complexType>
-                    <xs:key name="eitherTitleOrstatusCodeIsMandatory">
-                        <xs:selector xpath="."/>
-                        <xs:field xpath="@title|@statusCode"/>
-                    </xs:key>
-                </xs:element>
-                <xs:element name="assertPresent" type="identifiablePresent">
-                    <xs:key name="assertPresentAttribut">
-                        <xs:selector xpath="."/>
-                        <xs:field xpath="@id|@xpath|@cssClass|@index"/>
-                    </xs:key>
-                </xs:element>
-                <xs:element name="assertTable">
-                    <xs:complexType>
-                        <xs:simpleContent>
-                            <xs:extension base="xs:string">
-                                <xs:attribute name="position" type="xs:int"/>
-                                <xs:attribute name="id" type="xs:string"/>
-                                <xs:attribute name="excludedRows" type="xs:string"/>
-                                <xs:attribute name="excludedColumns" type="xs:string"/>
-                            </xs:extension>
-                        </xs:simpleContent>
-                    </xs:complexType>
-                    <xs:key name="assertTableAttribut">
-                        <xs:selector xpath="."/>
-                        <xs:field xpath="@position|@id"/>
-                    </xs:key>
-                </xs:element>
-                <xs:element name="assertText">
-                    <xs:complexType>
-                        <xs:simpleContent>
-                            <xs:extension base="xs:string">
-                                <xs:attribute name="containerId" type="xs:string"/>
-                                <xs:attribute name="containerXpath" type="xs:string"/>
-                                <xs:attribute name="containerCssClass" type="xs:string"/>
-                                <xs:attribute name="containerIndex" type="xs:integer"/>
-                                <xs:attribute name="present" type="xs:boolean"/>
-                            </xs:extension>
-                        </xs:simpleContent>
-                    </xs:complexType>
-                    <xs:key name="assertTextAttribut">
-                        <xs:selector xpath="."/>
-                        <xs:field xpath="@containerId|@containerXpath|@containerCssClass|@containerIndex"/>
-                    </xs:key>
-                </xs:element>
-                <xs:element name="assertImage">
-                    <xs:complexType>
-                        <xs:simpleContent>
-                            <xs:extension base="xs:string">
-                                <xs:attribute name="src" type="xs:string" use="required"/>
-                            </xs:extension>
-                        </xs:simpleContent>
-                    </xs:complexType>
-                </xs:element>
-                <xs:element name="editForm">
-                    <xs:complexType>
-                        <xs:choice maxOccurs="unbounded">
-                            <xs:element name="setField" type="valueNameAttributs"/>
-                            <xs:element name="clickSubmit">
-                                <xs:complexType>
-                                    <xs:attribute name="name" type="xs:string"/>
-                                    <xs:attribute name="value" type="xs:string"/>
-                                </xs:complexType>
-                                <xs:key name="clickSubmitAttribut">
-                                    <xs:selector xpath="."/>
-                                    <xs:field xpath="@name|@value"/>
-                                </xs:key>
-                            </xs:element>
-                            <xs:element name="assertField" type="valueNameAttributs"/>
-                            <xs:element name="assertSelectOptions">
-                                <xs:complexType>
-                                    <xs:sequence>
-                                        <xs:element name="option">
-                                            <xs:complexType>
-                                                <xs:simpleContent>
-                                                    <xs:extension base="xs:string">
-                                                        <xs:attribute name="value" type="xs:string"/>
-                                                    </xs:extension>
-                                                </xs:simpleContent>
-                                            </xs:complexType>
-                                        </xs:element>
-                                    </xs:sequence>
-                                    <xs:attribute name="name" type="xs:string" use="required"/>
-                                </xs:complexType>
-                            </xs:element>
-                            <xs:element name="select" type="valueNameAttributs"/>
-                            <xs:element name="assertCheckBox" type="identifiableChecked">
-                                <xs:key name="assertCheckBoxAttributInEditForm">
-                                    <xs:selector xpath="."/>
-                                    <xs:field xpath="@id|@xpath|@cssClass|@index"/>
-                                </xs:key>
-                            </xs:element>
-                            <xs:element name="clickCheckBox" type="identifiable">
-                                <xs:key name="clickCheckboxAttributInEditForm">
-                                    <xs:selector xpath="."/>
-                                    <xs:field xpath="@id|@xpath|@cssClass|@index"/>
-                                </xs:key>
-                            </xs:element>
-                            <xs:element name="clickRadioButton">
-                                <xs:complexType>
-                                    <xs:attribute name="name" type="xs:string" use="required"/>
-                                    <xs:attribute name="value" type="xs:string" use="required"/>
-                                </xs:complexType>
-                            </xs:element>
-                        </xs:choice>
-                        <xs:attribute name="id" type="xs:string"/>
-                        <xs:attribute name="position" type="xs:int"/>
-                    </xs:complexType>
-                    <xs:key name="editFormAttribut">
-                        <xs:selector xpath="."/>
-                        <xs:field xpath="@position|@id"/>
-                    </xs:key>
-                </xs:element>
-                <xs:element name="setConfirmation">
-                    <xs:complexType>
-                        <xs:attribute name="accept" type="xs:boolean"/>
-                    </xs:complexType>
-                </xs:element>
-                <xs:element name="clickButton" type="identifiable">
-                    <xs:key name="clickButtonAttribut">
-                        <xs:selector xpath="."/>
-                        <xs:field xpath="@id|@xpath|@cssClass|@index"/>
-                    </xs:key>
-                </xs:element>
-                <xs:element name="click" type="identifiable">
-                    <xs:key name="clickAttribut">
-                        <xs:selector xpath="."/>
-                        <xs:field xpath="@id|@xpath|@cssClass|@index"/>
-                    </xs:key>
-                </xs:element>
-                <xs:element name="clickCheckBox" type="identifiable">
-                    <xs:key name="clickCheckboxAttribut">
-                        <xs:selector xpath="."/>
-                        <xs:field xpath="@id|@xpath|@cssClass|@index"/>
-                    </xs:key>
-                </xs:element>
-                <xs:element name="clickLink">
-                    <xs:complexType>
-                        <xs:attribute name="id" type="xs:string"/>
-                        <xs:attribute name="text" type="xs:string"/>
-                        <xs:attribute name="xpath" type="xs:string"/>
-                        <xs:attribute name="cssClass" type="xs:string"/>
-                        <xs:attribute name="index" type="xs:integer"/>
-                    </xs:complexType>
-                    <xs:key name="clickLinkAttribut">
-                        <xs:selector xpath="."/>
-                        <xs:field xpath="@id|@text|@xpath|@cssClass|@index"/>
-                    </xs:key>
-                </xs:element>
-                <xs:element name="dragAndDrop">
-                    <xs:annotation>
-                        <xs:documentation xml:lang="fr">
-                            Simule un drag and drop, on clique sur le composant origine que l'on deplace sur le composant cible.
-                            <p>
-                                <i>Exemple :</i>
-                                <pre>
-
-                                    &lt;dragAndDrop&gt;
-                                    &lt;origin id="maBoite1"/&gt;
-                                    &lt;destination id="maBoite2"/&gt;
-                                    &lt;/dragAndDrop&gt;
-
-                                    &lt;dragAndDrop&gt;
-                                    &lt;origin cssClass="brinDansTableau" index="1"/&gt;
-                                    &lt;destination cssClass="panelDeGauche"/&gt;
-                                    &lt;/dragAndDrop&gt;
-
-                                    &lt;dragAndDrop&gt;
-                                    &lt;origin originXpath="//div[contains(@class,'PRODUCTION')]" index="1"/&gt;
-                                    &lt;destination originXpath="//div[contains(@class,'PRODUCTION')]" index="3"/&gt;
-                                    &lt;/dragAndDrop&gt;
-                                </pre>
-                            </p>
-                        </xs:documentation>
-                    </xs:annotation>
-                    <xs:complexType>
-                        <xs:sequence>
-                            <xs:element ref="origin"/>
-                            <xs:element ref="destination"/>
-                        </xs:sequence>
-                    </xs:complexType>
-                </xs:element>
-                <xs:element name="downloadFile">
-                    <xs:complexType>
-                        <xs:attribute name="link" type="xs:string" use="required"/>
-                        <xs:attribute name="target" type="xs:string" use="required"/>
-                    </xs:complexType>
-                </xs:element>
-                <xs:element name="gotoPage">
-                    <xs:complexType>
-                        <xs:attribute name="url" type="xs:string" use="required"/>
-                    </xs:complexType>
-                </xs:element>
-                <xs:element name="refresh">
-                    <xs:complexType/>
-                </xs:element>
-                <xs:element name="wait">
-                    <xs:complexType>
-                        <xs:attribute name="duration" type="xs:integer" use="required"/>
-                    </xs:complexType>
-                </xs:element>
-            </xs:choice>
-            <xs:attribute name="url" type="xs:string"/>
-            <xs:attribute name="session" type="xs:string"/>
-            <xs:attribute name="javascript" type="xs:boolean" default="true"/>
-            <xs:attribute name="failOnError" type="xs:boolean" default="true"/>
-            <xs:attribute name="requestHeader" type="xs:string"/>
-            <xs:attribute name="allowAllCertificates" type="xs:boolean" default="true"/>
+            <xs:complexContent>
+                <xs:extension base="allWebStep">
+                    <xs:attribute name="url" type="xs:string"/>
+                    <xs:attribute name="session" type="xs:string"/>
+                    <xs:attribute name="javascript" type="xs:boolean" default="true"/>
+                    <xs:attribute name="failOnError" type="xs:boolean" default="true"/>
+                    <xs:attribute name="requestHeader" type="xs:string"/>
+                    <xs:attribute name="allowAllCertificates" type="xs:boolean" default="true"/>
+                </xs:extension>
+            </xs:complexContent>
         </xs:complexType>
         <xs:key name="eitherSessionOrUrlIsMandatory">
             <xs:selector xpath="."/>
@@ -3428,4 +3208,256 @@
         </xs:complexContent>
     </xs:complexType>
 
+    <!-- ==================== ALL WEB STEPS ELEMENT ==================== -->
+    <xs:complexType name="allWebStep">
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="assertAlert" type="xs:string"/>
+            <xs:element name="assertCheckBox" type="identifiableChecked">
+                <xs:key name="assertCheckBoxAttribut">
+                    <xs:selector xpath="."/>
+                    <xs:field xpath="@id|@xpath|@cssClass|@index"/>
+                </xs:key>
+            </xs:element>
+            <xs:element name="assertLink">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute name="target" type="xs:string"/>
+                            <xs:attribute name="present" type="xs:boolean"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="assertPage">
+                <xs:complexType>
+                    <xs:attribute name="title" type="xs:string"/>
+                    <xs:attribute name="statusCode" type="xs:int"/>
+                </xs:complexType>
+                <xs:key name="eitherTitleOrstatusCodeIsMandatory">
+                    <xs:selector xpath="."/>
+                    <xs:field xpath="@title|@statusCode"/>
+                </xs:key>
+            </xs:element>
+            <xs:element name="assertPresent" type="identifiablePresent">
+                <xs:key name="assertPresentAttribut">
+                    <xs:selector xpath="."/>
+                    <xs:field xpath="@id|@xpath|@cssClass|@index"/>
+                </xs:key>
+            </xs:element>
+            <xs:element name="assertTable">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute name="position" type="xs:int"/>
+                            <xs:attribute name="id" type="xs:string"/>
+                            <xs:attribute name="excludedRows" type="xs:string"/>
+                            <xs:attribute name="excludedColumns" type="xs:string"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+                <xs:key name="assertTableAttribut">
+                    <xs:selector xpath="."/>
+                    <xs:field xpath="@position|@id"/>
+                </xs:key>
+            </xs:element>
+            <xs:element name="assertText">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute name="containerId" type="xs:string"/>
+                            <xs:attribute name="containerXpath" type="xs:string"/>
+                            <xs:attribute name="containerCssClass" type="xs:string"/>
+                            <xs:attribute name="containerIndex" type="xs:integer"/>
+                            <xs:attribute name="present" type="xs:boolean"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+                <xs:key name="assertTextAttribut">
+                    <xs:selector xpath="."/>
+                    <xs:field xpath="@containerId|@containerXpath|@containerCssClass|@containerIndex"/>
+                </xs:key>
+            </xs:element>
+            <xs:element name="assertImage">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute name="src" type="xs:string" use="required"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="editForm">
+                <xs:complexType>
+                    <xs:choice maxOccurs="unbounded">
+                        <xs:element name="setField" type="valueNameAttributs"/>
+                        <xs:element name="clickSubmit">
+                            <xs:complexType>
+                                <xs:attribute name="name" type="xs:string"/>
+                                <xs:attribute name="value" type="xs:string"/>
+                            </xs:complexType>
+                            <xs:key name="clickSubmitAttribut">
+                                <xs:selector xpath="."/>
+                                <xs:field xpath="@name|@value"/>
+                            </xs:key>
+                        </xs:element>
+                        <xs:element name="assertField" type="valueNameAttributs"/>
+                        <xs:element name="assertSelectOptions">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="option">
+                                        <xs:complexType>
+                                            <xs:simpleContent>
+                                                <xs:extension base="xs:string">
+                                                    <xs:attribute name="value" type="xs:string"/>
+                                                </xs:extension>
+                                            </xs:simpleContent>
+                                        </xs:complexType>
+                                    </xs:element>
+                                </xs:sequence>
+                                <xs:attribute name="name" type="xs:string" use="required"/>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="select" type="valueNameAttributs"/>
+                        <xs:element name="assertCheckBox" type="identifiableChecked">
+                            <xs:key name="assertCheckBoxAttributInEditForm">
+                                <xs:selector xpath="."/>
+                                <xs:field xpath="@id|@xpath|@cssClass|@index"/>
+                            </xs:key>
+                        </xs:element>
+                        <xs:element name="clickCheckBox" type="identifiable">
+                            <xs:key name="clickCheckboxAttributInEditForm">
+                                <xs:selector xpath="."/>
+                                <xs:field xpath="@id|@xpath|@cssClass|@index"/>
+                            </xs:key>
+                        </xs:element>
+                        <xs:element name="clickRadioButton">
+                            <xs:complexType>
+                                <xs:attribute name="name" type="xs:string" use="required"/>
+                                <xs:attribute name="value" type="xs:string" use="required"/>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:choice>
+                    <xs:attribute name="id" type="xs:string"/>
+                    <xs:attribute name="position" type="xs:int"/>
+                </xs:complexType>
+                <xs:key name="editFormAttribut">
+                    <xs:selector xpath="."/>
+                    <xs:field xpath="@position|@id"/>
+                </xs:key>
+            </xs:element>
+            <xs:element name="setConfirmation">
+                <xs:complexType>
+                    <xs:attribute name="accept" type="xs:boolean"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="clickButton" type="identifiable">
+                <xs:key name="clickButtonAttribut">
+                    <xs:selector xpath="."/>
+                    <xs:field xpath="@id|@xpath|@cssClass|@index"/>
+                </xs:key>
+            </xs:element>
+            <xs:element name="click" type="identifiable">
+                <xs:key name="clickAttribut">
+                    <xs:selector xpath="."/>
+                    <xs:field xpath="@id|@xpath|@cssClass|@index"/>
+                </xs:key>
+            </xs:element>
+            <xs:element name="clickCheckBox" type="identifiable">
+                <xs:key name="clickCheckboxAttribut">
+                    <xs:selector xpath="."/>
+                    <xs:field xpath="@id|@xpath|@cssClass|@index"/>
+                </xs:key>
+            </xs:element>
+            <xs:element name="clickLink">
+                <xs:complexType>
+                    <xs:attribute name="id" type="xs:string"/>
+                    <xs:attribute name="text" type="xs:string"/>
+                    <xs:attribute name="xpath" type="xs:string"/>
+                    <xs:attribute name="cssClass" type="xs:string"/>
+                    <xs:attribute name="index" type="xs:integer"/>
+                </xs:complexType>
+                <xs:key name="clickLinkAttribut">
+                    <xs:selector xpath="."/>
+                    <xs:field xpath="@id|@text|@xpath|@cssClass|@index"/>
+                </xs:key>
+            </xs:element>
+            <xs:element name="dragAndDrop">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">
+                        Simule un drag and drop, on clique sur le composant origine que l'on deplace sur le composant cible.
+                        <p>
+                            <i>Exemple :</i>
+                            <pre>
+
+                                &lt;dragAndDrop&gt;
+                                &lt;origin id="maBoite1"/&gt;
+                                &lt;destination id="maBoite2"/&gt;
+                                &lt;/dragAndDrop&gt;
+
+                                &lt;dragAndDrop&gt;
+                                &lt;origin cssClass="brinDansTableau" index="1"/&gt;
+                                &lt;destination cssClass="panelDeGauche"/&gt;
+                                &lt;/dragAndDrop&gt;
+
+                                &lt;dragAndDrop&gt;
+                                &lt;origin originXpath="//div[contains(@class,'PRODUCTION')]" index="1"/&gt;
+                                &lt;destination originXpath="//div[contains(@class,'PRODUCTION')]" index="3"/&gt;
+                                &lt;/dragAndDrop&gt;
+                            </pre>
+                        </p>
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="origin"/>
+                        <xs:element ref="destination"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="downloadFile">
+                <xs:complexType>
+                    <xs:attribute name="link" type="xs:string" use="required"/>
+                    <xs:attribute name="target" type="xs:string" use="required"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="gotoPage">
+                <xs:complexType>
+                    <xs:attribute name="url" type="xs:string" use="required"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="refresh">
+                <xs:complexType/>
+            </xs:element>
+            <xs:element name="wait">
+                <xs:complexType>
+                    <xs:attribute name="duration" type="xs:integer" use="required"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="group">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Permet de grouper plusieurs balises
+                        (éventuellement 'group'), dans un souci de lisibilité.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="allWebStep">
+                            <xs:attribute name="name" type="xs:string">
+                                <xs:annotation>
+                                    <xs:documentation xml:lang="fr">Nom du groupe, à titre de commentaire.
+                                    </xs:documentation>
+                                </xs:annotation>
+                            </xs:attribute>
+                            <xs:attribute name="enabled" type="xs:string" default="true">
+                                <xs:annotation>
+                                    <xs:documentation xml:lang="fr">Le groupe s'execute ou pas</xs:documentation>
+                                </xs:annotation>
+                            </xs:attribute>
+                        </xs:extension>
+
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
+        </xs:choice>
+    </xs:complexType>
 </xs:schema>

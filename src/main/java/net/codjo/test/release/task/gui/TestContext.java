@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import junit.extensions.jfcunit.JFCTestCase;
 import junit.extensions.jfcunit.JFCTestHelper;
+import net.codjo.test.release.task.util.TestLocation;
 import org.apache.tools.ant.Project;
 /**
  * Contexte d'exécution des tests passé entre les steps.

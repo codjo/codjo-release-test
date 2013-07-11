@@ -3,15 +3,17 @@
  *
  * Copyright (c) 2001 AGF Asset Management.
  */
-package net.codjo.test.release.task.gui;
+package net.codjo.test.release.task.util;
+import net.codjo.test.release.task.ReleaseTestStep;
 import net.codjo.test.release.task.Util;
 /**
- * 
+ *
  */
 public class TestLocation {
     private String groupName;
-    private GuiStep step;
+    private ReleaseTestStep step;
     private int stepNumber;
+
 
     public String getGroupName() {
         return groupName;
@@ -24,12 +26,12 @@ public class TestLocation {
     }
 
 
-    public GuiStep getStep() {
+    public ReleaseTestStep getStep() {
         return step;
     }
 
 
-    public void setStep(GuiStep step) {
+    public void setStep(ReleaseTestStep step) {
         this.step = step;
         stepNumber++;
     }
@@ -45,6 +47,6 @@ public class TestLocation {
             return "Localisation impossible";
         }
         return "Step " + stepNumber + " du groupe '" + groupName + "' ("
-        + Util.computeClassName(step.getClass()) + ")";
+               + Util.computeClassName(step.getClass()) + ")";
     }
 }
