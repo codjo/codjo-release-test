@@ -9,6 +9,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
+import net.codjo.test.release.task.Util;
 import net.codjo.test.release.task.util.TestLocation;
 import org.apache.tools.ant.Project;
 import org.mockito.Mockito;
@@ -150,25 +151,38 @@ public class WebTaskTest extends WebStepTestCase {
             fail();
         }
         catch (Exception e) {
-            assertThat(e.getMessage(), is("\n\n%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n"
-                                          + "Erreur web-test 'null' step 1\n"
-                                          +"%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n"
-                                          + "Impossible d'ouvrir la page : Mocked IOException"));
+            assertThat(e.getMessage(),
+                       is("\n\n%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n"
+                          + "Erreur web-test 'null' Step 1\n"
+                          + "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n"
+                          + "Impossible d'ouvrir la page : Mocked IOException"));
         }
     }
 
 
     public void test_throwableButNotIOexception() throws Exception {
-        Click mockedClickStep = Mockito.mock(Click.class);
-
         WebContext context = mockWebcontext();
         configureTaskWithMockContext(context);
 
+        Group mainGroup = new Group();
+        mainGroup.setName("mainGroup");
+        mainGroup.setEnabled(true);
+        Click clickInMainGroup = Mockito.mock(Click.class);
+        mainGroup.addClick(clickInMainGroup);
+
+        Group subGroup = new Group();
+        subGroup.setName("subGroup");
+        AssertPage assertPage = Mockito.mock(AssertPage.class);
+        subGroup.addAssertPage(assertPage);
+        Click clickInSubGroup = Mockito.mock(Click.class);
+        subGroup.addClick(clickInSubGroup);
+        mainGroup.addGroup(subGroup);
+
         Mockito.doThrow(new IllegalArgumentException("Everything but not IOException"))
-              .when(mockedClickStep)
+              .when(clickInSubGroup)
               .proceed(context);
 
-        task.addClick(mockedClickStep);
+        task.addGroup(mainGroup);
         try {
             task.execute();
             fail();
@@ -180,7 +194,8 @@ public class WebTaskTest extends WebStepTestCase {
                           + "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n\n\n"
                           + "<html><head><title>Page title</title></head><body>Page content</body></html>\n\n"
                           + "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n"
-                          + "Erreur web-test 'firstSession' step 0 in group 'second group'\n"
+                          + "Erreur web-test 'firstSession' Step 2 du groupe 'mainGroup > subGroup' ("
+                          + Util.computeClassName(clickInSubGroup.getClass()) + ")\n"
                           + "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n"
                           + "Everything but not IOException"));
         }
@@ -216,7 +231,6 @@ public class WebTaskTest extends WebStepTestCase {
     private WebContext mockWebcontext() throws MalformedURLException, URISyntaxException {
         WebContext context = Mockito.mock(WebContext.class);
         final TestLocation testLocation = new TestLocation();
-        testLocation.setGroupName("second group");
         Mockito.when(context.getTestLocation()).thenReturn(testLocation);
 
         HtmlPage page = Mockito.mock(HtmlPage.class);

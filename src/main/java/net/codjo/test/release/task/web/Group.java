@@ -17,6 +17,12 @@ public class Group extends StepList {
 
 
     @Override
+    protected void runAfterStepProceed(WebContext context, String groupName) {
+        context.getTestLocation().resetGroupName();
+    }
+
+
+    @Override
     public void proceed(WebContext context) throws IOException, WebException {
         context.getTestLocation().setGroupName(getName());
         if (enabled) {

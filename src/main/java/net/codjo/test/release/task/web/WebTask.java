@@ -57,19 +57,20 @@ public class WebTask extends AgfTask implements Resource {
 
 
     String formatErrorMessage(int stepNum, WebContext context, Throwable t) {
-        String groupName = null;
         String pageDescription = "";
+        String testLocationMessage = "";
         if (context != null) {
             final TestLocation testLocation = context.getTestLocation();
             if (testLocation.getGroupName() != null) {
-                stepNum = testLocation.getStepNumber() - 1;
-                groupName = testLocation.getGroupName();
+                testLocationMessage = testLocation.getLocationMessage();
             }
             pageDescription = getPageDescription(context);
         }
+        else {
+            testLocationMessage = "Step " + (stepNum + 1);
+        }
         String errorLocation = "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n"
-                               + "Erreur web-test '" + getSession() + "' step " + (stepNum + 1)
-                               + (groupName == null ? "" : " in group '" + groupName + "'") + "\n"
+                               + "Erreur web-test '" + getSession() +"' "+ testLocationMessage + "\n"
                                + "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n"
                                + (context == null ? CANNOT_OPEN_PAGE : "");
 

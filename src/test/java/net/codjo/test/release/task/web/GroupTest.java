@@ -57,7 +57,8 @@ public class GroupTest {
     }
 
 
-    private void assertStepProceed(int count, String groupName, int stepNumber, String locationMessage) throws IOException {
+    private void assertStepProceed(int count, String groupName, int stepNumber, String locationMessage)
+          throws IOException {
         Click mockedClickStep = Mockito.mock(Click.class);
 
         WebContext context = Mockito.mock(WebContext.class);

@@ -13,12 +13,16 @@ public class StepList implements WebStep {
     protected void runBeforeStepProceed(WebContext context, WebStep step) {
     }
 
+    protected void runAfterStepProceed(WebContext context, String groupName) {
+    }
+
 
     public void proceed(WebContext context) throws IOException, WebException {
         for (WebStep step : stepList) {
             runBeforeStepProceed(context, step);
             step.proceed(context);
         }
+        runAfterStepProceed(context, name);
     }
 
 

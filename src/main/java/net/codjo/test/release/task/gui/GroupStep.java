@@ -19,6 +19,12 @@ public class GroupStep extends StepList {
 
 
     @Override
+    protected void runAfterStepProceed(TestContext context, String groupName) {
+        context.getTestLocation().resetGroupName();
+    }
+
+
+    @Override
     public void proceed(TestContext context) {
         context.getTestLocation().setGroupName(getName());
         if (enabled) {
