@@ -10,6 +10,7 @@ public abstract class WebFormTestCase extends WebStepTestCase {
 
     @Override
     protected void setUp() throws Exception {
+        super.setUp();
         context = loadPage(wrapHtml(
               "<form name='loginForm' action='mails.html'>"
               + "    <table>"

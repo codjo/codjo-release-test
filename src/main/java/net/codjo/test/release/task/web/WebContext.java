@@ -8,18 +8,23 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import net.codjo.test.release.task.util.TestLocation;
 import org.apache.tools.ant.Project;
 /**
  *
  */
 public class WebContext {
+    private static final String TEST_LOCATION = "testLocation";
     private HtmlPage page;
     private HtmlForm form;
     private WebClient webClient;
     private final Project project;
     private List<String> collectedAlerts = new ArrayList<String>();
     private final int statuscode;
+    private Map<Object,Object> objects = new HashMap<Object,Object>();
 
 
     public WebContext(Page page, WebClient webClient, Project project) {
@@ -30,6 +35,7 @@ public class WebContext {
         this.webClient = webClient;
         this.project = project;
         webClient.setAlertHandler(new CollectingAlertHandler(collectedAlerts));
+        putObject(TEST_LOCATION, new TestLocation());
     }
 
 
@@ -94,5 +100,20 @@ public class WebContext {
 
     public int getStatusCode() {
         return statuscode;
+    }
+
+
+    public TestLocation getTestLocation() {
+        return (TestLocation)getObject(TEST_LOCATION);
+    }
+
+
+    private void putObject(Object key, Object value) {
+        objects.put(key, value);
+    }
+
+
+    private Object getObject(Object key) {
+        return objects.get(key);
     }
 }

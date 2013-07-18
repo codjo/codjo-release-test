@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import net.codjo.test.release.task.AgfTask;
 import net.codjo.test.release.task.Resource;
+import net.codjo.test.release.task.util.TestLocation;
 import net.codjo.test.release.task.web.dialogs.AssertAlert;
 import net.codjo.test.release.task.web.dialogs.SetConfirmation;
 import net.codjo.test.release.task.web.form.EditForm;
@@ -47,16 +48,35 @@ public class WebTask extends AgfTask implements Resource {
             }
         }
         catch (IOException e) {
-            throw new WebException(
-                  "Erreur web-test '" + getSession() + "' step " + (stepNum + 1) + " :\n" + CANNOT_OPEN_PAGE
-                  + e.getMessage(), e);
+            throw new WebException(formatErrorMessage(stepNum, null, e), e);
         }
         catch (Throwable t) {
-            throw new WebException(
-                  "Erreur web-test '" + getSession() + "' step " + (stepNum + 1) + " :\n" + t.getMessage()
-                  + "\n" + getPageDescription(context),
-                  t);
+            throw new WebException(formatErrorMessage(stepNum, context, t), t);
         }
+    }
+
+
+    String formatErrorMessage(int stepNum, WebContext context, Throwable t) {
+        String pageDescription = "";
+        String testLocationMessage = "";
+        if (context != null) {
+            final TestLocation testLocation = context.getTestLocation();
+            if (testLocation.getGroupName() != null) {
+                testLocationMessage = testLocation.getLocationMessage();
+            }
+            pageDescription = getPageDescription(context);
+        }
+        else {
+            testLocationMessage = "Step " + (stepNum + 1);
+        }
+        String errorLocation = "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n"
+                               + "Erreur web-test '" + getSession() +"' "+ testLocationMessage + "\n"
+                               + "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n"
+                               + (context == null ? CANNOT_OPEN_PAGE : "");
+
+        return pageDescription + "\n\n"
+               + errorLocation
+               + t.getMessage();
     }
 
 
@@ -71,7 +91,10 @@ public class WebTask extends AgfTask implements Resource {
         }
 
         WebResponse response = page.getWebResponse();
-        return response.getWebRequest().getUrl() + "\n\n" + response.getContentAsString();
+        return "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n"
+               + "Spool page: " + response.getWebRequest().getUrl() + "\n" +
+               "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n"
+               + "\n\n" + response.getContentAsString();
     }
 
 
@@ -234,6 +257,11 @@ public class WebTask extends AgfTask implements Resource {
 
 
     public void addDownloadFile(DownloadFile step) {
+        steps.add(step);
+    }
+
+
+    public void addGroup(Group step) {
         steps.add(step);
     }
 

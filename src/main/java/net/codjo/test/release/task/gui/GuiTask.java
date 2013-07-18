@@ -4,8 +4,6 @@
  * Copyright (c) 2001 AGF Asset Management.
  */
 package net.codjo.test.release.task.gui;
-import net.codjo.test.release.task.AgfTask;
-import net.codjo.test.release.task.Resource;
 import java.awt.Window;
 import java.io.FileDescriptor;
 import java.io.PrintStream;
@@ -21,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 import junit.extensions.jfcunit.TestHelper;
 import junit.extensions.jfcunit.WindowMonitor;
+import net.codjo.test.release.task.AgfTask;
+import net.codjo.test.release.task.Resource;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.types.Commandline;
 public class GuiTask extends AgfTask implements Resource {
@@ -35,6 +35,7 @@ public class GuiTask extends AgfTask implements Resource {
 
     @Override
     public void execute() {
+        group.setName("gui-test");
         SecurityManager oldSecurityManager = System.getSecurityManager();
         System.setSecurityManager(new NeverExitSecurityManager(oldSecurityManager));
         try {

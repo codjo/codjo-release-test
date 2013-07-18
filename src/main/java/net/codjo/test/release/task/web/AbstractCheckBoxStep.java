@@ -9,23 +9,25 @@ import net.codjo.test.release.task.web.finder.ResultHandler;
  *
  */
 public abstract class AbstractCheckBoxStep implements WebStep {
-    protected String id;
-    private String xpath;
+    private ComponentIdentifier identifier = new ComponentIdentifier();
 
 
     public void proceed(WebContext context) throws IOException {
-        HtmlElement element;
-        ComponentFinder<HtmlElement> finder = new ComponentFinder<HtmlElement>(null, id, xpath);
+        HtmlCheckBoxInput checkbox = (HtmlCheckBoxInput)findElement(context);
+        run(checkbox, context);
+    }
+
+
+    private HtmlElement findElement(WebContext context) {
+        ComponentFinder<HtmlElement> finder = new ComponentFinder<HtmlElement>(ComponentIdentifier.toArgumentMap(
+              identifier));
         final ResultHandler resultHandler = buildResultHandler();
         try {
-            element = finder.find(context, resultHandler);
+            return finder.find(context, resultHandler);
         }
         catch (ElementNotFoundException e) {
             throw new WebException(resultHandler.getErrorMessage(e.getAttributeValue()));
         }
-
-        HtmlCheckBoxInput checkbox = (HtmlCheckBoxInput)element;
-        run(checkbox, context);
     }
 
 
@@ -33,14 +35,27 @@ public abstract class AbstractCheckBoxStep implements WebStep {
 
 
     public void setId(String id) {
-        this.id = id;
+        identifier.setId(id);
     }
 
 
     public void setXpath(String xpath) {
-        this.xpath = xpath;
+        identifier.setXpath(xpath);
     }
 
+
+    public void setCssClass(String cssClass) {
+        identifier.setCssClass(cssClass);
+    }
+
+
+    public void setIndex(Integer index) {
+        identifier.setIndex(index);
+    }
+
+    protected String getArgValue() {
+        return identifier.getArgValue();
+    }
 
     private ResultHandler buildResultHandler() {
         return new ResultHandler() {

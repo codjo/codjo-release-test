@@ -21,7 +21,7 @@ public class DragAndDropTest extends WebStepTestCase {
     public void test_destinationNotSpecified() throws Exception {
         try {
             DragAndDrop step = new DragAndDrop();
-            step.addOrigin(new DragAndDropArg("firstBox", null, null, 0));
+            step.addOrigin(new ComponentIdentifier("firstBox", null, null, 0));
             step.addDestination(null);
             step.proceed(loadPage(""));
             fail();
@@ -36,7 +36,7 @@ public class DragAndDropTest extends WebStepTestCase {
         try {
             DragAndDrop step = new DragAndDrop();
             step.addOrigin(null);
-            step.addDestination(new DragAndDropArg(null, "destinationXpath", null, 0));
+            step.addDestination(new ComponentIdentifier(null, "destinationXpath", null, 0));
 
             step.proceed(loadPage(""));
             fail();
@@ -117,7 +117,7 @@ public class DragAndDropTest extends WebStepTestCase {
               + "    var options = {};\n"
               + "    dragOn.apply(draggable, options);\n"
               + "\n"
-              + "    document.attachEvent('onmouseup', \n"
+              + "    addEvent(document,'mouseup', \n"
               + "     function() {\n"
               + "         var dragged = document.getElementById('originBox');\n"
               + "         alert('originBox has moved: ' + ((originBoxPosition - getPos(dragged).r)!=0));\n"
@@ -136,8 +136,8 @@ public class DragAndDropTest extends WebStepTestCase {
 
     private void dragAndDrop(String originId, String destinationId, WebContext context) throws IOException {
         DragAndDrop step = new DragAndDrop();
-        step.addOrigin(new DragAndDropArg(originId, null, null, null));
-        step.addDestination(new DragAndDropArg(destinationId, null, null, null));
+        step.addOrigin(new ComponentIdentifier(originId, null, null, null));
+        step.addDestination(new ComponentIdentifier(destinationId, null, null, null));
         step.proceed(context);
     }
 
@@ -146,8 +146,8 @@ public class DragAndDropTest extends WebStepTestCase {
                                            String destinationXpath,
                                            WebContext context) throws IOException {
         DragAndDrop step = new DragAndDrop();
-        step.addOrigin(new DragAndDropArg(originId, null, null, null));
-        step.addDestination(new DragAndDropArg(null, destinationXpath, null, null));
+        step.addOrigin(new ComponentIdentifier(originId, null, null, null));
+        step.addDestination(new ComponentIdentifier(null, destinationXpath, null, null));
         step.proceed(context);
     }
 
@@ -158,8 +158,8 @@ public class DragAndDropTest extends WebStepTestCase {
                                       Integer destinationIndex,
                                       WebContext context) throws IOException {
         DragAndDrop step = new DragAndDrop();
-        step.addOrigin(new DragAndDropArg(null, originId, null, originIndex));
-        step.addDestination(new DragAndDropArg(null, destinationId, null, destinationIndex));
+        step.addOrigin(new ComponentIdentifier(null, originId, null, originIndex));
+        step.addDestination(new ComponentIdentifier(null, destinationId, null, destinationIndex));
         step.proceed(context);
     }
 
@@ -170,8 +170,8 @@ public class DragAndDropTest extends WebStepTestCase {
                                     Integer destinationIndex,
                                     WebContext context) throws IOException {
         DragAndDrop step = new DragAndDrop();
-        step.addOrigin(new DragAndDropArg(null, null, originCssClass, originIndex));
-        step.addDestination(new DragAndDropArg(null, null, destinationCssClass, destinationIndex));
+        step.addOrigin(new ComponentIdentifier(null, null, originCssClass, originIndex));
+        step.addDestination(new ComponentIdentifier(null, null, destinationCssClass, destinationIndex));
         step.proceed(context);
     }
 }

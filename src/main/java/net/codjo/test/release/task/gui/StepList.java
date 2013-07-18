@@ -19,6 +19,10 @@ public abstract class StepList extends AbstractGuiStep {
     }
 
 
+    protected void runAfterStepProceed(TestContext context, String name) {
+    }
+
+
     public String getName() {
         return name;
     }
@@ -34,6 +38,7 @@ public abstract class StepList extends AbstractGuiStep {
             runBeforeStepProceed(context, step);
             step.proceed(context);
         }
+        runAfterStepProceed(context, name);
     }
 
 

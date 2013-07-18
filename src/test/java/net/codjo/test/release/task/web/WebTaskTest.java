@@ -1,7 +1,20 @@
 package net.codjo.test.release.task.web;
+import com.gargoylesoftware.htmlunit.WebRequest;
+import com.gargoylesoftware.htmlunit.WebResponse;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.util.Cookie;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.Map;
+import net.codjo.test.release.task.Util;
+import net.codjo.test.release.task.util.TestLocation;
 import org.apache.tools.ant.Project;
+import org.mockito.Mockito;
+
+import static net.codjo.test.common.matcher.JUnitMatchers.*;
 /**
  *
  */
@@ -123,8 +136,75 @@ public class WebTaskTest extends WebStepTestCase {
     }
 
 
+    public void test_ioException() throws Exception {
+        Click mockedClickStep = Mockito.mock(Click.class);
+
+        WebContext context = Mockito.mock(WebContext.class);
+        final TestLocation testLocation = new TestLocation();
+        Mockito.when(context.getTestLocation()).thenReturn(testLocation);
+
+        Mockito.doThrow(new IOException("Mocked IOException")).when(mockedClickStep).proceed(Mockito.<WebContext>any());
+
+        task.addClick(mockedClickStep);
+        try {
+            task.execute();
+            fail();
+        }
+        catch (Exception e) {
+            assertThat(e.getMessage(),
+                       is("\n\n%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n"
+                          + "Erreur web-test 'null' Step 1\n"
+                          + "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n"
+                          + "Impossible d'ouvrir la page : Mocked IOException"));
+        }
+    }
+
+
+    public void test_throwableButNotIOexception() throws Exception {
+        WebContext context = mockWebcontext();
+        configureTaskWithMockContext(context);
+
+        Group mainGroup = new Group();
+        mainGroup.setName("mainGroup");
+        mainGroup.setEnabled(true);
+        Click clickInMainGroup = Mockito.mock(Click.class);
+        mainGroup.addClick(clickInMainGroup);
+
+        Group subGroup = new Group();
+        subGroup.setName("subGroup");
+        AssertPage assertPage = Mockito.mock(AssertPage.class);
+        subGroup.addAssertPage(assertPage);
+        Click clickInSubGroup = Mockito.mock(Click.class);
+        subGroup.addClick(clickInSubGroup);
+        mainGroup.addGroup(subGroup);
+
+        Mockito.doThrow(new IllegalArgumentException("Everything but not IOException"))
+              .when(clickInSubGroup)
+              .proceed(context);
+
+        task.addGroup(mainGroup);
+        try {
+            task.execute();
+            fail();
+        }
+        catch (Exception e) {
+            assertThat(e.getMessage(),
+                       is("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n"
+                          + "Spool page: http://localhost/page\n"
+                          + "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n\n\n"
+                          + "<html><head><title>Page title</title></head><body>Page content</body></html>\n\n"
+                          + "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n"
+                          + "Erreur web-test 'firstSession' Step 2 du groupe 'mainGroup > subGroup' ("
+                          + Util.computeClassName(clickInSubGroup.getClass()) + ")\n"
+                          + "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n"
+                          + "Everything but not IOException"));
+        }
+    }
+
+
     @Override
     protected void setUp() throws Exception {
+        super.setUp();
         task = new WebTask();
         task.setProject(new Project());
         task.open();
@@ -137,6 +217,30 @@ public class WebTaskTest extends WebStepTestCase {
     protected void tearDown() throws Exception {
         task.close();
         super.tearDown();
+    }
+
+
+    private void configureTaskWithMockContext(WebContext context) {
+        task.setSession("firstSession");
+        Map<String, WebContext> references = new HashMap<String, WebContext>();
+        references.put("firstSession", context);
+        task.getProject().addReference("web.sessions", references);
+    }
+
+
+    private WebContext mockWebcontext() throws MalformedURLException, URISyntaxException {
+        WebContext context = Mockito.mock(WebContext.class);
+        final TestLocation testLocation = new TestLocation();
+        Mockito.when(context.getTestLocation()).thenReturn(testLocation);
+
+        HtmlPage page = Mockito.mock(HtmlPage.class);
+        WebResponse response = Mockito.mock(WebResponse.class);
+        Mockito.when(response.getContentAsString())
+              .thenReturn("<html><head><title>Page title</title></head><body>Page content</body></html>");
+        Mockito.when(response.getWebRequest()).thenReturn(new WebRequest(new URI("http://localhost/page").toURL()));
+        Mockito.when(page.getWebResponse()).thenReturn(response);
+        Mockito.when(context.getHtmlPage()).thenReturn(page);
+        return context;
     }
 
 

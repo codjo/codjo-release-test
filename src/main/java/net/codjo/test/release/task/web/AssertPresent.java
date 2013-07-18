@@ -8,13 +8,12 @@ import net.codjo.test.release.task.web.finder.ResultHandler;
  *
  */
 public class AssertPresent implements WebStep {
-    private String id;
-    private String xpath;
+    private ComponentIdentifier identifier = new ComponentIdentifier();
     private Boolean present = Boolean.TRUE;
 
 
     public void proceed(WebContext context) throws IOException, WebException {
-        ComponentFinder<HtmlElement> factory = new ComponentFinder<HtmlElement>(null, id, xpath);
+        ComponentFinder<HtmlElement> factory = new ComponentFinder<HtmlElement>(ComponentIdentifier.toArgumentMap(identifier));
         try {
             factory.find(context, buildResultHandler());
         }
@@ -32,14 +31,22 @@ public class AssertPresent implements WebStep {
 
 
     public void setId(String id) {
-        this.id = id;
+        identifier.setId(id);
     }
 
 
     public void setXpath(String xpath) {
-        this.xpath = xpath;
+        identifier.setXpath(xpath);
     }
 
+    public void setCssClass(String cssClass) {
+        identifier.setCssClass(cssClass);
+    }
+
+
+    public void setIndex(Integer index) {
+        identifier.setIndex(index);
+    }
 
     private ResultHandler buildResultHandler() {
         return new ResultHandler() {

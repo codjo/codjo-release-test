@@ -31,6 +31,7 @@ public class DownloadFileTest extends WebStepTestCase {
 
     @Override
     protected void setUp() throws Exception {
+        super.setUp();
         project.setProperty(AgfTask.BROADCAST_LOCAL_DIR,
                             PathUtil.findTargetDirectory(getClass()).getAbsolutePath());
     }

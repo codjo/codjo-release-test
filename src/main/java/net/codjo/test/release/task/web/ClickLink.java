@@ -1,89 +1,30 @@
 package net.codjo.test.release.task.web;
-import com.gargoylesoftware.htmlunit.ElementNotFoundException;
-import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import java.io.IOException;
-import net.codjo.test.release.task.web.finder.ComponentFinder;
 import net.codjo.test.release.task.web.finder.ResultHandler;
 /**
  *
  */
-public class ClickLink implements WebStep {
+public class ClickLink extends Click {
 
-    private String text;
-    private String id;
-    private String xpath;
-
-
-    public void proceed(WebContext context) throws IOException {
-        try {
-            HtmlElement element = findAnchor(context);
-            HtmlPage click = (HtmlPage)element.click();
-            context.setPage(click);
-        }
-        catch (FailingHttpStatusCodeException e) {
-            throw new WebException("Erreur lors du click sur le lien '" + text +
-                                   "' : " + e.getMessage());
-        }
-    }
-
-
-    private HtmlElement findAnchor(WebContext context) {
-        ComponentFinder<HtmlElement> finder = new ComponentFinder<HtmlElement>(text, id, xpath);
-        final ResultHandler resultHandler = buildResultHandler();
-        try {
-            return finder.find(context, resultHandler);
-        }
-        catch (ElementNotFoundException e) {
-            throw new WebException(resultHandler.getErrorMessage(e.getAttributeValue()));
-        }
-    }
-
-
+    @Override
     public void setText(String text) {
-        this.text = text;
+        super.setText(text);
     }
 
 
-    public void setId(String id) {
-        this.id = id;
+    @Override
+    protected ResultHandler buildResultHandler() {
+        return new ClickLinkResultHandler();
     }
 
 
-    public void setXpath(String xpath) {
-        this.xpath = xpath;
-    }
-
-
-    private ResultHandler buildResultHandler() {
-        return new ResultHandler() {
-            public void handleElementFound(HtmlElement element, String key) throws WebException {
-                if (!(element instanceof HtmlAnchor)) {
-                    throw new WebException("L'élément '" + key + "' n'est pas un lien <a ...>");
-                }
+    private class ClickLinkResultHandler extends DefaultResultHandler {
+        @Override
+        public void handleElementFound(HtmlElement element, String key) throws WebException {
+            if (!(element instanceof HtmlAnchor)) {
+                throw new WebException("L'élément '" + key + "' n'est pas un lien <a ...>");
             }
-
-
-            public String getErrorMessage(final String key) {
-                String type = "";
-                if (text != null) {
-                    type = "le texte: ";
-                }
-                if (id != null) {
-                    type = "l'identifiant: ";
-                }
-                if (xpath != null) {
-                    type = "l'expression xpath: ";
-                }
-                return "Aucun lien trouvé avec " + type + key;
-            }
-
-
-            public void handleElementNotFound(ElementNotFoundException e, String id) throws WebException{
-                throw new WebException(getErrorMessage(id));
-            }
-        };
+        }
     }
 }

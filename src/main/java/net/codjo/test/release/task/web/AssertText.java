@@ -11,9 +11,8 @@ import net.codjo.test.release.task.web.finder.ResultHandler;
  */
 public class AssertText implements WebStep {
     private String value = "";
-    private String containerId = null;
     private Boolean present = Boolean.TRUE;
-    private String containerXpath = null;
+    private ComponentIdentifier identifier = new ComponentIdentifier();
 
 
     public void proceed(WebContext context) throws IOException {
@@ -22,11 +21,10 @@ public class AssertText implements WebStep {
 
         String content = getContent(page, context);
         if (content.contains(expected) != present) {
-            if (containerId != null || containerXpath != null) {
+            if (identifier.getArgValue() != null) {
                 throw new WebException(
                       "Texte '" + expected + "' " + getErrorText() + " dans le container '"
-                      + (containerId != null ? containerId : containerXpath)
-                      + "' de la page '" + page.getFullyQualifiedUrl("") + "'");
+                      + identifier.getArgValue() + "' de la page '" + page.getFullyQualifiedUrl("") + "'");
             }
             throw new WebException("Texte '" + expected + "' " + getErrorText() + " "
                                    + "dans la page '" + page.getTitleText() + "' "
@@ -36,7 +34,7 @@ public class AssertText implements WebStep {
 
 
     private String getContent(HtmlPage page, WebContext context) throws IOException {
-        if (containerId == null && containerXpath == null) {
+        if (identifier.getArgValue() == null) {
             return page.asText();
         }
         final HtmlElement container = findContainer(page, context);
@@ -48,7 +46,8 @@ public class AssertText implements WebStep {
 
 
     private HtmlElement findContainer(HtmlPage page, WebContext context) {
-        ComponentFinder<HtmlElement> finder = new ComponentFinder<HtmlElement>(null, containerId, containerXpath);
+        ComponentFinder<HtmlElement> finder
+              = new ComponentFinder<HtmlElement>(ComponentIdentifier.toArgumentMap(identifier));
         final ResultHandler resultHandler = buildResultHandler(page);
         try {
             return finder.find(context, resultHandler);
@@ -70,7 +69,7 @@ public class AssertText implements WebStep {
 
 
     public void setContainerId(String containerId) {
-        this.containerId = containerId;
+        identifier.setId(containerId);
     }
 
 
@@ -80,7 +79,17 @@ public class AssertText implements WebStep {
 
 
     public void setContainerXpath(String containerXpath) {
-        this.containerXpath = containerXpath;
+        identifier.setXpath(containerXpath);
+    }
+
+
+    public void setContainerCssClass(String containerCssClass) {
+        identifier.setCssClass(containerCssClass);
+    }
+
+
+    public void setContainerIndex(Integer containerIndex) {
+        identifier.setIndex(containerIndex);
     }
 
 
