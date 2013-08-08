@@ -153,7 +153,7 @@ public class WebTaskTest extends WebStepTestCase {
         catch (Exception e) {
             assertThat(e.getMessage(),
                        is("\n\n%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n"
-                          + "Erreur web-test 'null' Step 1\n"
+                          + "Erreur web-test Step 1\n"
                           + "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n"
                           + "Impossible d'ouvrir la page : Mocked IOException"));
         }
@@ -194,8 +194,48 @@ public class WebTaskTest extends WebStepTestCase {
                           + "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n\n\n"
                           + "<html><head><title>Page title</title></head><body>Page content</body></html>\n\n"
                           + "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n"
-                          + "Erreur web-test 'firstSession' Step 2 du groupe 'mainGroup > subGroup' ("
+                          + "Erreur web-test Session 'firstSession' Step 2 du groupe 'mainGroup > subGroup' ("
                           + Util.computeClassName(clickInSubGroup.getClass()) + ")\n"
+                          + "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n"
+                          + "Everything but not IOException"));
+        }
+    }
+
+
+    public void test_throwableAndNotInAGroup() throws Exception {
+        WebContext context = mockWebcontext();
+        configureTaskWithMockContext(context);
+
+        task.addClick(Mockito.mock(Click.class));
+
+        Group mainGroup = new Group();
+        mainGroup.setName("mainGroup");
+        mainGroup.setEnabled(true);
+        DragAndDrop clickInMainGroup = Mockito.mock(DragAndDrop.class);
+        mainGroup.addDragAndDrop(clickInMainGroup);
+        task.addGroup(mainGroup);
+
+        AssertPage assertPage = Mockito.mock(AssertPage.class);
+        task.addAssertPage(assertPage);
+
+        task.addClick(Mockito.mock(Click.class));
+
+        Mockito.doThrow(new IllegalArgumentException("Everything but not IOException"))
+              .when(assertPage)
+              .proceed(context);
+
+        try {
+            task.execute();
+            fail();
+        }
+        catch (Exception e) {
+            assertThat(e.getMessage(),
+                       is("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n"
+                          + "Spool page: http://localhost/page\n"
+                          + "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n\n\n"
+                          + "<html><head><title>Page title</title></head><body>Page content</body></html>\n\n"
+                          + "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n"
+                          + "Erreur web-test Session 'firstSession' Step 3\n"
                           + "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n"
                           + "Everything but not IOException"));
         }

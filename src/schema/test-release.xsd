@@ -3272,10 +3272,6 @@
                         </xs:extension>
                     </xs:simpleContent>
                 </xs:complexType>
-                <xs:key name="assertTextAttribut">
-                    <xs:selector xpath="."/>
-                    <xs:field xpath="@containerId|@containerXpath|@containerCssClass|@containerIndex"/>
-                </xs:key>
             </xs:element>
             <xs:element name="assertImage">
                 <xs:complexType>

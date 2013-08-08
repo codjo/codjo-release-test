@@ -135,6 +135,7 @@
             <assertLink>texte</assertLink>
             <assertLink target="cible.html"/>
             <assertPage title="titre"/>
+            <assertText>Cause de l&#039;erreur : Page introuvable</assertText>
             <assertPresent id="id" present="false"/>
             <assertPresent xpath="//a[@id='toto'" present="false"/>
             <assertPresent cssClass="myClass" index="2" present="false"/>
@@ -197,9 +198,11 @@
         </message>
         <message from="fromfrom" to="toto" subject="sujet" present="false"/>
     </assert-inbox>
+<!--
 
     <assert-excel expected="expected.xls" rowCount="1" columnCount="2"/>
     <assert-excel expected="expected.xls" rowCount="1" columnCount="2"/>
+-->
 
 </release-test>
 

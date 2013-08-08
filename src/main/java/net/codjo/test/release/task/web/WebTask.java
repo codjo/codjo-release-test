@@ -56,21 +56,19 @@ public class WebTask extends AgfTask implements Resource {
     }
 
 
-    String formatErrorMessage(int stepNum, WebContext context, Throwable t) {
+    private String formatErrorMessage(int stepNum, WebContext context, Throwable t) {
         String pageDescription = "";
-        String testLocationMessage = "";
+        String testLocationMessage = " Step " + (stepNum + 1);
         if (context != null) {
             final TestLocation testLocation = context.getTestLocation();
             if (testLocation.getGroupName() != null) {
-                testLocationMessage = testLocation.getLocationMessage();
+                testLocationMessage = " " +testLocation.getLocationMessage();
             }
             pageDescription = getPageDescription(context);
         }
-        else {
-            testLocationMessage = "Step " + (stepNum + 1);
-        }
+        String traceSession = (getSession() != null ? " Session '" + getSession() + "'" : "");
         String errorLocation = "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n"
-                               + "Erreur web-test '" + getSession() +"' "+ testLocationMessage + "\n"
+                               + "Erreur web-test" + traceSession + testLocationMessage + "\n"
                                + "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n"
                                + (context == null ? CANNOT_OPEN_PAGE : "");
 

@@ -12,6 +12,7 @@ import static net.codjo.test.common.matcher.JUnitMatchers.*;
 
 public class GroupTest {
     private Group groupTest;
+    private Click mockedClickStep = Mockito.mock(Click.class);
 
 
     @Test
@@ -19,7 +20,13 @@ public class GroupTest {
         groupTest = new Group();
         groupTest.setName("groupEnabled");
         groupTest.setEnabled(true);
-        assertStepProceed(1, "groupEnabled", 1, "Step 1 du groupe 'groupEnabled' ");
+
+        Group subGroup = new Group();
+        subGroup.setName("subGroup");
+        subGroup.setEnabled(true);
+        subGroup.addClick(mockedClickStep);
+        groupTest.addGroup(subGroup);
+        assertStepProceed(2, null, 2, "Localisation impossible");
 
         groupTest = new Group();
         groupTest.setName("groupDisabled");
@@ -59,7 +66,6 @@ public class GroupTest {
 
     private void assertStepProceed(int count, String groupName, int stepNumber, String locationMessage)
           throws IOException {
-        Click mockedClickStep = Mockito.mock(Click.class);
 
         WebContext context = Mockito.mock(WebContext.class);
         final TestLocation testLocation = new TestLocation();
