@@ -64,6 +64,9 @@ public class TestLocation {
     public void resetGroupName() {
         if (!path.isEmpty() && groupName != null) {
             path.removeLast();
+            if (path.isEmpty()) {
+                groupName = null;
+            }
         }
     }
 

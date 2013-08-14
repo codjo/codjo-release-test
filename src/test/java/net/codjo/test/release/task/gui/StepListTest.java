@@ -26,7 +26,7 @@ public class StepListTest extends TestCase {
         TestContext context = new TestContext(new JFCTestCase(""));
         stepList.proceed(context);
 
-        assertEquals("Step 2 du groupe 'test' (StepListTest$MockStep)",
+        assertEquals("Localisation impossible",
                      context.getTestLocation().getLocationMessage());
 
         assertEquals(1, step1.callCount);
