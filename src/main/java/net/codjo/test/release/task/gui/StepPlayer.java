@@ -17,13 +17,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import junit.extensions.jfcunit.JFCTestCase;
 import junit.extensions.jfcunit.TestHelper;
-import junit.extensions.jfcunit.finder.DialogFinder;
+import junit.extensions.jfcunit.WindowMonitor;
 import org.apache.log4j.Logger;
 import org.apache.tools.ant.Project;
 /**
  * Classe permettant d'exécuter une {@link GuiStep}.
  *
- * @noinspection JUnitTestCaseInProductSource,UnconstructableJUnitTestCase,JUnitTestClassNamingConvention
+ * @noinspection JUnitTestCaseInProductSource, UnconstructableJUnitTestCase, JUnitTestClassNamingConvention
  */
 public class StepPlayer extends JFCTestCase {
     private static final Logger LOG = Logger.getLogger(StepPlayer.class);
@@ -69,14 +69,13 @@ public class StepPlayer extends JFCTestCase {
                 public void run() {
                     try {
                         resumeAWT();
-                        TestHelper.cleanUp(StepPlayer.this);
-                        DialogFinder dialogFinder = new DialogFinder(null);
-                        dialogFinder.setWait(0);
-                        Window window = TestHelper.getWindow(dialogFinder);
-                        if (window != null) {
+
+                        for (Window window : WindowMonitor.getWindows()) {
                             window.setVisible(false);
                             window.dispose();
                         }
+
+                        TestHelper.cleanUp(StepPlayer.this);
                         flushAWT();
                     }
                     catch (Throwable e) {
