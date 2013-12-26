@@ -70,12 +70,12 @@ public class StepPlayer extends JFCTestCase {
                     try {
                         resumeAWT();
 
+                        TestHelper.cleanUp(StepPlayer.this);
                         for (Window window : WindowMonitor.getWindows()) {
                             window.setVisible(false);
                             window.dispose();
                         }
 
-                        TestHelper.cleanUp(StepPlayer.this);
                         flushAWT();
                     }
                     catch (Throwable e) {
