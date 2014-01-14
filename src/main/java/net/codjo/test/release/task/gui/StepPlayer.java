@@ -72,8 +72,10 @@ public class StepPlayer extends JFCTestCase {
 
                         TestHelper.cleanUp(StepPlayer.this);
                         for (Window window : WindowMonitor.getWindows()) {
-                            window.setVisible(false);
-                            window.dispose();
+                            if (window.isVisible()) {
+                                window.setVisible(false);
+                                window.dispose();
+                            }
                         }
 
                         flushAWT();
