@@ -1,5 +1,4 @@
 package net.codjo.test.release.task.gui;
-import net.codjo.test.common.LogString;
 import java.awt.AWTEvent;
 import java.awt.Color;
 import java.awt.Toolkit;
@@ -13,6 +12,7 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JTextField;
 import junit.extensions.jfcunit.JFCTestCase;
+import net.codjo.test.common.LogString;
 
 public class PressKeyStepTest extends JFCTestCase {
     private final LogString log = new LogString();
@@ -220,7 +220,7 @@ public class PressKeyStepTest extends JFCTestCase {
                 flushAWT();
             }
         }
-        while (System.currentTimeMillis() - startTime < 1000);
+        while (System.currentTimeMillis() - startTime < 2000);
 
         throw exception;
     }
