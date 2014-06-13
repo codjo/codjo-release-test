@@ -11,12 +11,15 @@ public abstract class SecureCommand<T extends Channel> {
     private final String host;
     private TaskLogger log;
     private UnixSessionFactory unixSessionFactory;
+    public static final int DEFAULT_SSH_PORT = 22;
+    private int port;
 
 
-    protected SecureCommand(String channelType, String user, String host) {
+    protected SecureCommand(String channelType, String user, String host, int port) {
         this.channelType = channelType;
         this.user = user;
         this.host = host;
+        this.port = port;
     }
 
 
@@ -27,6 +30,11 @@ public abstract class SecureCommand<T extends Channel> {
 
     public String getHost() {
         return host;
+    }
+
+
+    public int getPort() {
+        return port;
     }
 
 
@@ -42,7 +50,7 @@ public abstract class SecureCommand<T extends Channel> {
 
     public UnixSessionFactory getUnixSessionFactory() {
         if (unixSessionFactory == null) {
-            unixSessionFactory = new UnixSessionFactory(user, host);
+            unixSessionFactory = new UnixSessionFactory(user, host, port);
         }
         return unixSessionFactory;
     }

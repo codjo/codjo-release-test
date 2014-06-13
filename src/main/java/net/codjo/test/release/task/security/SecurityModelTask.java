@@ -214,6 +214,7 @@ public class SecurityModelTask extends AgfTask {
         if (remoteCommand == null) {
             remoteCommand = new CopyFileSecureCommand(getRemoteUser(),
                                                       getRemoteServer(),
+                                                      getPort(),
                                                       fileInTemp(getProject(),
                                                                  toAbsoluteFile(fileName)).getPath(),
                                                       determineRemoteRepository());
@@ -242,8 +243,8 @@ public class SecurityModelTask extends AgfTask {
         private final String remoteDirectory;
 
 
-        CopyFileSecureCommand(String user, String host, String source, String remoteDirectory) {
-            super(user, host);
+        CopyFileSecureCommand(String user, String host, int port, String source, String remoteDirectory) {
+            super(user, host, port);
             this.source = source;
             this.remoteDirectory = remoteDirectory;
         }

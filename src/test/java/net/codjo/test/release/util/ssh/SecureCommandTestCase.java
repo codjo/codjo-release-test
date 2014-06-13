@@ -1,9 +1,10 @@
 package net.codjo.test.release.util.ssh;
 import net.codjo.test.common.LogString;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.verify;
 /**
  *
@@ -18,7 +19,7 @@ public abstract class SecureCommandTestCase<T extends SecureCommand> {
     public void setUp() {
         secureCommand = createSecureCommand();
 
-        sessionFactoryMock = new UnixSessionFactoryMock(secureCommand.getUser(), secureCommand.getHost());
+        sessionFactoryMock = new UnixSessionFactoryMock(secureCommand.getUser(), secureCommand.getHost() , secureCommand.getPort());
 
         secureCommand.setUnixSessionFactory(sessionFactoryMock);
     }

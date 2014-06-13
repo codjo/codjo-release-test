@@ -56,6 +56,7 @@ public class BatchTask extends AbstractBatchTask {
     protected RemoteCommand createRemoteCommand() {
         return new BatchSecureCommand(getProperty(REMOTE_USER, true),
                                       getProperty(REMOTE_SERVER, true),
+                                      getPort(),
                                       getRemoteBatchDir(),
                                       remote.getScript(),
                                       getProject().replaceProperties(remote.getArg()));
