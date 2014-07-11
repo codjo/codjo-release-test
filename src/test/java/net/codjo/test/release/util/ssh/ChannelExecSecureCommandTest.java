@@ -23,7 +23,7 @@ public class ChannelExecSecureCommandTest {
     @Test
     public void test_magicEuropean() throws Exception {
         ChannelExecSecureCommand toto = new ChannelExecSecureCommand("magdev",
-                                                                     "afzda120.intradit.net",
+                                                                     "d-app-magic.intradit.net",
                                                                      2222,
                                                                      "/global/dmig/MAGIC/",
                                                                      "$(exit 5)") {
