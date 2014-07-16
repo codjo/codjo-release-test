@@ -77,7 +77,7 @@ public class AssertTreeStepTest extends JFCTestCase {
     public void test_ok() throws Exception {
         // Création d'un arbre avec un noeud racine sans feuille
         JTree tree = new JTree();
-        DefaultTreeModel treeModel = new DefaultTreeModel(new DefaultMutableTreeNode("rootName"));
+        DefaultTreeModel treeModel = new DefaultTreeModel(new TestableTreeNode("rootName"));
         tree.setModel(treeModel);
         showFrame(tree);
 
@@ -101,7 +101,7 @@ public class AssertTreeStepTest extends JFCTestCase {
         JTree tree = new JTree();
 
         // Noeud racine
-        DefaultMutableTreeNode root = new DefaultMutableTreeNode("rootName");
+        DefaultMutableTreeNode root = new TestableTreeNode("rootName");
 
         // Construction de l'arbre
         DefaultTreeModel treeModel = new DefaultTreeModel(root);
@@ -350,13 +350,13 @@ public class AssertTreeStepTest extends JFCTestCase {
         JTree tree = new JTree();
 
         // Noeud racine
-        DefaultMutableTreeNode root = new DefaultMutableTreeNode("rootName");
+        DefaultMutableTreeNode root = new TestableTreeNode("rootName");
 
         // Ajout d'une feuille à la racine
-        DefaultMutableTreeNode child1 = new DefaultMutableTreeNode("child1");
+        DefaultMutableTreeNode child1 = new TestableTreeNode("child1");
         root.add(child1);
-        child1.add(new DefaultMutableTreeNode("child11"));
-        root.add(new DefaultMutableTreeNode("child2"));
+        child1.add(new TestableTreeNode("child11"));
+        root.add(new TestableTreeNode("child2"));
 
         // Construction de l'arbre
         DefaultTreeModel treeModel = new DefaultTreeModel(root);
@@ -367,24 +367,51 @@ public class AssertTreeStepTest extends JFCTestCase {
 
 
     private JTree createTreeWithColorsAndIcons() {
-        JTree tree = new JTree();
-        tree.setCellRenderer(new ColorsAndIconsTreeRenderer());
         // Noeud racine
-        DefaultMutableTreeNode root = new DefaultMutableTreeNode("rootName");
+        TestableTreeNode root = new TestableTreeNode("rootName", Color.RED, "red.png");
 
         // Ajout d'une feuille à la racine
-        DefaultMutableTreeNode child1 = new DefaultMutableTreeNode("green");
+        TestableTreeNode child1 = new TestableTreeNode("green", Color.GREEN, "green.png");
         root.add(child1);
-        root.add(new DefaultMutableTreeNode("red"));
-        child1.add(new DefaultMutableTreeNode("red"));
+        root.add(new TestableTreeNode("red", Color.RED, "red.png"));
+        child1.add(new TestableTreeNode("red", Color.RED, "red.png"));
 
         // Construction de l'arbre
         DefaultTreeModel treeModel = new DefaultTreeModel(root);
-        tree.setModel(treeModel);
+        JTree tree = new JTree(treeModel);
+        tree.setCellRenderer(new ColorsAndIconsTreeRenderer());
 
         return tree;
     }
 
+
+    private class TestableTreeNode extends DefaultMutableTreeNode {
+
+        private final Color foregroundColor;
+        private final Icon icon;
+
+
+        private TestableTreeNode(String userObject) {
+            this(userObject, Color.RED, "red.png");
+        }
+
+
+        private TestableTreeNode(String userObject, Color foregroundColor, String iconResource) {
+            super(userObject);
+            this.foregroundColor = foregroundColor;
+            this.icon = new ImageIcon(getClass().getResource(iconResource));
+        }
+
+
+        private Color getForegroundColor() {
+            return foregroundColor;
+        }
+
+
+        public Icon getIcon() {
+            return icon;
+        }
+    }
 
     private class ColorsAndIconsTreeRenderer implements TreeCellRenderer {
         public Component getTreeCellRendererComponent(JTree tree,
@@ -394,35 +421,27 @@ public class AssertTreeStepTest extends JFCTestCase {
                                                       boolean leaf,
                                                       int row,
                                                       boolean hasFocus) {
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode)value;
+            TestableTreeNode node = (TestableTreeNode)value;
             String colorText = (String)node.getUserObject();
-            Icon icon = getIcon(node, expanded, colorText);
-            return buildLabel(colorText, icon);
+            Icon icon = getIcon(node, expanded);
+            return buildLabel(node, colorText, icon);
         }
 
 
-        private JLabel buildLabel(String color, Icon icon) {
+        private Icon getIcon(TestableTreeNode node, boolean expanded) {
+            if (!node.isLeaf()) {
+                String iconName = expanded ? "folder_expanded.png" : "folder_collapsed.png";
+                return new ImageIcon(getClass().getResource(iconName));
+            }
+            return node.getIcon();
+        }
+
+
+        private JLabel buildLabel(TestableTreeNode node, String color, Icon icon) {
             JLabel component = new JLabel(color, icon, JLabel.HORIZONTAL);
             component.setBackground(Color.WHITE);
-            component.setForeground(getForegroundColor(color));
+            component.setForeground(node.getForegroundColor());
             return component;
-        }
-
-
-        private Color getForegroundColor(String color) {
-            return "green".equals(color) ? Color.GREEN : Color.RED;
-        }
-
-
-        private Icon getIcon(DefaultMutableTreeNode node, boolean expanded, String text) {
-            String iconName;
-            if (!node.isLeaf()) {
-                iconName = expanded ? "folder_expanded" : "folder_collapsed";
-            }
-            else {
-                iconName = "green".equals(text) ? "green" : "red";
-            }
-            return new ImageIcon(getClass().getResource(iconName + ".png"));
         }
     }
 
