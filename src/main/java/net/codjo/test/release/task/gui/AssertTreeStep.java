@@ -17,7 +17,6 @@ import javax.swing.tree.TreePath;
 import junit.extensions.jfcunit.finder.NamedComponentFinder;
 import net.codjo.test.release.task.AgfTask;
 
-import static java.lang.Integer.valueOf;
 import static net.codjo.test.release.task.gui.TreeStepUtils.getAssertConverter;
 import static net.codjo.test.release.task.gui.TreeUtils.convertIntoTreePath;
 /**
@@ -28,6 +27,7 @@ public class AssertTreeStep extends AbstractAssertStep {
     private String path;
     private int row = -1;
     private Color foreground;
+    private Color background;
     private String icon;
     private boolean exists = true;
     private String mode = DISPLAY_MODE;
@@ -83,19 +83,23 @@ public class AssertTreeStep extends AbstractAssertStep {
     }
 
 
+    public Color getBackground() {
+        return background;
+    }
+
+
+    public void setBackground(String rgb) {
+        this.background = GuiUtil.convertToColor(rgb);
+    }
+
+
     public Color getForeground() {
         return foreground;
     }
 
 
     public void setForeground(String rgb) {
-        String[] rgbArray = rgb.split(",");
-        try {
-            foreground = new Color(valueOf(rgbArray[0]), valueOf(rgbArray[1]), valueOf(rgbArray[2]));
-        }
-        catch (NumberFormatException e) {
-            throw new GuiException("Invalid rgb format : " + rgb, e);
-        }
+        foreground = GuiUtil.convertToColor(rgb);
     }
 
 
@@ -138,6 +142,9 @@ public class AssertTreeStep extends AbstractAssertStep {
             }
             if (getForeground() != null) {
                 assertForeground(getRendererComponent(tree, foundPath));
+            }
+            if (getBackground() != null) {
+                assertBackground(getRendererComponent(tree, foundPath));
             }
             if (getIcon() != null) {
                 assertIcon(context, getRendererComponent(tree, foundPath));
@@ -196,6 +203,22 @@ public class AssertTreeStep extends AbstractAssertStep {
         if (!equals) {
             throw new GuiAssertException("Couleur de police du composant '" + getName() + "' au niveau de '" + path +
                                          "' : attendu='" + foreground + "' obtenu='" + actualForeground + "'");
+        }
+    }
+
+
+    private void assertBackground(Component rendererComponent) {
+        Color actualBackground = rendererComponent.getBackground();
+        if (background == null) {
+            return;
+        }
+        boolean equals = actualBackground.getRed() == background.getRed()
+                         && actualBackground.getGreen() == background.getGreen()
+                         && actualBackground.getBlue() == background.getBlue();
+
+        if (!equals) {
+            throw new GuiAssertException("Couleur de fond du composant '" + getName() + "' au niveau de '" + path +
+                                         "' : attendu='" + background + "' obtenu='" + actualBackground + "'");
         }
     }
 }
