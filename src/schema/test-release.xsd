@@ -2741,6 +2741,11 @@
                     </xs:documentation>
                 </xs:annotation>
             </xs:attribute>
+            <xs:attribute name="foreground" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Spécifie la couleur des caractères de l'onglet</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
     <xs:element name="assertTabCount">

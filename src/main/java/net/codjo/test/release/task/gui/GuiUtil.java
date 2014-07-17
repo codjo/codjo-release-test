@@ -13,4 +13,11 @@ public class GuiUtil {
             throw new GuiException("Invalid rgb format : " + rgb, e);
         }
     }
+
+
+    public static boolean equals(Color firstColor, Color secondColor) {
+        return firstColor.getRed() == secondColor.getRed()
+               && firstColor.getGreen() == secondColor.getGreen()
+               && firstColor.getBlue() == secondColor.getBlue();
+    }
 }

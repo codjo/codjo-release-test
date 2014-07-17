@@ -1,5 +1,6 @@
 package net.codjo.test.release.task.gui;
 
+import java.awt.Color;
 import java.awt.Component;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -48,6 +49,32 @@ public class AssertTabStepTest extends JFCTestCase {
         tabbedPane.add("Onglet1", new JPanel());
         tabbedPane.add("Onglet2", new JPanel());
         return tabbedPane;
+    }
+
+
+    public void testForegroundColor() {
+        JTabbedPane tabbedPane = buildTabbedPane();
+        tabbedPane.setForegroundAt(0, Color.RED);
+        tabbedPane.setForegroundAt(1, Color.GREEN);
+        tabbedPane.setForegroundAt(2, Color.BLUE);
+        showFrame(tabbedPane);
+
+        step.setName("MyTabbedPane");
+        step.setTabLabel("Onglet0");
+        step.setForeground("255,0,0");
+        step.proceedOnce(new TestContext(this));
+
+        step.setForeground("0,255,0");
+        try {
+            step.proceedOnce(new TestContext(this));
+            fail("AssertTabStep aurait dû lever une exception.");
+        }
+        catch (GuiAssertException e) {
+            assertEquals(
+                  "La couleur des caractères de l'onglet 'Onglet0' du JTabbedPane 'MyTabbedPane' est incorrecte : attendu='java.awt.Color[r=0,g=255,b=0]' obtenu='java.awt.Color[r=255,g=0,b=0]'",
+                  e.getMessage(),
+                  e.getMessage());
+        }
     }
 
 

@@ -196,11 +196,8 @@ public class AssertTreeStep extends AbstractAssertStep {
         if (foreground == null) {
             return;
         }
-        boolean equals = actualForeground.getRed() == foreground.getRed()
-                         && actualForeground.getGreen() == foreground.getGreen()
-                         && actualForeground.getBlue() == foreground.getBlue();
 
-        if (!equals) {
+        if (!GuiUtil.equals(actualForeground, foreground)) {
             throw new GuiAssertException("Couleur de police du composant '" + getName() + "' au niveau de '" + path +
                                          "' : attendu='" + foreground + "' obtenu='" + actualForeground + "'");
         }
@@ -212,11 +209,8 @@ public class AssertTreeStep extends AbstractAssertStep {
         if (background == null) {
             return;
         }
-        boolean equals = actualBackground.getRed() == background.getRed()
-                         && actualBackground.getGreen() == background.getGreen()
-                         && actualBackground.getBlue() == background.getBlue();
 
-        if (!equals) {
+        if (!GuiUtil.equals(actualBackground, background)) {
             throw new GuiAssertException("Couleur de fond du composant '" + getName() + "' au niveau de '" + path +
                                          "' : attendu='" + background + "' obtenu='" + actualBackground + "'");
         }

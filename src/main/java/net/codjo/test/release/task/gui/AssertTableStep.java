@@ -149,11 +149,8 @@ public class AssertTableStep extends AbstractMatchingStep {
         if (background == null) {
             return;
         }
-        boolean equals = actualBackground.getRed() == background.getRed()
-                         && actualBackground.getGreen() == background.getGreen()
-                         && actualBackground.getBlue() == background.getBlue();
 
-        if (!equals) {
+        if (!GuiUtil.equals(actualBackground, background)) {
             throw new GuiAssertException("Couleur de fond du composant '" + getName() + "' : attendu='"
                                          + background + "' obtenu='" + actualBackground + "'");
         }
