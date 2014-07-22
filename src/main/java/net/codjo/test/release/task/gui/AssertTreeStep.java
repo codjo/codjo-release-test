@@ -31,6 +31,7 @@ public class AssertTreeStep extends AbstractAssertStep {
     private String icon;
     private boolean exists = true;
     private String mode = DISPLAY_MODE;
+    private Boolean opaque;
 
 
     public boolean isExists() {
@@ -143,6 +144,9 @@ public class AssertTreeStep extends AbstractAssertStep {
             if (getForeground() != null) {
                 assertForeground(getRendererComponent(tree, foundPath));
             }
+            if (opaque != null) {
+                assertOpaque(getRendererComponent(tree, foundPath));
+            }
             if (getBackground() != null) {
                 assertBackground(getRendererComponent(tree, foundPath));
             }
@@ -170,12 +174,12 @@ public class AssertTreeStep extends AbstractAssertStep {
 
     private void assertIcon(TestContext context, Component rendererComponent) {
         try {
-            Icon actualIcon = ((JLabel)rendererComponent).getIcon();
             if (!(rendererComponent instanceof JLabel)) {
                 throw new GuiAssertException(
                       "Le noeud '" + path + "' n'est pas rendu sous forme d'un type géré.");
             }
             String parentPath = context.getProperty(AgfTask.TEST_DIRECTORY);
+            Icon actualIcon = ((JLabel)rendererComponent).getIcon();
             ImageIcon actualImageIcon = (ImageIcon)actualIcon;
 
             String expectedIconName = new File(parentPath, getIcon()).getName();
@@ -192,11 +196,11 @@ public class AssertTreeStep extends AbstractAssertStep {
 
 
     private void assertForeground(Component rendererComponent) {
-        Color actualForeground = rendererComponent.getForeground();
         if (foreground == null) {
             return;
         }
 
+        Color actualForeground = rendererComponent.getForeground();
         if (!GuiUtil.equals(actualForeground, foreground)) {
             throw new GuiAssertException("Couleur de police du composant '" + getName() + "' au niveau de '" + path +
                                          "' : attendu='" + foreground + "' obtenu='" + actualForeground + "'");
@@ -204,15 +208,33 @@ public class AssertTreeStep extends AbstractAssertStep {
     }
 
 
+    private void assertOpaque(Component rendererComponent) {
+        if (opaque == null) {
+            return;
+        }
+
+        boolean actualOpaque = rendererComponent.isOpaque();
+        if (actualOpaque != opaque) {
+            throw new GuiAssertException("Opacité du composant '" + getName() + "' au niveau de '" + path +
+                                         "' : attendu='" + opaque + "' obtenu='" + actualOpaque + "'");
+        }
+    }
+
+
     private void assertBackground(Component rendererComponent) {
-        Color actualBackground = rendererComponent.getBackground();
         if (background == null) {
             return;
         }
 
+        Color actualBackground = rendererComponent.getBackground();
         if (!GuiUtil.equals(actualBackground, background)) {
             throw new GuiAssertException("Couleur de fond du composant '" + getName() + "' au niveau de '" + path +
                                          "' : attendu='" + background + "' obtenu='" + actualBackground + "'");
         }
+    }
+
+
+    public void setOpaque(boolean opaque) {
+        this.opaque = opaque;
     }
 }

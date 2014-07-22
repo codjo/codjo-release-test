@@ -1761,12 +1761,18 @@
                     </xs:attribute>
                     <xs:attribute name="foreground" type="xs:string">
                         <xs:annotation>
-                            <xs:documentation xml:lang="fr">Spécifie la couleur des caractères</xs:documentation>
+                            <xs:documentation xml:lang="fr">Spécifie la couleur des caractères du noeud.
+                            </xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
                     <xs:attribute name="background" type="xs:string">
                         <xs:annotation>
-                            <xs:documentation xml:lang="fr">Spécifie la couleur de fond</xs:documentation>
+                            <xs:documentation xml:lang="fr">Spécifie la couleur de fond du noeud.</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="opaque" type="xs:boolean">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="fr">Spécifie l'opacité du noeud.</xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
                 </xs:extension>
