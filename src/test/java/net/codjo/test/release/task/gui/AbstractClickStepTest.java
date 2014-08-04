@@ -1,16 +1,33 @@
 package net.codjo.test.release.task.gui;
 
-import junit.extensions.jfcunit.JFCTestCase;
-import junit.extensions.jfcunit.TestHelper;
-
-import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.security.InvalidParameterException;
+import javax.swing.AbstractAction;
+import javax.swing.DefaultCellEditor;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-
+import javax.swing.tree.TreePath;
+import junit.extensions.jfcunit.JFCTestCase;
+import junit.extensions.jfcunit.TestHelper;
 import net.codjo.test.common.LogString;
-
-import java.security.InvalidParameterException;
-import java.awt.event.*;
+import net.codjo.test.release.task.gui.converter.TreeNodeConverter;
 
 public abstract class AbstractClickStepTest extends JFCTestCase {
     protected static final String TREE_NAME = "Tree";
@@ -44,6 +61,7 @@ public abstract class AbstractClickStepTest extends JFCTestCase {
 
     abstract protected AbstractButtonClickStep createClickStep();
 
+
     @Override
     protected void setUp() throws Exception {
         showFrameCalled = false;
@@ -63,6 +81,7 @@ public abstract class AbstractClickStepTest extends JFCTestCase {
         }
     }
 
+
     public void test_clickingUsingBadLabel() throws Exception {
         showFrame();
 
@@ -75,9 +94,6 @@ public abstract class AbstractClickStepTest extends JFCTestCase {
             assertEquals("Le composant 'je ne suis pas le bon label!' est introuvable.", e.getMessage());
         }
     }
-
-
-    
 
 
     public void test_nok_noFrame() throws Exception {
@@ -147,6 +163,7 @@ public abstract class AbstractClickStepTest extends JFCTestCase {
         }
     }
 
+
     public void test_clickOnUnkownColumnThrowsAnException() throws Exception {
         showFrame();
 
@@ -177,9 +194,6 @@ public abstract class AbstractClickStepTest extends JFCTestCase {
             assertEquals("La cellule [row=45, col=45] n'existe pas dans la table maTable", e.getMessage());
         }
     }
-
-
-   
 
 
     /**
@@ -319,6 +333,45 @@ public abstract class AbstractClickStepTest extends JFCTestCase {
     }
 
 
+    public void test_clickOnATreepathThatExistsButNotExpanded_openParentNode() throws Exception {
+        test_clickOnATreepathThatExistsButParentNodeIsNotOpened(true);
+
+        TreeNodeConverter converter = TreeStepUtils.getConverter(step.getMode());
+        TreePath parentPath = TreeUtils.convertIntoTreePath(tree, step.getPath(), converter).getParentPath();
+        assertEquals("Node1 expanded", true, tree.isExpanded(parentPath));
+        assertEquals("mouseEntered., mousePressed., mouseReleased., mouseClicked 1 times.",
+                     treeMouseLog.getContent());
+    }
+
+
+    public void test_clickOnATreepathThatExistsButNotExpanded_doNotOpenParentNode() throws Exception {
+        try {
+            test_clickOnATreepathThatExistsButParentNodeIsNotOpened(false);
+            fail("An GuiConfigurationException was expected");
+        }
+        catch (GuiConfigurationException e) {
+            // ok
+            assertEquals("Exception message", "The parent node 'Root:Node1' is not opened.", e.getMessage());
+            assertEquals("Node1 opened", false, tree.isExpanded(new TreePath(new Object[]{"Root", "Node1"})));
+        }
+    }
+
+
+    private void test_clickOnATreepathThatExistsButParentNodeIsNotOpened(boolean openParentNode) throws Exception {
+        showFrame();
+
+        // ensure children of Root:Node1 are collapsed
+        int rowForPath = tree.getRowForPath(new TreePath(new Object[]{"Root", "Node1"}));
+        tree.collapseRow(rowForPath);
+
+        step.setName(TREE_NAME);
+        step.setPath("Root:Node1:Node1.1");
+        step.setOpenParentNode(openParentNode);
+
+        step.proceed(new TestContext(this));
+    }
+
+
     public void test_clickOnATreepathThatDoesNotExist() throws Exception {
         showFrame();
 
@@ -413,7 +466,7 @@ public abstract class AbstractClickStepTest extends JFCTestCase {
         panel.add(list);
 
         tree = createJTree();
-        panel.add(tree);
+        panel.add(new JScrollPane(tree));
 
         frame.pack();
         frame.setVisible(true);
@@ -439,7 +492,9 @@ public abstract class AbstractClickStepTest extends JFCTestCase {
         return tree;
     }
 
+
     protected abstract boolean isCorrectClickEvent(MouseEvent event);
+
 
     private class TreeMouseListener implements MouseListener {
         private LogString treeMouseLog;
@@ -512,5 +567,4 @@ public abstract class AbstractClickStepTest extends JFCTestCase {
             }
         }
     }
-
 }

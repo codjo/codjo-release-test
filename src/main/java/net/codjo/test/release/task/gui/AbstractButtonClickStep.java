@@ -1,9 +1,5 @@
 package net.codjo.test.release.task.gui;
 
-import net.codjo.test.release.task.gui.finder.LabeledAndNamedFinder;
-import net.codjo.test.release.task.gui.finder.LabeledJComponentFinder;
-import net.codjo.test.release.task.gui.metainfo.ClickDescriptor;
-import net.codjo.test.release.task.gui.metainfo.Introspector;
 import java.awt.Component;
 import java.awt.Rectangle;
 import java.security.InvalidParameterException;
@@ -23,6 +19,10 @@ import junit.extensions.jfcunit.eventdata.PathData;
 import junit.extensions.jfcunit.finder.Finder;
 import junit.extensions.jfcunit.finder.JMenuItemFinder;
 import junit.extensions.jfcunit.finder.NamedComponentFinder;
+import net.codjo.test.release.task.gui.finder.LabeledAndNamedFinder;
+import net.codjo.test.release.task.gui.finder.LabeledJComponentFinder;
+import net.codjo.test.release.task.gui.metainfo.ClickDescriptor;
+import net.codjo.test.release.task.gui.metainfo.Introspector;
 
 /**
  *
@@ -36,6 +36,7 @@ public abstract class AbstractButtonClickStep extends AbstractClickStep {
     private String matcher = MATCHER_EQUALS;
     private int row = 0;
     private String path;
+    private boolean openParentNode = false;
     private String mode;
 
 
@@ -274,7 +275,16 @@ public abstract class AbstractButtonClickStep extends AbstractClickStep {
 
                     final TreePath treePath = TreeUtils
                           .convertIntoTreePath(tree, getPath(), TreeStepUtils.getConverter(getMode()));
-
+                    TreePath parentTreePath = treePath.getParentPath();
+                    if (!tree.isExpanded(parentTreePath)) {
+                        if (!openParentNode) {
+                            String parentPath = TreeUtils.convertPath(tree,
+                                                                      parentTreePath,
+                                                                      TreeStepUtils.getConverter(getMode()));
+                            throw new GuiConfigurationException("The parent node '" + parentPath + "' is not opened.");
+                        }
+                        tree.expandPath(parentTreePath);
+                    }
                     Rectangle cellRect = tree.getPathBounds(treePath);
                     if (cellRect != null) {
                         cellRect.x += cellRect.width / 2;
@@ -289,5 +299,10 @@ public abstract class AbstractButtonClickStep extends AbstractClickStep {
         else {
             descriptor = Introspector.getTestBehavior(comp.getClass(), ClickDescriptor.class);
         }
+    }
+
+
+    public void setOpenParentNode(boolean openParentNode) {
+        this.openParentNode = openParentNode;
     }
 }
