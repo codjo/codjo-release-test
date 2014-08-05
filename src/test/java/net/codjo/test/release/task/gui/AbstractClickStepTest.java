@@ -333,8 +333,8 @@ public abstract class AbstractClickStepTest extends JFCTestCase {
     }
 
 
-    public void test_clickOnATreepathThatExistsButNotExpanded_openParentNode() throws Exception {
-        test_clickOnATreepathThatExistsButParentNodeIsNotOpened(true);
+    public void test_clickOnATreepathThatExists_parentNotOpened_openParentNode() throws Exception {
+        test_clickOnATreepathThatExists_parentNotOpened(true);
 
         TreeNodeConverter converter = TreeStepUtils.getConverter(step.getMode());
         TreePath parentPath = TreeUtils.convertIntoTreePath(tree, step.getPath(), converter).getParentPath();
@@ -344,9 +344,9 @@ public abstract class AbstractClickStepTest extends JFCTestCase {
     }
 
 
-    public void test_clickOnATreepathThatExistsButNotExpanded_doNotOpenParentNode() throws Exception {
+    public void test_clickOnATreepathThatExists_parentNotOpened_doNotOpenParentNode() throws Exception {
         try {
-            test_clickOnATreepathThatExistsButParentNodeIsNotOpened(false);
+            test_clickOnATreepathThatExists_parentNotOpened(false);
             fail("An GuiConfigurationException was expected");
         }
         catch (GuiConfigurationException e) {
@@ -357,15 +357,37 @@ public abstract class AbstractClickStepTest extends JFCTestCase {
     }
 
 
-    private void test_clickOnATreepathThatExistsButParentNodeIsNotOpened(boolean openParentNode) throws Exception {
+    public void test_clickOnATreepathThatExists_rootNode_openParentNode() throws Exception {
+        test_clickOnATreepathThatExists_rootNode(true);
+    }
+
+
+    public void test_clickOnATreepathThatExists_rootNode_doNotOpenParentNode() throws Exception {
+        test_clickOnATreepathThatExists_rootNode(false);
+    }
+
+
+    public void test_clickOnATreepathThatExists_rootNode(boolean openParentNode) throws Exception {
+        test_clickOnATreepathThatExists_parentNotOpened(openParentNode, new TreePath(new Object[]{"Root"}));
+    }
+
+
+    private void test_clickOnATreepathThatExists_parentNotOpened(boolean openParentNode) throws Exception {
+        test_clickOnATreepathThatExists_parentNotOpened(openParentNode,
+                                                        new TreePath(new Object[]{"Root", "Node1", "Node1.1"}));
+    }
+
+
+    private void test_clickOnATreepathThatExists_parentNotOpened(boolean openParentNode, TreePath targetNode)
+          throws Exception {
         showFrame();
 
-        // ensure children of Root:Node1 are collapsed
-        int rowForPath = tree.getRowForPath(new TreePath(new Object[]{"Root", "Node1"}));
+        // ensure parent of target node is collapsed
+        int rowForPath = tree.getRowForPath(targetNode.getParentPath());
         tree.collapseRow(rowForPath);
 
         step.setName(TREE_NAME);
-        step.setPath("Root:Node1:Node1.1");
+        step.setPath(TreeUtils.convertPath(tree, targetNode, TreeStepUtils.getConverter(step.getMode())));
         step.setOpenParentNode(openParentNode);
 
         step.proceed(new TestContext(this));

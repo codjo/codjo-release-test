@@ -276,7 +276,7 @@ public abstract class AbstractButtonClickStep extends AbstractClickStep {
                     final TreePath treePath = TreeUtils
                           .convertIntoTreePath(tree, getPath(), TreeStepUtils.getConverter(getMode()));
                     TreePath parentTreePath = treePath.getParentPath();
-                    if (!tree.isExpanded(parentTreePath)) {
+                    if ((parentTreePath != null) && !tree.isExpanded(parentTreePath)) {
                         if (!openParentNode) {
                             String parentPath = TreeUtils.convertPath(tree,
                                                                       parentTreePath,
