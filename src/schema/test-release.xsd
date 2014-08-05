@@ -2380,6 +2380,13 @@
                     </xs:documentation>
                 </xs:annotation>
             </xs:attribute>
+            <xs:attribute name="openParentNode" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation
+                          xml:lang="fr">Spécifie s'il faut d'abord déployer le parent du noeud spécifié par l'attribut path.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
             <xs:attribute name="mode">
                 <xs:annotation>
                     <xs:documentation xml:lang="fr">Spécifie si l'on prend en compte la valeur
