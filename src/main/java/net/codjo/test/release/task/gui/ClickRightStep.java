@@ -8,12 +8,14 @@ import java.awt.Component;
 import java.awt.event.InputEvent;
 import javax.swing.JComboBox;
 import javax.swing.JList;
+import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.tree.TreePath;
 import junit.extensions.jfcunit.eventdata.AbstractMouseEventData;
 import junit.extensions.jfcunit.eventdata.JListMouseEventData;
+import junit.extensions.jfcunit.eventdata.JTabbedPaneMouseEventData;
 import junit.extensions.jfcunit.eventdata.JTableHeaderMouseEventData;
 import junit.extensions.jfcunit.eventdata.JTableMouseEventData;
 import junit.extensions.jfcunit.eventdata.JTreeMouseEventData;
@@ -22,7 +24,7 @@ import junit.extensions.jfcunit.eventdata.MouseEventData;
  *
  */
 public class ClickRightStep extends AbstractClickButtonStep {
-    private int row = INITIAL_ROW_VALUE;
+    private int row = INITIAL_INDEX_TYPE_VALUE;
 
 
     public ClickRightStep() {
@@ -44,6 +46,9 @@ public class ClickRightStep extends AbstractClickButtonStep {
     protected boolean acceptAndProceed(TestContext context, Component comp) throws Exception {
         if (comp instanceof JTable) {
             proceedTable(context, (JTable)comp);
+        }
+        else if (comp instanceof JTabbedPane) {
+            proceedTabbedPane(context, (JTabbedPane)comp);
         }
         else if (comp instanceof JTree) {
             proceedTree(context, (JTree)comp);
@@ -101,6 +106,11 @@ public class ClickRightStep extends AbstractClickButtonStep {
     }
 
 
+    protected void proceedTabbedPane(TestContext context, JTabbedPane tabbedPane) {
+        showPopupAndSelectItem(tabbedPane, context, getMouseEventData(context, tabbedPane, tabIndex, tabLabel));
+    }
+
+
     protected void proceedTextField(TestContext context, JTextField jTextField) {
         MouseEventData eventData = new ClickMouseEventData(context.getTestCase(),
                                                            jTextField, 1,
@@ -116,6 +126,15 @@ public class ClickRightStep extends AbstractClickButtonStep {
     protected AbstractMouseEventData getMouseEventData(TestContext context, JTable table, int realColumn) {
         return new JTableMouseEventData(context.getTestCase(), table, getRow(), realColumn,
                                         1, true, getTimeout());
+    }
+
+
+    protected AbstractMouseEventData getMouseEventData(TestContext context,
+                                                       JTabbedPane tabbedPane,
+                                                       int tabIndex,
+                                                       String tabLabel) {
+        return new JTabbedPaneMouseEventData(context.getTestCase(), tabbedPane, tabIndex, tabLabel,
+                                             1, true, getTimeout());
     }
 
 
@@ -135,7 +154,7 @@ public class ClickRightStep extends AbstractClickButtonStep {
 
     private void proceedTree(TestContext context, final JTree tree)
           throws Exception {
-        if (getRow() != INITIAL_ROW_VALUE) {
+        if (getRow() != INITIAL_INDEX_TYPE_VALUE) {
             throw new GuiConfigurationException("L'attribut row n'est pas supporté.");
         }
 

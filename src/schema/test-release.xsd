@@ -1277,7 +1277,7 @@
     <xs:element name="clickRight">
         <xs:annotation>
             <xs:documentation xml:lang="fr">Permet de simuler le click droit sur un élément d'une table,
-                d'une liste, d'un arbre, d'un champ texte éditable ou d'une liste déroulante.
+                d'une liste, d'un arbre, d'un champ texte éditable, d'une liste déroulante ou d'un conteneur d'onglets.
             </xs:documentation>
         </xs:annotation>
         <xs:complexType>
@@ -1339,6 +1339,16 @@
                     <xs:documentation xml:lang="fr">Si 'false', aucun menu contextuel n'est affiché.
                         Par défaut : 'true'.
                     </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="tabIndex" type="integerOrVariable">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Numéro de l'onglet commençant à 0.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="tabLabel" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="fr">Titre de l'onglet.</xs:documentation>
                 </xs:annotation>
             </xs:attribute>
         </xs:complexType>
