@@ -22,7 +22,7 @@ import junit.extensions.jfcunit.eventdata.MouseEventData;
  *
  */
 public class ClickRightStep extends AbstractClickButtonStep {
-    private int row = -1;
+    private int row = INITIAL_ROW_VALUE;
 
 
     public ClickRightStep() {
