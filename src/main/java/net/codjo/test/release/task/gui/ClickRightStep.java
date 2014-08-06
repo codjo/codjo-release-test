@@ -6,7 +6,6 @@
 package net.codjo.test.release.task.gui;
 import java.awt.Component;
 import java.awt.event.InputEvent;
-import java.awt.event.MouseEvent;
 import javax.swing.JComboBox;
 import javax.swing.JList;
 import javax.swing.JTable;
@@ -116,8 +115,7 @@ public class ClickRightStep extends AbstractClickButtonStep {
     @Override
     protected AbstractMouseEventData getMouseEventData(TestContext context, JTable table, int realColumn) {
         return new JTableMouseEventData(context.getTestCase(), table, getRow(), realColumn,
-                                        MouseEvent.BUTTON1,
-                                        true, getTimeout());
+                                        1, true, getTimeout());
     }
 
 
