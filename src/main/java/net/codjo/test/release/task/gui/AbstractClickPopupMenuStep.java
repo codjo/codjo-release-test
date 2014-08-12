@@ -9,7 +9,11 @@ import junit.extensions.jfcunit.finder.JPopupMenuFinder;
 import org.apache.log4j.Logger;
 
 public abstract class AbstractClickPopupMenuStep extends StepList {
-    protected static final int INITIAL_ROW_VALUE = -1;
+    /**
+     * Default value for index type (row, tabIndex ...) values.
+     */
+    protected static final int INITIAL_INDEX_TYPE_VALUE = -1;
+
     protected static final Logger LOG = Logger.getLogger(AbstractClickPopupMenuStep.class);
     protected String column = "0";
     protected String select;
@@ -17,6 +21,28 @@ public abstract class AbstractClickPopupMenuStep extends StepList {
     protected int waitingNumber = 10;
     protected int disappearTryingNumber = 10;
     private boolean popupVisible = true;
+    protected int tabIndex = INITIAL_INDEX_TYPE_VALUE;
+    protected String tabLabel;
+
+
+    public int getTabIndex() {
+        return tabIndex;
+    }
+
+
+    public void setTabIndex(int tabIndex) {
+        this.tabIndex = tabIndex;
+    }
+
+
+    public String getTabLabel() {
+        return tabLabel;
+    }
+
+
+    public void setTabLabel(String tabLabel) {
+        this.tabLabel = tabLabel;
+    }
 
 
     public String getColumn() {

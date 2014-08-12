@@ -83,6 +83,7 @@ public class BatchExportTask extends AbstractBatchTask {
     protected RemoteCommand createRemoteCommand() {
         return new BatchExportSecureCommand(getProperty(REMOTE_USER, true),
                                             getProperty(REMOTE_SERVER, true),
+                                            getPort(),
                                             getRemoteBatchDir(),
                                             getInitiator(),
                                             getFile(),

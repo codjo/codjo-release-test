@@ -4,16 +4,16 @@
  * Copyright (c) 2001 AGF Asset Management.
  */
 package net.codjo.test.release.task.gui;
-import net.codjo.test.release.task.gui.metainfo.AssertTableDescriptor;
-import static net.codjo.test.release.task.gui.metainfo.Introspector.getTestBehavior;
 import java.awt.Color;
 import java.awt.Component;
-import static java.lang.Integer.valueOf;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 import junit.extensions.jfcunit.finder.NamedComponentFinder;
+import net.codjo.test.release.task.gui.metainfo.AssertTableDescriptor;
+
+import static net.codjo.test.release.task.gui.metainfo.Introspector.getTestBehavior;
 /**
  * Classe permettant de vérifier le contenu d'une {@link javax.swing.JTable}.
  */
@@ -72,13 +72,7 @@ public class AssertTableStep extends AbstractMatchingStep {
 
 
     public void setBackground(String rgb) {
-        String[] rgbArray = rgb.split(",");
-        try {
-            background = new Color(valueOf(rgbArray[0]), valueOf(rgbArray[1]), valueOf(rgbArray[2]));
-        }
-        catch (NumberFormatException e) {
-            throw new GuiException("Invalid rgb format : " + rgb, e);
-        }
+        background = GuiUtil.convertToColor(rgb);
     }
 
 
@@ -155,11 +149,8 @@ public class AssertTableStep extends AbstractMatchingStep {
         if (background == null) {
             return;
         }
-        boolean equals = actualBackground.getRed() == background.getRed()
-                         && actualBackground.getGreen() == background.getGreen()
-                         && actualBackground.getBlue() == background.getBlue();
 
-        if (!equals) {
+        if (!GuiUtil.equals(actualBackground, background)) {
             throw new GuiAssertException("Couleur de fond du composant '" + getName() + "' : attendu='"
                                          + background + "' obtenu='" + actualBackground + "'");
         }

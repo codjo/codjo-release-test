@@ -42,6 +42,7 @@ public abstract class AbstractFileAssert extends AgfTask {
         if (remoteCommand == null) {
             remoteCommand = new FileAssertRemoteCommand(getRemoteUser(),
                                                         getRemoteServer(),
+                                                        getPort(),
                                                         getProperty(BROADCAST_REMOTE_DIR, true),
                                                         getProperty(BROADCAST_LOCAL_DIR, true),
                                                         getFileName());

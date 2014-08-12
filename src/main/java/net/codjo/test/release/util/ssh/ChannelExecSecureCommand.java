@@ -10,8 +10,8 @@ public abstract class ChannelExecSecureCommand extends SecureCommand<ChannelExec
     private int timeout = 60 * 1000;
 
 
-    protected ChannelExecSecureCommand(String user, String host, String workingDir, String command) {
-        super("exec", user, host);
+    protected ChannelExecSecureCommand(String user, String host, int port, String workingDir, String command) {
+        super("exec", user, host, port);
         this.workingDir = workingDir;
         this.command = command;
     }

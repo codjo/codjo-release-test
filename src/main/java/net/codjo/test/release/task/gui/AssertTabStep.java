@@ -1,4 +1,5 @@
 package net.codjo.test.release.task.gui;
+import java.awt.Color;
 import java.awt.Component;
 import javax.swing.JTabbedPane;
 import junit.extensions.jfcunit.finder.NamedComponentFinder;
@@ -12,6 +13,7 @@ public class AssertTabStep extends AbstractAssertStep {
     private boolean selected = false;
     private boolean selectedAttributeIsSet = false;
     private Boolean enabled;
+    private Color foreground;
 
 
     @Override
@@ -56,6 +58,13 @@ public class AssertTabStep extends AbstractAssertStep {
         if (enabled != null && enabled != tabbedPane.isEnabledAt(indexFound)) {
             throw new GuiAssertException(
                   "L'onglet '" + tabLabel + "' est ou n'est pas actif contrairement à ce qui a été spécifié");
+        }
+
+        Color actualForeground = tabbedPane.getForegroundAt(indexFound);
+        if (foreground != null && !GuiUtil.equals(actualForeground, foreground)) {
+            throw new GuiAssertException(
+                  "La couleur des caractères de l'onglet '" + tabLabel + "' du JTabbedPane '" + name
+                  + "' est incorrecte : attendu='" + foreground + "' obtenu='" + actualForeground + "'");
         }
     }
 
@@ -103,5 +112,10 @@ public class AssertTabStep extends AbstractAssertStep {
 
     public boolean isEnabled() {
         return enabled;
+    }
+
+
+    public void setForeground(String rgb) {
+        foreground = GuiUtil.convertToColor(rgb);
     }
 }

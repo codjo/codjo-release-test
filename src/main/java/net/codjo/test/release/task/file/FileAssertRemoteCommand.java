@@ -13,10 +13,11 @@ class FileAssertRemoteCommand extends ChannelSftpSecureCommand implements Remote
 
     FileAssertRemoteCommand(String user,
                             String host,
+                            int port,
                             String remoteDirectory,
                             String localDirectory,
                             String fileToGet) {
-        super(user, host);
+        super(user, host, port);
         this.remoteDirectory = remoteDirectory;
         this.localDirectory = localDirectory;
         this.fileToGet = fileToGet;

@@ -6,8 +6,8 @@ import com.jcraft.jsch.SftpException;
  */
 public abstract class ChannelSftpSecureCommand extends SecureCommand<ChannelSftp> {
 
-    protected ChannelSftpSecureCommand(String user, String host) {
-        super("sftp", user, host);
+    protected ChannelSftpSecureCommand(String user, String host, int port) {
+        super("sftp", user, host, port);
     }
 
 

@@ -11,13 +11,25 @@ class BatchSegmentationSecureCommand extends ChannelExecSecureCommand implements
                                    String segmentations,
                                    String date,
                                    String extraArgs) {
-        super(user, host, batchDirectory, "./segmentation.ksh "
-                                          + initiator + " "
-                                          + "\"" + segmentations + "\" "
-                                          + date
-                                          + (extraArgs == null || "".equals(extraArgs) ?
-                                             "" :
-                                             " " + extraArgs));
+        this(user, host, DEFAULT_SSH_PORT, batchDirectory, initiator, segmentations, date, extraArgs);
+    }
+
+
+    BatchSegmentationSecureCommand(String user,
+                                   String host,
+                                   int port,
+                                   String batchDirectory,
+                                   String initiator,
+                                   String segmentations,
+                                   String date,
+                                   String extraArgs) {
+        super(user, host, port, batchDirectory, "./segmentation.ksh "
+                                                + initiator + " "
+                                                + "\"" + segmentations + "\" "
+                                                + date
+                                                + (extraArgs == null || "".equals(extraArgs) ?
+                                                   "" :
+                                                   " " + extraArgs));
         setTimeout(360 * 1000);
     }
 }

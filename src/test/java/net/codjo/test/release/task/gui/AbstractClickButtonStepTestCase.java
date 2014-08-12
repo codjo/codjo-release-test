@@ -1,5 +1,5 @@
 package net.codjo.test.release.task.gui;
-import net.codjo.test.common.LogString;
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -11,19 +11,23 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JTabbedPane;
 import javax.swing.JTable;
-import junit.extensions.jfcunit.TestHelper;
 import junit.extensions.jfcunit.JFCTestCase;
+import junit.extensions.jfcunit.TestHelper;
+import net.codjo.test.common.LogString;
 /**
  *
  */
 public abstract class AbstractClickButtonStepTestCase extends JFCTestCase {
     protected JTable table;
+    protected JTabbedPane tabbedPane;
     protected JPopupMenu popupMenu;
     protected PopupHelper popupHelper;
     protected LogString menuSelectionLog = new LogString();
     protected int buttonClicked = BUTTON_NOT_CLICKED;
     protected static final int BUTTON_NOT_CLICKED = -1;
+
 
     @Override
     protected void tearDown() throws Exception {
@@ -35,7 +39,7 @@ public abstract class AbstractClickButtonStepTestCase extends JFCTestCase {
     // jfcunit ne le voit pas, il faut alors augmenter la taille de la frame en conséquence.
     protected void showFrame(JComponent component) {
         JFrame frame = new JFrame("My frame");
-        JPanel panel = new JPanel();
+        JPanel panel = new JPanel(new BorderLayout());
         panel.setPreferredSize(new Dimension(600, 400));
         frame.setContentPane(panel);
 
@@ -44,6 +48,20 @@ public abstract class AbstractClickButtonStepTestCase extends JFCTestCase {
         frame.pack();
         frame.setVisible(true);
         flushAWT();
+    }
+
+
+    protected void createTabbedPane() {
+        tabbedPane = new JTabbedPane();
+        tabbedPane.setName("tabbedPane");
+        tabbedPane.addTab("tab1", new JTable());
+        tabbedPane.addTab("tab2", new JTable());
+
+        popupMenu = new JPopupMenu();
+        addMenu("menu1");
+        addMenu("menu2");
+        popupHelper = new PopupHelper();
+        tabbedPane.addMouseListener(popupHelper);
     }
 
 

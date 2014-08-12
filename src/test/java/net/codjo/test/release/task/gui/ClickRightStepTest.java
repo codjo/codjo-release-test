@@ -107,6 +107,20 @@ public class ClickRightStepTest extends AbstractClickButtonStepTestCase {
     }
 
 
+    public void test_selectMenuTabbedPaneOK() throws Exception {
+        createTabbedPane();
+        showFrame(tabbedPane);
+
+        clickButtonStep.setName("tabbedPane");
+        //clickButtonStep.setTabIndex(0);
+        clickButtonStep.setTabLabel("tab2");
+        clickButtonStep.setSelect("menu1");
+        clickButtonStep.proceed(new TestContext(this));
+
+        checkMenuSelection("menu1 selected");
+    }
+
+
     public void test_selectMenuTableOk() throws Exception {
         createTable();
         showFrame(table);

@@ -54,6 +54,7 @@ public class BatchImportTask extends AbstractBatchTask {
     protected RemoteCommand createRemoteCommand() {
         return new BatchImportSecureCommand(getProperty(REMOTE_USER, true),
                                             getProperty(REMOTE_SERVER, true),
+                                            getPort(),
                                             getRemoteBatchDir(),
                                             getInitiator(),
                                             getFile());

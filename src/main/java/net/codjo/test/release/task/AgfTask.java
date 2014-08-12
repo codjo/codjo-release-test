@@ -4,10 +4,11 @@
  * Copyright (c) 2001 AGF Asset Management.
  */
 package net.codjo.test.release.task;
-import net.codjo.test.release.TestEnvironment;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
+import net.codjo.test.release.TestEnvironment;
+import net.codjo.test.release.util.ssh.SecureCommand;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.util.TaskLogger;
@@ -17,6 +18,7 @@ import org.apache.tools.ant.util.TaskLogger;
 public abstract class AgfTask extends Task {
     public static final String REMOTE_SERVER = "remote.server";
     public static final String REMOTE_USER = "remote.user";
+    public static final String REMOTE_PORT = "remote.port";
     public static final String REMOTE_PROJECT_DIR = "remote.project.dir";
 
     public static final String GUI_PREFIX = "gui";
@@ -69,6 +71,11 @@ public abstract class AgfTask extends Task {
             info("############################################################################");
             return getProperty(FTP_USER);
         }
+    }
+
+
+    public int getPort() {
+        return Integer.parseInt(getProperty(REMOTE_PORT, "" + SecureCommand.DEFAULT_SSH_PORT));
     }
 
 

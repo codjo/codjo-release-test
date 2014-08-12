@@ -43,6 +43,7 @@ public class CleanupTask extends AgfTask {
         if (remoteCommand == null) {
             remoteCommand = new CleanupSecureCommand(getRemoteUser(),
                                                      getRemoteServer(),
+                                                     getPort(),
                                                      getProperty(getDir() + REMOTE_SUFFIX, true));
             remoteCommand.setLog(logger);
         }

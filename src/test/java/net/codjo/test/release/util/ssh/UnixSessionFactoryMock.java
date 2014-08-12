@@ -16,8 +16,8 @@ public class UnixSessionFactoryMock extends UnixSessionFactory {
     private boolean commandError = false;
 
 
-    public UnixSessionFactoryMock(String user, String host) {
-        super(user, host);
+    public UnixSessionFactoryMock(String user, String host, int port) {
+        super(user, host, port);
     }
 
 

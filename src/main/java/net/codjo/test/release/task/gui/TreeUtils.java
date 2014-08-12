@@ -4,14 +4,14 @@
  * Copyright (c) 2001 AGF Asset Management.
  */
 package net.codjo.test.release.task.gui;
-import net.codjo.test.release.task.gui.converter.TreeNodeConverter;
-import net.codjo.test.release.task.gui.converter.TreeNodeModelConverter;
-import net.codjo.test.release.task.gui.converter.TreeNodeRendererConverter;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JTree;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
+import net.codjo.test.release.task.gui.converter.TreeNodeConverter;
+import net.codjo.test.release.task.gui.converter.TreeNodeModelConverter;
+import net.codjo.test.release.task.gui.converter.TreeNodeRendererConverter;
 /**
  * Méthodes utilitaires pour la gestion des {@link JTree}
  *
@@ -107,6 +107,13 @@ final class TreeUtils {
         }
 
         return null;
+    }
+
+
+    public static String convertPath(JTree tree,
+                                     TreePath treePath,
+                                     TreeNodeConverter converter) {
+        return convertPath(tree, treePath, converter, SEPARATOR);
     }
 
 

@@ -1,9 +1,9 @@
 package net.codjo.test.release.task.batch;
-import net.codjo.test.release.task.Arg;
-import net.codjo.test.release.task.util.RemoteCommand;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import net.codjo.test.release.task.Arg;
+import net.codjo.test.release.task.util.RemoteCommand;
 /**
  *
  */
@@ -72,6 +72,7 @@ public class BatchSegmentationTask extends AbstractBatchTask {
     protected RemoteCommand createRemoteCommand() {
         return new BatchSegmentationSecureCommand(getProperty(REMOTE_USER, true),
                                                   getProperty(REMOTE_SERVER, true),
+                                                  getPort(),
                                                   getRemoteBatchDir(),
                                                   getInitiator(),
                                                   getSegmentations(),

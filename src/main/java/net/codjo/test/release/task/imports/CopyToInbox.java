@@ -80,6 +80,7 @@ public class CopyToInbox extends AgfTask {
         if (remoteCommand == null) {
             remoteCommand = new CopyToInboxSecureCommand(getRemoteUser(),
                                                          getRemoteServer(),
+                                                         getPort(),
                                                          fileInTemp(getProject(),
                                                                     toAbsoluteFile(getFile())).getPath(),
                                                          determineRemoteInbox());
